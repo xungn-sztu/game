@@ -1,0 +1,86 @@
+<style>
+  :root { --bg:#111823; --panel:#161f2b; --line:#334153; --text:#dbe4ee; --muted:#95a5b7; --accent:#4ea8ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:14px; background:transparent; color:var(--text); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .panel { max-width:860px; margin:0 auto; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:linear-gradient(180deg,#0d141d,#182230); box-shadow:0 16px 32px rgba(0,0,0,.25); }
+  .head { padding:18px 20px; border-bottom:1px solid var(--line); background:rgba(78,168,255,.08); }
+  .head h1 { margin:0 0 8px; font-size:22px; }
+  .head p { margin:0; color:var(--muted); font-size:13px; line-height:1.7; }
+  .grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; padding:16px; }
+  .field { border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(0,0,0,.12); }
+  .field label { display:block; margin-bottom:8px; color:#c4d1dd; font-size:12px; font-weight:700; }
+  .field input, .field select, .field textarea { width:100%; background:#0c1219; color:#eef3f8; border:1px solid #425368; border-radius:10px; padding:10px 12px; font-size:13px; }
+  .field textarea { min-height:88px; resize:vertical; }
+  .wide { grid-column:1 / -1; }
+  .foot { display:flex; justify-content:space-between; gap:12px; padding:16px; border-top:1px solid var(--line); align-items:center; }
+  .tip { color:var(--muted); font-size:12px; line-height:1.7; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; }
+  .btn { cursor:pointer; border-radius:10px; padding:11px 16px; font-size:13px; font-weight:700; border:1px solid #425368; }
+  .btn-secondary { background:#17202c; color:#d7e0ea; }
+  .btn-primary { background:linear-gradient(135deg,#257bff,#51a8ff); color:#fff; border-color:transparent; }
+  @media (max-width: 800px) { .grid { grid-template-columns:1fr; } .foot { flex-direction:column; align-items:stretch; } .btn { width:100%; } }
+</style>
+<div class="panel">
+  <div class="head">
+    <h1>&#23450;&#21046;&#24320;&#22330;&#35282;&#33394;</h1>
+    <p>&#39318;&#36718;&#21482;&#20570;&#19968;&#20214;&#20107;&#65306;&#20808;&#35753;&#31532;&#19968;&#20301;&#22899;&#35282;&#33394;&#31283;&#23450;&#20889;&#20837;&#22266;&#23450;&#27133;&#20301;&#65292;&#24182;&#31435;&#21051;&#20986;&#29616;&#22312;&#29366;&#24577;&#26639;&#30340;&#35282;&#33394;&#39029;&#12290;</p>
+  </div>
+  <div class="grid">
+    <div class="field"><label for="age">&#24180;&#40836;&#21306;&#38388;</label><select id="age"><option>18-22</option><option selected>23-27</option><option>28-32</option><option>33-40</option><option>40+</option></select></div>
+    <div class="field"><label for="title">&#20844;&#24320;&#22836;&#34900;</label><input id="title" placeholder="&#22914;&#65306;&#30740;&#31350;&#29983;&#12289;&#22806;&#20225;&#34892;&#25919;&#24635;&#30417;"></div>
+    <div class="field"><label for="body">&#36523;&#26448;</label><select id="body"><option selected>&#23159;&#23567;&#32420;&#32454;</option><option>&#21248;&#31216;&#26631;&#20934;</option><option>&#39640;&#25361;&#20462;&#38271;</option><option>&#20016;&#33100;&#32905;&#24863;</option><option>&#20581;&#36523;&#32039;&#33268;</option></select></div>
+    <div class="field"><label for="job">&#32844;&#19994;</label><select id="job"><option selected>&#23398;&#29983;</option><option>&#25945;&#24072;</option><option>&#30333;&#39046;</option><option>&#21307;&#25252;</option><option>&#37329;&#34701;</option><option>&#31185;&#25216;</option><option>&#20840;&#32844;&#22826;&#22826;</option><option>&#26381;&#21153;&#19994;</option></select></div>
+    <div class="field"><label for="channel">&#35748;&#35782;&#28192;&#36947;</label><select id="channel"><option selected>&#23436;&#20840;&#38476;&#29983;</option><option>&#37051;&#23621;</option><option>&#32593;&#32476;&#31038;&#20132;</option><option>&#24037;&#20316;&#20851;&#31995;</option><option>&#26379;&#21451;&#20171;&#32461;</option></select></div>
+    <div class="field"><label for="relation">&#20851;&#31995;&#24615;&#36136;</label><select id="relation"><option selected>&#21333;&#21521;&#35266;&#23519;</option><option>&#21018;&#35748;&#35782;</option><option>&#26222;&#36890;&#26379;&#21451;</option><option>&#26167;&#26167;&#35797;&#25506;</option><option>&#31192;&#23494;&#20851;&#31995;</option><option>&#21033;&#30410;&#20132;&#25442;</option></select></div>
+    <div class="field"><label for="emotion">&#24773;&#24863;&#28145;&#24230;</label><select id="emotion"><option selected>&#26080;&#24863;</option><option>&#30053;&#26377;&#22909;&#24863;</option><option>&#24515;&#21160;</option><option>&#21916;&#27426;</option><option>&#20381;&#36182;</option></select></div>
+    <div class="field"><label for="intimacy">&#20146;&#23494;&#31243;&#24230;</label><select id="intimacy"><option selected>&#38646;&#25509;&#35302;</option><option>&#36731;&#24494;&#25509;&#35302;</option><option>&#25317;&#25265;</option><option>&#25509;&#21563;</option><option>&#25242;&#25720;</option></select></div>
+    <div class="field"><label for="life">&#29983;&#27963;&#28183;&#36879;&#24230;</label><select id="life"><option selected>&#38476;&#29983;</option><option>&#32593;&#21451;</option><option>&#20598;&#23572;&#32852;&#31995;</option><option>&#23450;&#26399;&#35265;&#38754;</option><option>&#20849;&#20139;&#26085;&#24120;</option></select></div>
+    <div class="field"><label for="route">&#20851;&#31995;&#36208;&#21521;</label><select id="route"><option selected>&#20808;&#35266;&#23519;&#21518;&#25509;&#36817;</option><option>&#20808;&#29087;&#24713;&#21518;&#36234;&#30028;</option><option>&#20808;&#20132;&#26131;&#21518;&#32465;&#23450;</option><option>&#20808;&#35797;&#25506;&#21518;&#30830;&#35748;</option></select></div>
+    <div class="field wide"><label for="extra">&#39069;&#22806;&#35201;&#27714;</label><textarea id="extra" placeholder="&#21487;&#22635;&#20889;&#29305;&#27530;&#32454;&#33410;&#12289;&#36523;&#20221;&#27668;&#36136;&#25110;&#24615;&#30230;&#20542;&#21521;"></textarea></div>
+  </div>
+  <div class="foot">
+    <div class="tip">&#36755;&#20986;&#35268;&#21017;&#22266;&#23450;&#65306;&#20808; <code>&lt;UpdateVariable&gt;</code> &#65292;&#28982;&#21518;&#21482;&#36755;&#20986; <code>&#12304;&#27880;&#20876;&#20027;&#39029;&#12305;</code> &#21644; <code>&lt;StatusPlaceHolderImpl/&gt;</code>&#12290;</div>
+    <div class="actions">
+      <button class="btn btn-secondary" type="button" onclick="Forum1Selector.fillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
+      <button class="btn btn-primary" type="button" onclick="Forum1Selector.send()">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
+    </div>
+  </div>
+</div>
+<script src="./common.js"></script>
+<script>
+  (function () {
+    function value(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+    function promptText() {
+      return [
+        "\u3010\u5b9a\u5236\u5973\u89d2\u8272\u5e76\u76f4\u63a5\u5f00\u573a\u3011",
+        "",
+        "\u8bf7\u6839\u636e\u4e0b\u5217\u6761\u4ef6\u751f\u6210\u4e00\u540d\u5b8c\u6574\u5973\u89d2\u8272\uff0c\u5e76\u5199\u5165\u5f53\u524d MVU \u53d8\u91cf\u7cfb\u7edf\u3002",
+        "\u5e74\u9f84\u533a\u95f4\uff1a" + value("age"),
+        "\u516c\u5f00\u5934\u8854\uff1a" + (value("title") || value("job")),
+        "\u8eab\u6750\uff1a" + value("body"),
+        "\u804c\u4e1a\uff1a" + value("job"),
+        "\u8ba4\u8bc6\u6e20\u9053\uff1a" + value("channel"),
+        "\u5173\u7cfb\u6027\u8d28\uff1a" + value("relation"),
+        "\u60c5\u611f\u6df1\u5ea6\uff1a" + value("emotion"),
+        "\u4eb2\u5bc6\u7a0b\u5ea6\uff1a" + value("intimacy"),
+        "\u751f\u6d3b\u6e17\u900f\u5ea6\uff1a" + value("life"),
+        "\u5173\u7cfb\u8d70\u5411\uff1a" + value("route"),
+        "\u989d\u5916\u8981\u6c42\uff1a" + (value("extra") || "\u65e0"),
+        "",
+        "\u786c\u6027\u8981\u6c42\uff1a",
+        "1. \u9996\u8f6e\u53ea\u5141\u8bb8\u5bf9 /\u89d2\u8272\u7d22\u5f15/\u6863\u68481-4 \u4f7f\u7528 replace \u5199\u5165\u3002",
+        "2. \u81f3\u5c11\u5199\u5165\uff1a\u89d2\u8272\u540d\u3001\u5f53\u524d\u662f\u5426\u5728\u573a\u3001\u662f\u5426\u5df2\u5efa\u6863\u3001\u516c\u5f00\u5934\u8854\u3001\u5173\u7cfb\u6027\u8d28\u3001\u60c5\u611f\u6df1\u5ea6\u3001\u751f\u6d3b\u6e17\u900f\u5ea6\u3001\u4eb2\u5bc6\u7a0b\u5ea6\u3001\u6700\u8fd1\u66f4\u65b0\u3002",
+        "3. \u8bbe\u4e3a\uff1a\u5f53\u524d\u662f\u5426\u5728\u573a=false\uff0c\u662f\u5426\u5df2\u5efa\u6863=true\uff0c\u6700\u8fd1\u66f4\u65b0=\u6ce8\u518c\u524d\u5efa\u6863\u3002",
+        "4. \u4e0d\u8981\u4f7f\u7528\u52a8\u6001\u89d2\u8272\u540d\u8def\u5f84\uff0c\u4e0d\u8981\u8f93\u51fa insert\u3001delta\u3001append\u3002",
+        "5. </UpdateVariable> \u4e4b\u540e\u6b63\u6587\u53ea\u80fd\u8f93\u51fa\u4e24\u884c\uff1a\u7b2c\u4e00\u884c\u3010\u6ce8\u518c\u4e3b\u9875\u3011\uff1b\u7b2c\u4e8c\u884c <StatusPlaceHolderImpl/> \u3002"
+      ].join("\\n");
+    }
+    window.Forum1Selector = {
+      fillOnly() { Forum1Common.fillInput(promptText()); },
+      send() { if (Forum1Common.fillInput(promptText())) setTimeout(() => Forum1Common.clickSend(), 80); }
+    };
+  })();
+</script>

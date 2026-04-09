@@ -1,0 +1,199 @@
+<style>
+  :root {
+    --panel: rgba(18, 23, 32, 0.96);
+    --line: #2c3a4d;
+    --line-2: #39485c;
+    --text: #d8e0ea;
+    --muted: #98a7ba;
+    --accent: #52a7ff;
+    --accent-2: #2878ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 18px;
+    background: transparent;
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .panel {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  }
+  .hero {
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(135deg, rgba(63, 95, 143, 0.18), rgba(18, 24, 33, 0.4));
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 22px; color: #f4f7fb; }
+  .hero p { margin: 0; font-size: 13px; line-height: 1.75; color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+  .field {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: rgba(9, 13, 19, 0.62);
+    padding: 12px;
+  }
+  .field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #bcc7d4;
+  }
+  .field select, .field input, .field textarea {
+    width: 100%;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    background: #0c1219;
+    color: #edf2f8;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .field textarea { min-height: 96px; resize: vertical; }
+  .wide { grid-column: 1 / -1; }
+  .tips {
+    margin: 0 16px 16px;
+    padding: 12px 14px;
+    border: 1px dashed #40526a;
+    border-radius: 12px;
+    color: #96a5b7;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .summary { color: #8e9caf; font-size: 12px; line-height: 1.6; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    border: 1px solid #41526a;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-secondary { background: rgba(18, 24, 33, 0.9); color: #c2ccd8; }
+  .btn-primary { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; border-color: transparent; }
+  @media (max-width: 920px) {
+    .grid { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; }
+    .btn { width: 100%; }
+  }
+</style>
+<div class="panel">
+  <div class="hero">
+    <h1>定制开场角色</h1>
+    <p>这一页只负责让第一位角色先进入角色栏。首轮目标不是把详情写满，而是让模型在固定槽位里成功写入一位可显示的角色摘要。</p>
+  </div>
+  <div class="grid">
+    <div class="field"><label for="age">年龄区间</label><select id="age"><option>18-22</option><option selected>23-27</option><option>28-32</option><option>33-40</option><option>40+</option></select></div>
+    <div class="field"><label for="race">人种 / 外貌</label><select id="race"><option selected>东亚</option><option>混血</option><option>欧美</option><option>拉美</option><option>少数民族</option><option>异域感强</option></select></div>
+    <div class="field"><label for="job">职业</label><select id="job"><option selected>学生</option><option>教师</option><option>白领</option><option>医护</option><option>金融</option><option>科技</option><option>全职太太</option><option>娱乐行业</option><option>服务业</option><option>其他</option></select></div>
+    <div class="field"><label for="title">公开头衔</label><input id="title" placeholder="如：法学院研究生、外企行政总监"></div>
+    <div class="field"><label for="body">身材</label><select id="body"><option selected>娇小纤细</option><option>匀称标准</option><option>高挑修长</option><option>丰腴肉感</option><option>健身紧致</option><option>骨感清冷</option></select></div>
+    <div class="field"><label for="dev">身体开发等级</label><select id="dev"><option selected>未开发</option><option>初窥门径</option><option>轻度开发</option><option>中度开发</option><option>深度开发</option><option>完全开发</option></select></div>
+    <div class="field"><label for="channel">认识渠道</label><select id="channel"><option>血亲</option><option>邻居</option><option>同学长辈</option><option selected>完全陌生</option><option>网络社交</option><option>工作关系</option><option>朋友介绍</option></select></div>
+    <div class="field"><label for="relation">关系性质</label><select id="relation"><option selected>单向观察</option><option>刚认识</option><option>普通熟人</option><option>普通朋友</option><option>暧昧试探</option><option>互有好感</option><option>秘密关系</option><option>地下情</option><option>主从关系</option><option>利益交换</option><option>竞争对手</option><option>求助委托</option><option>职场绑定</option></select></div>
+    <div class="field"><label for="emotion">情感深度</label><select id="emotion"><option selected>无感</option><option>略有好感</option><option>心动</option><option>喜欢</option><option>依赖</option><option>沉迷</option><option>复杂情感</option></select></div>
+    <div class="field"><label for="intimacy">亲密程度</label><select id="intimacy"><option selected>零接触</option><option>轻微接触</option><option>拥抱</option><option>接吻</option><option>抚摸身体</option><option>手交</option><option>口交</option><option>带套性交</option><option>无套内射</option></select></div>
+    <div class="field"><label for="life">生活渗透度</label><select id="life"><option selected>陌生</option><option>网友</option><option>偶尔联系</option><option>定期见面</option><option>共享日常</option><option>半同居</option><option>深度绑定</option></select></div>
+    <div class="field"><label for="route">关系走向</label><select id="route"><option selected>先观察后接近</option><option>先熟悉后越界</option><option>先交易后绑定</option><option>先压制后依赖</option><option>先竞争后合作</option><option>先试探后确认</option></select></div>
+    <div class="field wide"><label for="extra">额外要求</label><textarea id="extra" placeholder="如：保留某种职业气质、特殊身体细节、某种性癖好"></textarea></div>
+  </div>
+  <div class="tips">首轮硬要求只有两条：1. 先在固定槽位里写出第一位角色。2. 正文只输出注册页标记和状态栏占位符。</div>
+  <div class="footer">
+    <div class="summary">首轮只要求角色页能立刻出现人。详情层和兼容层可以同回合补，但不能拖掉首轮建档。</div>
+    <div class="actions">
+      <button class="btn btn-secondary" type="button" onclick="Forum1Selector.fillOnly()">仅填入输入栏</button>
+      <button class="btn btn-primary" type="button" onclick="Forum1Selector.generateAndSend()">生成并开场</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    function parentWindow() {
+      try { if (window.parent && window.parent !== window) return window.parent; } catch (error) {}
+      return window;
+    }
+    function parentDocument() {
+      const host = parentWindow();
+      try { return host.document || document; } catch (error) { return document; }
+    }
+    function valueOf(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+    function fillInput(text) {
+      const host = parentWindow();
+      const doc = parentDocument();
+      const textarea = doc.querySelector("#send_textarea") || doc.querySelector('textarea[name="message"]') || doc.querySelector(".message-input textarea") || doc.querySelector('[data-testid="chat-input"] textarea') || doc.querySelector("textarea");
+      if (!textarea) return false;
+      const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
+      const setter = Object.getOwnPropertyDescriptor(proto, "value");
+      if (setter && typeof setter.set === "function") setter.set.call(textarea, text); else textarea.value = text;
+      try { textarea.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text })); }
+      catch (error) { textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true })); }
+      textarea.dispatchEvent(new Event("change", { bubbles: true }));
+      textarea.focus();
+      return true;
+    }
+    function clickSend() {
+      const doc = parentDocument();
+      const btn = doc.querySelector("#send_but") || doc.querySelector('[data-testid="send-button"]') || doc.querySelector("button[type='submit']");
+      if (!btn) return false;
+      btn.click();
+      return true;
+    }
+    function buildPrompt() {
+      return [
+        "【定制女角色并直接开场】",
+        "",
+        "请根据以下条件生成一名完整女角色，并写入当前 MVU 变量系统。",
+        `年龄区间：${valueOf("age")}`,
+        `人种/外貌：${valueOf("race")}`,
+        `职业：${valueOf("job")}`,
+        `公开头衔：${valueOf("title") || valueOf("job")}`,
+        `身材：${valueOf("body")}`,
+        `身体开发等级：${valueOf("dev")}`,
+        `认识渠道：${valueOf("channel")}`,
+        `关系性质：${valueOf("relation")}`,
+        `情感深度：${valueOf("emotion")}`,
+        `亲密程度：${valueOf("intimacy")}`,
+        `生活渗透度：${valueOf("life")}`,
+        `关系走向：${valueOf("route")}`,
+        `额外要求：${valueOf("extra") || "无"}`,
+        "",
+        "硬性要求：",
+        "1. 同一条回复里，先且只输出一个合法的 <UpdateVariable> 块。",
+        "2. 首轮只允许使用固定槽位：档案1、档案2、档案3、档案4。",
+        "3. 空槽位定义是：是否已建档=false 或 角色名为空。",
+        "4. 首轮必须先把第一位角色写进 /角色索引/档案X，并用 replace 写入现有字段。",
+        "5. 首轮至少写入：角色名、当前是否在场、是否已建档、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
+        "6. 注册开场阶段必须设置：当前是否在场=false，是否已建档=true，最近更新=注册前建档。",
+        "7. 同回合可以继续补 /角色详情/档案X 和 /女角色档案/档案X，但不能因此拖掉首轮建档。",
+        "8. 严禁输出 insert、delta、append、thinking、raw html、角色档案总结。",
+        "9. <UpdateVariable> 结束后，正文只能输出两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。"
+      ].join("\\n");
+    }
+    window.Forum1Selector = {
+      fillOnly() { fillInput(buildPrompt()); },
+      generateAndSend() { if (fillInput(buildPrompt())) setTimeout(function () { clickSend(); }, 80); }
+    };
+  })();
+</script>

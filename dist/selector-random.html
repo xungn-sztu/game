@@ -1,0 +1,49 @@
+<style>
+  :root { --bg:#111823; --panel:#161f2b; --line:#334153; --text:#dbe4ee; --muted:#95a5b7; --accent:#4ea8ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:14px; background:transparent; color:var(--text); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .panel { max-width:760px; margin:0 auto; border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,#0d141d,#182230); box-shadow:0 16px 32px rgba(0,0,0,.25); overflow:hidden; }
+  .inner { padding:20px; }
+  h1 { margin:0 0 8px; font-size:22px; }
+  p { margin:0 0 10px; font-size:13px; line-height:1.7; color:var(--muted); }
+  .tip { margin-top:12px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.12); }
+  .actions { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .btn { cursor:pointer; border-radius:10px; padding:11px 16px; font-size:13px; font-weight:700; border:1px solid #425368; }
+  .btn-secondary { background:#17202c; color:#d7e0ea; }
+  .btn-primary { background:linear-gradient(135deg,#257bff,#51a8ff); color:#fff; border-color:transparent; }
+</style>
+<div class="panel">
+  <div class="inner">
+    <h1>&#38543;&#26426;&#29983;&#25104;&#24182;&#30452;&#25509;&#24320;&#22330;</h1>
+    <p>&#36825;&#26465;&#20837;&#21475;&#29992;&#20110;&#26368;&#24555;&#24314;&#26723;&#12290;&#39318;&#36718;&#21482;&#35201;&#27714;&#31532;&#19968;&#20301;&#35282;&#33394;&#31435;&#21051;&#20986;&#29616;&#22312;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#65292;&#19981;&#35201;&#29992;&#21160;&#24577; key&#12290;</p>
+    <div class="tip">&#26368;&#20302;&#25104;&#21151;&#26631;&#20934;&#65306;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#35745;&#25968;&#22823;&#20110; 0&#65292;&#24182;&#31435;&#21051;&#21487;&#35265;&#31532;&#19968;&#20301;&#35282;&#33394;&#12290;</div>
+    <div class="actions">
+      <button class="btn btn-secondary" type="button" onclick="Forum1Random.fillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
+      <button class="btn btn-primary" type="button" onclick="Forum1Random.send()">&#38543;&#26426;&#29983;&#25104;&#24182;&#24320;&#22330;</button>
+    </div>
+  </div>
+</div>
+<script src="./common.js"></script>
+<script>
+  (function () {
+    function promptText() {
+      return [
+        "\u3010\u968f\u673a\u751f\u6210\u5973\u89d2\u8272\u5e76\u76f4\u63a5\u5f00\u573a\u3011",
+        "",
+        "\u8bf7\u968f\u673a\u751f\u6210\u4e00\u540d\u5b8c\u6574\u5973\u89d2\u8272\uff0c\u5e76\u5199\u5165\u5f53\u524d MVU \u53d8\u91cf\u7cfb\u7edf\u3002",
+        "\u968f\u673a\u65f6\u4f18\u5148\u8865\u9f50\uff1a\u516c\u5f00\u5934\u8854\u3001\u5173\u7cfb\u6027\u8d28\u3001\u60c5\u611f\u6df1\u5ea6\u3001\u751f\u6d3b\u6e17\u900f\u5ea6\u3001\u4eb2\u5bc6\u7a0b\u5ea6\u3001\u8ba4\u8bc6\u6e20\u9053\u3002",
+        "",
+        "\u786c\u6027\u8981\u6c42\uff1a",
+        "1. \u9996\u8f6e\u53ea\u5141\u8bb8\u5bf9 /\u89d2\u8272\u7d22\u5f15/\u6863\u68481-4 \u4f7f\u7528 replace \u3002",
+        "2. \u81f3\u5c11\u5199\u5165\uff1a\u89d2\u8272\u540d\u3001\u5f53\u524d\u662f\u5426\u5728\u573a\u3001\u662f\u5426\u5df2\u5efa\u6863\u3001\u516c\u5f00\u5934\u8854\u3001\u5173\u7cfb\u6027\u8d28\u3001\u60c5\u611f\u6df1\u5ea6\u3001\u751f\u6d3b\u6e17\u900f\u5ea6\u3001\u4eb2\u5bc6\u7a0b\u5ea6\u3001\u6700\u8fd1\u66f4\u65b0\u3002",
+        "3. \u8bbe\u4e3a\uff1a\u5f53\u524d\u662f\u5426\u5728\u573a=false\uff0c\u662f\u5426\u5df2\u5efa\u6863=true\uff0c\u6700\u8fd1\u66f4\u65b0=\u6ce8\u518c\u524d\u5efa\u6863\u3002",
+        "4. \u4e0d\u8981\u8f93\u51fa insert\u3001delta\u3001append\u3001raw html \u6216\u6863\u6848\u603b\u7ed3\u3002",
+        "5. </UpdateVariable> \u4e4b\u540e\u6b63\u6587\u53ea\u80fd\u8f93\u51fa\u4e24\u884c\uff1a\u7b2c\u4e00\u884c\u3010\u6ce8\u518c\u4e3b\u9875\u3011\uff1b\u7b2c\u4e8c\u884c <StatusPlaceHolderImpl/> \u3002"
+      ].join("\\n");
+    }
+    window.Forum1Random = {
+      fillOnly() { Forum1Common.fillInput(promptText()); },
+      send() { if (Forum1Common.fillInput(promptText())) setTimeout(() => Forum1Common.clickSend(), 80); }
+    };
+  })();
+</script>
