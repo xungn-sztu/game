@@ -82,8 +82,8 @@
       const items = slice.map((row) => {
         const summary = row.summary || {};
         const detail = row.detail || {};
-        const social = detail["社交与从属"] || {};
-        const body = detail["身体数据"] || {};
+        const social = detail[Forum1Common.U.K.social] || {};
+        const body = detail[Forum1Common.U.K.body] || {};
         const open = state.expanded === row.slot;
         return `<div class="char">
           <div class="char-head" data-slot="${row.slot}">

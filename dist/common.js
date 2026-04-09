@@ -6,6 +6,13 @@
       time: "\u65f6\u95f4",
       place: "\u5730\u70b9",
       detailTime: "\u8be6\u7ec6\u65f6\u95f4",
+      year: "\u5e74",
+      month: "\u6708",
+      day: "\u65e5",
+      hour: "\u65f6",
+      minute: "\u5206",
+      second: "\u79d2",
+      weekday: "\u661f\u671f",
       player: "\u4e3b\u89d2",
       money: "\u91d1\u94b1",
       stamina: "\u4f53\u529b",
@@ -26,6 +33,8 @@
       intimacy: "\u4eb2\u5bc6\u7a0b\u5ea6",
       latest: "\u6700\u8fd1\u66f4\u65b0",
       realIdentity: "\u73b0\u5b9e\u8eab\u4efd",
+      social: "\u793e\u4ea4\u4e0e\u4ece\u5c5e",
+      body: "\u8eab\u4f53\u6570\u636e",
       channel: "\u8ba4\u8bc6\u6e20\u9053",
       route: "\u5173\u7cfb\u8d70\u5411"
     }
@@ -137,15 +146,21 @@
       const compat = get(stat, [U.K.femaleArchive, slot], {});
       const built = !!(summary[U.K.built] || detail[U.K.built] || compat[U.K.built]);
       const name = summary[U.K.name] || detail[U.K.name] || compat[U.K.name] || "";
-      return { slot, summary, detail: Object.keys(detail || {}).length ? detail : compat, built, name };
+      return {
+        slot,
+        summary,
+        detail: Object.keys(detail || {}).length ? detail : compat,
+        built,
+        name
+      };
     }).filter((row) => row.built && row.name);
   }
 
   function formatTime(stat) {
     const t = get(stat, [U.K.world, U.K.detailTime], {});
-    if (!t || t["年"] === undefined) return "\u65f6\u95f4\u672a\u540c\u6b65";
+    if (!t || t[U.K.year] === undefined) return "\u65f6\u95f4\u672a\u540c\u6b65";
     const pad = (n) => String(n || 0).padStart(2, "0");
-    return `${t["年"]}-${pad(t["月"])}-${pad(t["日"])} ${pad(t["时"])}:${pad(t["分"])} ${safe(t["星期"], "")}`.trim();
+    return `${t[U.K.year]}-${pad(t[U.K.month])}-${pad(t[U.K.day])} ${pad(t[U.K.hour])}:${pad(t[U.K.minute])} ${safe(t[U.K.weekday], "")}`.trim();
   }
 
   window.Forum1Common = {
