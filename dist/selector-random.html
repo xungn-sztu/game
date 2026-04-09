@@ -18,8 +18,8 @@
     <p>&#36825;&#26465;&#20837;&#21475;&#29992;&#20110;&#26368;&#24555;&#24314;&#26723;&#12290;&#39318;&#36718;&#21482;&#35201;&#27714;&#31532;&#19968;&#20301;&#35282;&#33394;&#31435;&#21051;&#20986;&#29616;&#22312;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#65292;&#19981;&#35201;&#29992;&#21160;&#24577; key&#12290;</p>
     <div class="tip">&#26368;&#20302;&#25104;&#21151;&#26631;&#20934;&#65306;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#35745;&#25968;&#22823;&#20110; 0&#65292;&#24182;&#31435;&#21051;&#21487;&#35265;&#31532;&#19968;&#20301;&#35282;&#33394;&#12290;</div>
     <div class="actions">
-      <button class="btn btn-secondary" type="button" onclick="Forum1Random.fillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
-      <button class="btn btn-primary" type="button" onclick="Forum1Random.send()">&#38543;&#26426;&#29983;&#25104;&#24182;&#24320;&#22330;</button>
+      <button class="btn btn-secondary" id="random-fill-btn" type="button">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
+      <button class="btn btn-primary" id="random-send-btn" type="button">&#38543;&#26426;&#29983;&#25104;&#24182;&#24320;&#22330;</button>
     </div>
   </div>
 </div>
@@ -45,5 +45,7 @@
       fillOnly() { Forum1Common.fillInput(promptText()); },
       send() { if (Forum1Common.fillInput(promptText())) setTimeout(() => Forum1Common.clickSend(), 80); }
     };
+    document.getElementById("random-fill-btn")?.addEventListener("click", () => window.Forum1Random.fillOnly());
+    document.getElementById("random-send-btn")?.addEventListener("click", () => window.Forum1Random.send());
   })();
 </script>

@@ -41,8 +41,8 @@
   <div class="foot">
     <div class="tip">&#36755;&#20986;&#35268;&#21017;&#22266;&#23450;&#65306;&#20808; <code>&lt;UpdateVariable&gt;</code> &#65292;&#28982;&#21518;&#21482;&#36755;&#20986; <code>&#12304;&#27880;&#20876;&#20027;&#39029;&#12305;</code> &#21644; <code>&lt;StatusPlaceHolderImpl/&gt;</code>&#12290;</div>
     <div class="actions">
-      <button class="btn btn-secondary" type="button" onclick="Forum1Selector.fillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
-      <button class="btn btn-primary" type="button" onclick="Forum1Selector.send()">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
+      <button class="btn btn-secondary" id="fill-only-btn" type="button">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
+      <button class="btn btn-primary" id="send-btn" type="button">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
     </div>
   </div>
 </div>
@@ -82,5 +82,7 @@
       fillOnly() { Forum1Common.fillInput(promptText()); },
       send() { if (Forum1Common.fillInput(promptText())) setTimeout(() => Forum1Common.clickSend(), 80); }
     };
+    document.getElementById("fill-only-btn")?.addEventListener("click", () => window.Forum1Selector.fillOnly());
+    document.getElementById("send-btn")?.addEventListener("click", () => window.Forum1Selector.send());
   })();
 </script>

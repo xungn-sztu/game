@@ -104,15 +104,20 @@
     const doc = hostDocument();
     const input =
       doc.querySelector("#send_textarea") ||
+      doc.querySelector("[contenteditable='true']") ||
       doc.querySelector('textarea[name="message"]') ||
       doc.querySelector(".message-input textarea") ||
       doc.querySelector('[data-testid="chat-input"] textarea') ||
       doc.querySelector("textarea");
     if (!input) return false;
-    const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
-    const desc = Object.getOwnPropertyDescriptor(proto, "value");
-    if (desc && typeof desc.set === "function") desc.set.call(input, text);
-    else input.value = text;
+    if (input.matches && input.matches("[contenteditable='true']")) {
+      input.textContent = text;
+    } else {
+      const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
+      const desc = Object.getOwnPropertyDescriptor(proto, "value");
+      if (desc && typeof desc.set === "function") desc.set.call(input, text);
+      else input.value = text;
+    }
     try {
       input.dispatchEvent(new host.InputEvent("input", {
         bubbles: true,
