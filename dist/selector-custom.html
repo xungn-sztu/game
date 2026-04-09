@@ -86,7 +86,13 @@
     }
     window.Forum1Selector = {
       fillOnly() { Forum1Common.fillInput(promptText()); },
-      send() { if (Forum1Common.fillInput(promptText())) setTimeout(() => Forum1Common.clickSend(), 80); }
+      send() {
+        const message = promptText();
+        const command = `/send ${message} | /trigger`;
+        if (!Forum1Common.triggerCommand(command)) {
+          if (Forum1Common.fillInput(message)) setTimeout(() => Forum1Common.clickSend(), 80);
+        }
+      }
     };
     document.getElementById("fill-only-btn")?.addEventListener("click", () => window.Forum1Selector.fillOnly());
     document.getElementById("send-btn")?.addEventListener("click", () => window.Forum1Selector.send());

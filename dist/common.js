@@ -144,6 +144,23 @@
     return true;
   }
 
+  function triggerCommand(command) {
+    const host = hostWindow();
+    try {
+      if (typeof host.triggerSlash === "function") {
+        host.triggerSlash(command);
+        return true;
+      }
+    } catch (error) {}
+    try {
+      if (typeof window.triggerSlash === "function") {
+        window.triggerSlash(command);
+        return true;
+      }
+    } catch (error) {}
+    return false;
+  }
+
   function roleRows(stat) {
     return U.SLOT_NAMES.map((slot) => {
       const summary = get(stat, [U.K.charIndex, slot], {});
@@ -176,6 +193,7 @@
     getStatData,
     fillInput,
     clickSend,
+    triggerCommand,
     roleRows,
     formatTime
   };

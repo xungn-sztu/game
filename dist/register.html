@@ -43,7 +43,11 @@
       Forum1Common.fillInput(buildPrompt());
     });
     document.getElementById("register-send-btn")?.addEventListener("click", () => {
-      if (Forum1Common.fillInput(buildPrompt())) setTimeout(() => Forum1Common.clickSend(), 80);
+      const message = buildPrompt();
+      const command = `/send ${message} | /trigger`;
+      if (!Forum1Common.triggerCommand(command)) {
+        if (Forum1Common.fillInput(message)) setTimeout(() => Forum1Common.clickSend(), 80);
+      }
     });
   })();
 </script>
