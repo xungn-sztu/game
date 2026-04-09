@@ -32,21 +32,71 @@
     </div>
   </div>
 </div>
-<script src="./common.js"></script>
 <script>
   (function () {
+    function hostWindow() {
+      try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
+      try { if (window.top && window.top !== window) return window.top; } catch (e) {}
+      return window;
+    }
+    function hostDocument() {
+      const host = hostWindow();
+      try { return host.document || document; } catch (e) { return document; }
+    }
+    function fillInput(text) {
+      const host = hostWindow();
+      const doc = hostDocument();
+      const input =
+        doc.querySelector("#send_textarea") ||
+        doc.querySelector("[contenteditable='true']") ||
+        doc.querySelector('textarea[name=\"message\"]') ||
+        doc.querySelector(".message-input textarea") ||
+        doc.querySelector('[data-testid=\"chat-input\"] textarea') ||
+        doc.querySelector("textarea");
+      if (!input) return false;
+      if (input.matches && input.matches("[contenteditable='true']")) {
+        input.textContent = text;
+      } else {
+        const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
+        const desc = Object.getOwnPropertyDescriptor(proto, "value");
+        if (desc && typeof desc.set === "function") desc.set.call(input, text);
+        else input.value = text;
+      }
+      try {
+        input.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text }));
+      } catch (e) {
+        input.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      }
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.focus();
+      return true;
+    }
+    function clickSend() {
+      const doc = hostDocument();
+      const btn =
+        doc.querySelector("#send_but") ||
+        doc.querySelector('[data-testid=\"send-button\"]') ||
+        doc.querySelector("button[type='submit']");
+      if (!btn) return false;
+      btn.click();
+      return true;
+    }
+    function triggerCommand(command) {
+      const host = hostWindow();
+      try { if (typeof host.triggerSlash === "function") { host.triggerSlash(command); return true; } } catch (e) {}
+      try { if (typeof window.triggerSlash === "function") { window.triggerSlash(command); return true; } } catch (e) {}
+      return false;
+    }
     function buildPrompt() {
-      const forumId = String(document.getElementById("forum-id-input")?.value || "").trim() || "xun";
+      const forumId = String(document.getElementById("forum-id-input").value || "").trim() || "xun";
       return `id: ${forumId}\n\uff08\u66f4\u65b0\u6211\u7684\u8bba\u575b\u8d26\u6237\u5e76\u7ee7\u7eed\u5f53\u524d\u5267\u60c5\uff09`;
     }
-    document.getElementById("register-fill-btn")?.addEventListener("click", () => {
-      Forum1Common.fillInput(buildPrompt());
-    });
-    document.getElementById("register-send-btn")?.addEventListener("click", () => {
+    document.getElementById("register-fill-btn").addEventListener("click", () => fillInput(buildPrompt()));
+    document.getElementById("register-send-btn").addEventListener("click", () => {
       const message = buildPrompt();
       const command = `/send ${message} | /trigger`;
-      if (!Forum1Common.triggerCommand(command)) {
-        if (Forum1Common.fillInput(message)) setTimeout(() => Forum1Common.clickSend(), 80);
+      if (!triggerCommand(command)) {
+        if (fillInput(message)) setTimeout(() => clickSend(), 80);
       }
     });
   })();

@@ -23,7 +23,7 @@
 <div class="panel">
   <div class="head">
     <h1>&#23450;&#21046;&#24320;&#22330;&#35282;&#33394;</h1>
-    <p>&#39318;&#36718;&#21482;&#20570;&#19968;&#20214;&#20107;&#65306;&#20808;&#35753;&#31532;&#19968;&#20301;&#22899;&#35282;&#33394;&#31283;&#23450;&#20889;&#20837;&#22266;&#23450;&#27133;&#20301;&#65292;&#24182;&#31435;&#21051;&#20986;&#29616;&#22312;&#29366;&#24577;&#26639;&#30340;&#35282;&#33394;&#39029;&#12290;</p>
+    <p>&#21482;&#23450;&#21046;&#35282;&#33394;&#26723;&#26696;&#65292;&#19981;&#25512;&#21160;&#21095;&#24773;&#12290;&#39318;&#36718;&#30446;&#26631;&#26159;&#20808;&#25226;&#31532;&#19968;&#20301;&#22899;&#35282;&#33394;&#31283;&#23450;&#20889;&#20837;&#29366;&#24577;&#26639;&#12290;</p>
   </div>
   <div class="grid">
     <div class="field"><label for="age">&#24180;&#40836;&#21306;&#38388;</label><select id="age"><option>18-22</option><option selected>23-27</option><option>28-32</option><option>33-40</option><option>40+</option></select></div>
@@ -42,16 +42,68 @@
     <div class="field wide"><label for="extra">&#39069;&#22806;&#35201;&#27714;</label><textarea id="extra" placeholder="&#21487;&#22635;&#20889;&#29305;&#27530;&#32454;&#33410;&#12289;&#36523;&#20221;&#27668;&#36136;&#25110;&#24615;&#30230;&#20542;&#21521;"></textarea></div>
   </div>
   <div class="foot">
-    <div class="tip">&#36755;&#20986;&#35268;&#21017;&#22266;&#23450;&#65306;&#20808; <code>&lt;UpdateVariable&gt;</code> &#65292;&#28982;&#21518;&#21482;&#36755;&#20986; <code>&#12304;&#27880;&#20876;&#20027;&#39029;&#12305;</code> &#21644; <code>&lt;StatusPlaceHolderImpl/&gt;</code>&#12290;</div>
+    <div class="tip">&#21482;&#23450;&#21046;&#35282;&#33394;&#26723;&#26696;&#65306;&#20808; <code>&lt;UpdateVariable&gt;</code> &#65292;&#28982;&#21518;&#22266;&#23450;&#36755;&#20986; <code>&#12304;&#27880;&#20876;&#20027;&#39029;&#12305;</code> &#21644; <code>&lt;StatusPlaceHolderImpl/&gt;</code>&#12290;</div>
     <div class="actions">
       <button class="btn btn-secondary" id="fill-only-btn" type="button">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
       <button class="btn btn-primary" id="send-btn" type="button">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
     </div>
   </div>
 </div>
-<script src="./common.js"></script>
 <script>
   (function () {
+    function hostWindow() {
+      try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
+      try { if (window.top && window.top !== window) return window.top; } catch (e) {}
+      return window;
+    }
+    function hostDocument() {
+      const host = hostWindow();
+      try { return host.document || document; } catch (e) { return document; }
+    }
+    function fillInput(text) {
+      const host = hostWindow();
+      const doc = hostDocument();
+      const input =
+        doc.querySelector("#send_textarea") ||
+        doc.querySelector("[contenteditable='true']") ||
+        doc.querySelector('textarea[name=\"message\"]') ||
+        doc.querySelector(".message-input textarea") ||
+        doc.querySelector('[data-testid=\"chat-input\"] textarea') ||
+        doc.querySelector("textarea");
+      if (!input) return false;
+      if (input.matches && input.matches("[contenteditable='true']")) {
+        input.textContent = text;
+      } else {
+        const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
+        const desc = Object.getOwnPropertyDescriptor(proto, "value");
+        if (desc && typeof desc.set === "function") desc.set.call(input, text);
+        else input.value = text;
+      }
+      try {
+        input.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text }));
+      } catch (e) {
+        input.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      }
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.focus();
+      return true;
+    }
+    function clickSend() {
+      const doc = hostDocument();
+      const btn =
+        doc.querySelector("#send_but") ||
+        doc.querySelector('[data-testid=\"send-button\"]') ||
+        doc.querySelector("button[type='submit']");
+      if (!btn) return false;
+      btn.click();
+      return true;
+    }
+    function triggerCommand(command) {
+      const host = hostWindow();
+      try { if (typeof host.triggerSlash === "function") { host.triggerSlash(command); return true; } } catch (e) {}
+      try { if (typeof window.triggerSlash === "function") { window.triggerSlash(command); return true; } } catch (e) {}
+      return false;
+    }
     function value(id) {
       const el = document.getElementById(id);
       return el ? String(el.value || "").trim() : "";
@@ -84,17 +136,14 @@
         "5. </UpdateVariable> \u4e4b\u540e\u6b63\u6587\u53ea\u80fd\u8f93\u51fa\u4e24\u884c\uff1a\u7b2c\u4e00\u884c\u3010\u6ce8\u518c\u4e3b\u9875\u3011\uff1b\u7b2c\u4e8c\u884c <StatusPlaceHolderImpl/> \u3002"
       ].join("\\n");
     }
-    window.Forum1Selector = {
-      fillOnly() { Forum1Common.fillInput(promptText()); },
-      send() {
-        const message = promptText();
-        const command = `/send ${message} | /trigger`;
-        if (!Forum1Common.triggerCommand(command)) {
-          if (Forum1Common.fillInput(message)) setTimeout(() => Forum1Common.clickSend(), 80);
-        }
+    function sendPrompt() {
+      const message = promptText();
+      const command = `/send ${message} | /trigger`;
+      if (!triggerCommand(command)) {
+        if (fillInput(message)) setTimeout(() => clickSend(), 80);
       }
-    };
-    document.getElementById("fill-only-btn")?.addEventListener("click", () => window.Forum1Selector.fillOnly());
-    document.getElementById("send-btn")?.addEventListener("click", () => window.Forum1Selector.send());
+    }
+    document.getElementById("fill-only-btn").addEventListener("click", () => fillInput(promptText()));
+    document.getElementById("send-btn").addEventListener("click", sendPrompt);
   })();
 </script>
