@@ -44,13 +44,12 @@
   <div class="foot">
     <div class="tip">&#21482;&#23450;&#21046;&#35282;&#33394;&#26723;&#26696;&#65306;&#20808; <code>&lt;UpdateVariable&gt;</code> &#65292;&#28982;&#21518;&#22266;&#23450;&#36755;&#20986; <code>&#12304;&#27880;&#20876;&#20027;&#39029;&#12305;</code> &#21644; <code>&lt;StatusPlaceHolderImpl/&gt;</code>&#12290;</div>
     <div class="actions">
-      <button class="btn btn-secondary" id="fill-only-btn" type="button">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
-      <button class="btn btn-primary" id="send-btn" type="button">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
+      <button class="btn btn-secondary" type="button" onclick="forum1FillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
+      <button class="btn btn-primary" type="button" onclick="forum1GenerateAndSend()">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
     </div>
   </div>
 </div>
 <script>
-  (function () {
     function hostWindow() {
       try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
       try { if (window.top && window.top !== window) return window.top; } catch (e) {}
@@ -143,7 +142,10 @@
         if (fillInput(message)) setTimeout(() => clickSend(), 80);
       }
     }
-    document.getElementById("fill-only-btn").addEventListener("click", () => fillInput(promptText()));
-    document.getElementById("send-btn").addEventListener("click", sendPrompt);
-  })();
+    window.forum1FillOnly = function () {
+      return fillInput(promptText());
+    };
+    window.forum1GenerateAndSend = function () {
+      return sendPrompt();
+    };
 </script>

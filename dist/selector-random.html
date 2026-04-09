@@ -18,13 +18,12 @@
     <p>&#21482;&#36127;&#36131;&#24555;&#36895;&#24314;&#26723;&#65292;&#30446;&#26631;&#26159;&#35753;&#31532;&#19968;&#20301;&#35282;&#33394;&#31435;&#21051;&#20986;&#29616;&#22312;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#12290;</p>
     <div class="tip">&#26368;&#20302;&#25104;&#21151;&#26631;&#20934;&#65306;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#35745;&#25968;&#22823;&#20110; 0&#65292;&#24182;&#31435;&#21051;&#21487;&#35265;&#31532;&#19968;&#20301;&#35282;&#33394;&#12290;</div>
     <div class="actions">
-      <button class="btn btn-secondary" id="random-fill-btn" type="button">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
-      <button class="btn btn-primary" id="random-send-btn" type="button">&#38543;&#26426;&#29983;&#25104;&#24182;&#24320;&#22330;</button>
+      <button class="btn btn-secondary" type="button" onclick="forum1RandomFillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
+      <button class="btn btn-primary" type="button" onclick="forum1RandomGenerateAndSend()">&#38543;&#26426;&#29983;&#25104;&#24182;&#24320;&#22330;</button>
     </div>
   </div>
 </div>
 <script>
-  (function () {
     function hostWindow() {
       try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
       try { if (window.top && window.top !== window) return window.top; } catch (e) {}
@@ -100,7 +99,10 @@
         if (fillInput(message)) setTimeout(() => clickSend(), 80);
       }
     }
-    document.getElementById("random-fill-btn").addEventListener("click", () => fillInput(promptText()));
-    document.getElementById("random-send-btn").addEventListener("click", sendPrompt);
-  })();
+    window.forum1RandomFillOnly = function () {
+      return fillInput(promptText());
+    };
+    window.forum1RandomGenerateAndSend = function () {
+      return sendPrompt();
+    };
 </script>

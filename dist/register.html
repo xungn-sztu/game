@@ -27,13 +27,12 @@
     <div class="value">&#36755;&#20837;&#35770;&#22363;ID&#65292;&#23436;&#25104;&#31532;&#19968;&#27425;&#27880;&#20876;</div>
     <div class="row">
       <input class="input" id="forum-id-input" placeholder="&#36755;&#20837;&#35770;&#22363;ID">
-      <button class="btn" id="register-fill-btn" type="button">&#20165;&#22635;&#20837;</button>
-      <button class="btn btn-primary" id="register-send-btn" type="button">&#27880;&#20876;&#24182;&#32487;&#32493;</button>
+      <button class="btn" type="button" onclick="forum1RegisterFillOnly()">&#20165;&#22635;&#20837;</button>
+      <button class="btn btn-primary" type="button" onclick="forum1RegisterAndContinue()">&#27880;&#20876;&#24182;&#32487;&#32493;</button>
     </div>
   </div>
 </div>
 <script>
-  (function () {
     function hostWindow() {
       try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
       try { if (window.top && window.top !== window) return window.top; } catch (e) {}
@@ -91,13 +90,14 @@
       const forumId = String(document.getElementById("forum-id-input").value || "").trim() || "xun";
       return `id: ${forumId}\n\uff08\u66f4\u65b0\u6211\u7684\u8bba\u575b\u8d26\u6237\u5e76\u7ee7\u7eed\u5f53\u524d\u5267\u60c5\uff09`;
     }
-    document.getElementById("register-fill-btn").addEventListener("click", () => fillInput(buildPrompt()));
-    document.getElementById("register-send-btn").addEventListener("click", () => {
+    window.forum1RegisterFillOnly = function () {
+      return fillInput(buildPrompt());
+    };
+    window.forum1RegisterAndContinue = function () {
       const message = buildPrompt();
       const command = `/send ${message} | /trigger`;
       if (!triggerCommand(command)) {
         if (fillInput(message)) setTimeout(() => clickSend(), 80);
       }
-    });
-  })();
+    };
 </script>
