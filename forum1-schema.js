@@ -2,6 +2,12 @@ import { registerMvuSchema } from 'https://testingcf.jsdelivr.net/gh/StageDog/ta
 
 const clamp = (min, max) => (value) => _.clamp(value, min, max);
 
+const SourceMetaSchema = z.object({
+  信息来源: z.string().describe('该信息当前主要来源，例如亲眼所见、论坛爆料、她本人表露'),
+  认知状态: z.string().describe('该信息当前属于已知、可推测、未知或未证实'),
+  是否已确认: z.boolean().describe('该信息是否已经通过事件或现实互动确认')
+}).describe('字段展示级来源与认知状态');
+
 const CharacterSummarySchema = z.object({
   角色名: z.string().describe('状态栏角色页显示的角色名'),
   当前是否在场: z.boolean().describe('该角色当前是否出现在场景中'),
@@ -18,6 +24,7 @@ const CharacterDetailSchema = z.object({
   角色名: z.string().describe('角色名'),
   当前是否在场: z.boolean().describe('该角色当前是否出现在场景中'),
   是否已建档: z.boolean().describe('该角色是否完成建档'),
+  信息来源: z.record(z.string(), SourceMetaSchema).optional().describe('关键字段的来源、认知状态与确认标记'),
   现实身份: z.object({
     公开头衔: z.string().describe('角色在现实社会的公开身份'),
     体面维持度: z.coerce.number().transform(clamp(0, 100)).describe('表面体面程度，范围0-100')
@@ -28,7 +35,8 @@ const CharacterDetailSchema = z.object({
     认知坐标: z.string().describe('心理认知位置'),
     好感度: z.coerce.number().transform(clamp(-100, 100)).describe('对主角好感度'),
     开放度: z.coerce.number().transform(clamp(0, 100)).describe('开放程度'),
-    情感深度: z.string().describe('当前情感深度')
+    情感深度: z.string().describe('当前情感深度'),
+    变化原因: z.string().optional().describe('近期心理状态变化的主要诱因或触发事件')
   }),
   性向数据: z.object({
     性经验: z.string().describe('角色性经验阶段'),
@@ -60,6 +68,8 @@ const CharacterDetailSchema = z.object({
     体重: z.coerce.number().transform(clamp(30, 200)).describe('角色体重 kg'),
     身材类型: z.string().describe('角色身材类型'),
     外观可见特征: z.string().describe('角色最显眼的外观描述'),
+    当前观感: z.string().optional().describe('当前阶段从外观看到的整体体态或状态'),
+    最近体态变化: z.string().optional().describe('近期因时间或事件导致的体态变化说明'),
     三围: z.string().describe('角色三围'),
     罩杯: z.string().describe('角色罩杯'),
     私处: z.object({
@@ -107,6 +117,7 @@ export const Schema = z.object({
     })
   }),
   视线内对象: z.record(z.string(), z.object({
+    当前观察: z.string().optional().describe('当前一眼看到的短句观察，10-18字左右'),
     面貌: z.string().describe('长什么样'),
     发型发色: z.string().describe('发型和发色'),
     配饰: z.string().describe('佩戴的饰品'),
@@ -134,7 +145,7 @@ export const Schema = z.object({
   角色详情: FixedDetailSlotsSchema,
   女角色档案: FixedDetailSlotsSchema.describe('旧版兼容角色档案容器'),
   暗网论坛: z.object({
-    当前分区: z.enum(['约炮区', '淫妻区', '文爱区', '主仆区', '视频图文区', '我的']).describe('当前浏览的论坛分区'),
+    当前分区: z.enum(['约炮区', '淫妻区', '文爱区', '主仆区', '视频图文区', '我的', '炫耀区', '爆料区', '物色区', '交易/服务区']).describe('当前浏览的论坛分区'),
     我的账户: z.object({
       用户名: z.string().describe('论坛用户名'),
       等级: z.string().describe('论坛等级'),
@@ -157,6 +168,9 @@ export const Schema = z.object({
         时间: z.string().describe('发帖时间'),
         热度: z.coerce.number().transform(clamp(0, 99999999)).describe('帖子热度'),
         内容摘要: z.string().describe('帖子内容摘要'),
+        风格标签: z.string().optional().describe('帖子当前对应的论坛风格标签，如炫耀区、爆料区、物色区、交易/服务区'),
+        信息来源: z.string().optional().describe('帖子层信息来源，通常为论坛爆料或匿名转述'),
+        可信度: z.string().optional().describe('帖子内容的可信度，例如未证实、片段、亲历实录'),
         帖子ID: z.string().describe('帖子唯一 ID')
       })).describe('该分区的帖子列表'),
       最后刷新时间: z.string().describe('该分区最后刷新时间')

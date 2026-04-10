@@ -62,6 +62,7 @@
     price: '价格',
     desc: '描述',
     visible: '视线内对象',
+    currentObservation: '当前观察',
     face: '面貌',
     hair: '发型发色',
     accessory: '配饰',
@@ -86,6 +87,7 @@
     randomFlaw: '随机项',
     personality: '角色性格',
     mood: '心情值',
+    changeReason: '变化原因',
     coordinate: '认知坐标',
     favor: '好感度',
     openness: '开放度',
@@ -101,6 +103,15 @@
     deprivation: '彻底剥夺',
     degradation: '极限堕落',
     dependency: '病态依赖度',
+    sourceMeta: '信息来源',
+    sourceName: '信息来源',
+    cognitionState: '认知状态',
+    confirmed: '是否已确认',
+    currentFeeling: '当前观感',
+    recentBodyChange: '最近体态变化',
+    styleTag: '风格标签',
+    credibility: '可信度',
+    contentSummary: '内容摘要',
   };
 
   function text(value, fallback) {
@@ -335,6 +346,22 @@
     return `<div><div class="label">${label}</div><div class="value${className}">${text(value, UNKNOWN)}</div></div>`;
   }
 
+  function detailField(label, value, tone, note) {
+    const className = tone ? ` ${tone}` : '';
+    const noteHtml = note ? `<div class="field-note">${note}</div>` : '';
+    return `<div><div class="label">${label}</div><div class="value${className}">${text(value, UNKNOWN)}</div>${noteHtml}</div>`;
+  }
+
+  function getSourceMeta(detail, key) {
+    const meta = get(detail, [K.sourceMeta, key], null);
+    if (!meta || typeof meta !== 'object') return null;
+    const source = text(meta[K.sourceName], '');
+    const cognition = text(meta[K.cognitionState], '');
+    const confirmed = meta[K.confirmed] === true ? '已确认' : (meta[K.confirmed] === false ? '未证实' : '');
+    const parts = [source, cognition, confirmed].filter(Boolean);
+    return parts.length ? parts.join(' · ') : null;
+  }
+
   function joinList(value) {
     if (Array.isArray(value)) return value.length ? value.join('、') : UNKNOWN;
     if (isPlainObject(value)) {
@@ -386,7 +413,7 @@
     const body = rows.map(([name, value]) => {
       return `<div class="char">`
         + `<div class="char-name">${text(name, '未命名角色')}</div>`
-        + `<div class="char-sub">当前看到的外观层，不等于完整档案</div>`
+        + `<div class="char-sub">${text(value[K.currentObservation], '当前看到的外观层，不等于完整档案')}</div>`
         + `<div class="grid" style="margin-top:10px;">`
         + field('面貌', value[K.face], false)
         + field('发型发色', value[K.hair], false)
@@ -442,28 +469,28 @@
   function bodyDisplayRows(detail) {
     const bodyData = get(detail, [K.body], {}) || {};
     const known = [
-      ['年龄', bodyData[K.age]],
-      ['身高', bodyData[K.height] ? `${bodyData[K.height]} cm` : undefined],
-      ['体重', bodyData[K.weight] ? `${bodyData[K.weight]} kg` : undefined],
-      ['身材类型', bodyData[K.bodyType]],
-      ['外观可见特征', bodyData[K.visibleTraits]],
+      ['年龄', bodyData[K.age], null],
+      ['身高', bodyData[K.height] ? `${bodyData[K.height]} cm` : undefined, null],
+      ['体重', bodyData[K.weight] ? `${bodyData[K.weight]} kg` : undefined, getSourceMeta(detail, '体重')],
+      ['身材类型', bodyData[K.bodyType], getSourceMeta(detail, '身材类型')],
+      ['外观可见特征', bodyData[K.visibleTraits], getSourceMeta(detail, '外观可见特征')],
     ];
 
     const inferred = [
-      ['三围', bodyData[K.bustWaistHip] || '可推测'],
-      ['罩杯', bodyData[K.cup] || '可推测'],
+      ['三围', bodyData[K.bustWaistHip] || '可推测', getSourceMeta(detail, '三围') || '来源：主观推测'],
+      ['罩杯', bodyData[K.cup] || '可推测', getSourceMeta(detail, '罩杯') || '来源：主观推测'],
     ];
 
     const unknown = [
-      ['私处', UNKNOWN],
-      ['身体缺陷', UNKNOWN],
-      ['身体开发等级', UNKNOWN],
-      ['亲密程度', UNKNOWN],
+      ['私处', UNKNOWN, null],
+      ['身体缺陷', UNKNOWN, null],
+      ['身体开发等级', UNKNOWN, null],
+      ['亲密程度', UNKNOWN, null],
     ];
 
-    const knownHtml = known.map(([label, value]) => field(label, value, 'known-value')).join('');
-    const inferredHtml = inferred.map(([label, value]) => field(label, value, 'inferred-value')).join('');
-    const unknownHtml = unknown.map(([label, value]) => field(label, value, 'unknown-value')).join('');
+    const knownHtml = known.map(([label, value, note]) => detailField(label, value, 'known-value', note)).join('');
+    const inferredHtml = inferred.map(([label, value, note]) => detailField(label, value, 'inferred-value', note)).join('');
+    const unknownHtml = unknown.map(([label, value, note]) => detailField(label, value, 'unknown-value', note)).join('');
 
     return {
       knownHtml,
@@ -478,30 +505,30 @@
     const social = get(detail, [K.social], {}) || {};
 
     const known = [
-      ['情感深度', mind[K.emotionDepth] || social[K.emotionDepth]],
-      ['最近更新', detail[K.lastUpdate]],
+      ['情感深度', mind[K.emotionDepth] || social[K.emotionDepth], getSourceMeta(detail, '情感深度')],
+      ['最近更新', detail[K.lastUpdate], null],
     ];
 
     const inferred = [
-      ['性态度', sex[K.sexualAttitude] || '可推测'],
-      ['性开放程度', sex[K.sexualOpenLevel] || '可推测'],
-      ['性欲', sex[K.libido] || '可推测'],
-      ['好感度', mind[K.favor] === undefined ? '可推测' : '可推测'],
+      ['性态度', sex[K.sexualAttitude] || '可推测', getSourceMeta(detail, '性态度') || '来源：主观推测'],
+      ['性开放程度', sex[K.sexualOpenLevel] || '可推测', getSourceMeta(detail, '性开放程度') || '来源：主观推测'],
+      ['性欲', sex[K.libido] || '可推测', getSourceMeta(detail, '性欲程度') || '来源：主观推测'],
+      ['好感度', mind[K.favor] === undefined ? '可推测' : '可推测', getSourceMeta(detail, '好感度') || '来源：长期互动推测'],
     ];
 
     const unknown = [
-      ['性经验', UNKNOWN],
-      ['性癖好', UNKNOWN],
-      ['性癖', UNKNOWN],
-      ['开放度', UNKNOWN],
-      ['形态适应度', UNKNOWN],
-      ['病态依赖度', UNKNOWN],
+      ['性经验', UNKNOWN, null],
+      ['性癖好', UNKNOWN, null],
+      ['性癖', UNKNOWN, null],
+      ['开放度', UNKNOWN, null],
+      ['形态适应度', UNKNOWN, null],
+      ['病态依赖度', UNKNOWN, null],
     ];
 
     return {
-      knownHtml: known.map(([label, value]) => field(label, value, 'known-value')).join(''),
-      inferredHtml: inferred.map(([label, value]) => field(label, value, 'inferred-value')).join(''),
-      unknownHtml: unknown.map(([label, value]) => field(label, value, 'unknown-value')).join(''),
+      knownHtml: known.map(([label, value, note]) => detailField(label, value, 'known-value', note)).join(''),
+      inferredHtml: inferred.map(([label, value, note]) => detailField(label, value, 'inferred-value', note)).join(''),
+      unknownHtml: unknown.map(([label, value, note]) => detailField(label, value, 'unknown-value', note)).join(''),
     };
   }
 
@@ -518,15 +545,15 @@
     const realIdentity = get(detail, [K.realIdentity], {});
     const bodyData = get(detail, [K.body], {});
     const summaryTab = `<div class="grid">`
-      + field('角色名', row.name, false)
-      + field('公开头衔', row.summary[K.publicTitle] || realIdentity[K.publicTitle], false)
-      + field('关系性质', row.summary[K.relationNature] || social[K.relationNature], false)
-      + field('情感深度', row.summary[K.emotionDepth] || social[K.emotionDepth] || get(detail, [K.mind, K.emotionDepth]), false)
-      + field('生活渗透度', row.summary[K.lifePenetration] || social[K.lifePenetration], false)
-      + field('亲密程度', row.summary[K.intimacy] || bodyData[K.intimacy], false)
-      + field('认识渠道', social[K.channel], false)
-      + field('最近更新', row.summary[K.lastUpdate] || detail[K.lastUpdate], false)
-      + `</div>`;
+      + detailField('角色名', row.name, false, null)
+      + detailField('公开头衔', row.summary[K.publicTitle] || realIdentity[K.publicTitle], false, getSourceMeta(detail, '公开头衔'))
+      + detailField('关系性质', row.summary[K.relationNature] || social[K.relationNature], false, getSourceMeta(detail, '关系性质'))
+      + detailField('情感深度', row.summary[K.emotionDepth] || social[K.emotionDepth] || get(detail, [K.mind, K.emotionDepth]), false, getSourceMeta(detail, '情感深度'))
+      + detailField('生活渗透度', row.summary[K.lifePenetration] || social[K.lifePenetration], false, getSourceMeta(detail, '生活渗透度'))
+      + detailField('亲密程度', row.summary[K.intimacy] || bodyData[K.intimacy], false, getSourceMeta(detail, '亲密程度'))
+      + detailField('认识渠道', social[K.channel], false, getSourceMeta(detail, '认识渠道'))
+      + detailField('最近更新', row.summary[K.lastUpdate] || detail[K.lastUpdate], false, null)
+        + `</div>`;
 
     const bodyRows = bodyDisplayRows(detail);
     const statusRows = statusDisplayRows(detail);
@@ -536,10 +563,12 @@
     if (state.selectedCharTab === 'body') {
       badge = '已知 / 可推测 / 未知';
       detailBody = `<div class="notice">身体页分成三级：已知表示当前合理可知；可推测表示可以从外观粗略判断；未知表示底层变量存在，但当前不该直接得知。</div>`
+        + `<div class="notice">当前观感：${text(bodyData[K.currentFeeling], '暂无明显变化')}｜最近体态变化：${text(bodyData[K.recentBodyChange], '暂无')}</div>`
         + `<div class="grid">${bodyRows.knownHtml}${bodyRows.inferredHtml}${bodyRows.unknownHtml}</div>`;
     } else if (state.selectedCharTab === 'status') {
       badge = '已知 / 可推测 / 未知';
       detailBody = `<div class="notice">性向与状态页分成三级：已知为当前互动中能确认的内容；可推测为能从相处气质中猜到的倾向；未知则继续遮罩。</div>`
+        + `<div class="notice">变化原因：${text(get(detail, [K.mind, K.changeReason], ''), '暂无明确触发')}</div>`
         + `<div class="grid">${statusRows.knownHtml}${statusRows.inferredHtml}${statusRows.unknownHtml}</div>`;
     }
 
@@ -585,23 +614,43 @@
     }
 
     let list = '<div class="empty">当前分区没有帖子</div>';
-    if (current.length) {
-      list = current.map((post) => {
-        const postTitle = text(post[K.title], '未命名帖子');
-        return `<div class="char">`
-          + field('标题', postTitle, false)
-          + field('发帖人', text(post[K.author], '匿名'), false)
-          + field('热度', text(post[K.hotness], 0), false)
-          + `<div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="查看帖子：${postTitle}">查看帖子</button></div>`
-          + `</div>`;
-      }).join('');
+      if (current.length) {
+        list = current.map((post) => {
+          const postTitle = text(post[K.title], '未命名帖子');
+          const styleTag = text(post[K.styleTag], mapForumStyle(state.currentZone).title);
+          const credibility = text(post[K.credibility], '未证实');
+          return `<div class="char">`
+            + field('标题', postTitle, false)
+            + detailField('发帖人', text(post[K.author], '匿名'), false, '来源：论坛爆料')
+            + detailField('热度', text(post[K.hotness], 0), false, `${styleTag} · ${credibility}`)
+            + field('摘要', text(post[K.contentSummary], post[K.desc]), false)
+            + `<div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="查看帖子：${postTitle}">查看帖子</button></div>`
+            + `</div>`;
+        }).join('');
+      }
+
+      const style = mapForumStyle(state.currentZone);
+      return section(
+        '论坛',
+        `${text(state.currentZone, '暂无')} · ${style.title}`,
+        `<div class="notice">${style.desc}</div><div class="pill-row" style="margin-bottom:10px;">${zoneButtons}<button class="action" data-fill="刷新【${text(state.currentZone, '论坛')}】帖子">刷新</button></div>${list}${pager('post', state.postPage, total)}`
+      );
     }
 
-    return section(
-      '论坛',
-      text(state.currentZone, '暂无'),
-      `<div class="pill-row" style="margin-bottom:10px;">${zoneButtons}<button class="action" data-fill="刷新【${text(state.currentZone, '论坛')}】帖子">刷新</button></div>${list}${pager('post', state.postPage, total)}`
-    );
+  function mapForumStyle(zone) {
+    const mapping = {
+      '约炮区': { title: '物色区', desc: '这里偏向筛选、试探与找入口。帖子不等于事实，更像打听渠道与交换条件。' },
+      '文爱区': { title: '物色区', desc: '这里偏向试探、暧昧与筛选对象。语言更软，但仍属于传闻层与试探层。' },
+      '淫妻区': { title: '炫耀区', desc: '这里偏向炫耀、展示与半真半假的战绩叙述，展示欲强，不必全信。' },
+      '主仆区': { title: '交易/服务区', desc: '这里偏向规则、交换、任务与关系招募，语气更工具化。' },
+      '视频图文区': { title: '爆料区', desc: '这里偏向片段、截图、偷拍视频与匿名爆料，是最典型的传闻层。' },
+      '我的': { title: '账户/归档', desc: '这里是你的账户痕迹与浏览归档，不直接推进现实互动。' },
+      '炫耀区': { title: '炫耀区', desc: '这里偏向炫耀、展示与半真半假的战绩叙述，展示欲强，不必全信。' },
+      '爆料区': { title: '爆料区', desc: '这里偏向片段、截图、偷拍视频与匿名爆料，是最典型的传闻层。' },
+      '物色区': { title: '物色区', desc: '这里偏向筛选、试探与找入口。帖子不等于事实，更像打听渠道与交换条件。' },
+      '交易/服务区': { title: '交易/服务区', desc: '这里偏向规则、交换、任务与关系招募，语气更工具化。' },
+    };
+    return mapping[zone] || { title: '传闻层', desc: '论坛是外泄层、炫耀层与物色层，不应直接替代现实互动。' };
   }
 
   function renderAccount(stat) {
