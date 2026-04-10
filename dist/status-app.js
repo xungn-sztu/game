@@ -189,13 +189,17 @@
   }
 
   function getSummarySlot(stat, slot) {
-    return get(stat, [K.roleIndex, slot], {}) || {};
+    const compat = get(stat, [K.compatRole, slot], {}) || {};
+    const index = get(stat, [K.roleIndex, slot], {}) || {};
+    if (Object.keys(index).length) return Object.assign({}, compat, index);
+    return compat;
   }
 
   function getDetailSlot(stat, slot) {
+    const compat = get(stat, [K.compatRole, slot], {}) || {};
     const primary = get(stat, [K.roleDetail, slot], {}) || {};
-    if (Object.keys(primary).length) return primary;
-    return get(stat, [K.compatRole, slot], {}) || {};
+    if (Object.keys(primary).length) return Object.assign({}, compat, primary);
+    return compat;
   }
 
   function isPlainObject(value) {
