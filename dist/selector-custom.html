@@ -19,7 +19,7 @@
     font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   }
   .panel {
-    max-width: 980px;
+    max-width: 1040px;
     margin: 0 auto;
     background: var(--panel);
     border: 1px solid var(--line);
@@ -57,10 +57,16 @@
   }
   .field label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-size: 12px;
     font-weight: 700;
     color: #bcc7d4;
+  }
+  .field .desc {
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
   }
   .field select,
   .field input,
@@ -97,12 +103,13 @@
   .summary {
     color: #8e9caf;
     font-size: 12px;
-    line-height: 1.6;
+    line-height: 1.7;
   }
   .actions {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    align-items: flex-start;
   }
   .btn {
     border: 1px solid #41526a;
@@ -130,33 +137,112 @@
 <div class="panel">
   <div class="hero">
     <h1>定制开场角色</h1>
-    <p>这一步只负责把第一位角色稳定写进固定槽位，并让注册页与状态栏在首轮同时出现。这里不生成剧情走向，也不要求首轮把所有详情写满。</p>
+    <p>这里定制的是第一位角色档案，不是剧情。首轮只需要把角色稳定写进建档变量，然后跳到注册页与状态栏，不要额外展开故事。</p>
   </div>
   <div class="grid">
-    <div class="field"><label for="age">年龄区间</label><select id="age"><option>18-22岁</option><option selected>23-27岁</option><option>28-32岁</option><option>33-40岁</option><option>40岁以上</option></select></div>
-    <div class="field"><label for="race">人种 / 外貌</label><select id="race"><option selected>东亚婉约</option><option>混血立体</option><option>少数民族</option><option>欧美辣妹</option><option>拉美风情</option><option>异域感强</option></select></div>
-    <div class="field"><label for="job">职业类型</label><select id="job"><option selected>学生</option><option>教师</option><option>OL白领</option><option>医护</option><option>金融</option><option>艺术</option><option>科技</option><option>体制内</option><option>自由职业</option><option>全职太太</option><option>娱乐行业</option><option>服务行业</option></select></div>
-    <div class="field"><label for="title">公开头衔</label><input id="title" placeholder="如：法学院研究生、外企行政总监、主治医师"></div>
-    <div class="field"><label for="body">身材类型</label><select id="body"><option>娇小纤细</option><option selected>匀称标准</option><option>丰满肉感</option><option>高挑修长</option><option>健身紧致</option><option>骨感清冷</option></select></div>
-    <div class="field"><label for="face">颜值水平</label><select id="face"><option>顶级(9-10分)</option><option selected>中上(7-8分)</option><option>中等(5-6分)</option><option>偏下(3-4分)</option><option>底层(1-2分)</option></select></div>
-    <div class="field"><label for="personality">性格底色</label><select id="personality"><option selected>冰山脸</option><option>刀子嘴豆腐心</option><option>软柿子好捏</option><option>闷葫芦</option><option>人来疯</option><option>玻璃心</option><option>强装冷静</option><option>温柔克制</option></select></div>
-    <div class="field"><label for="marriage">婚姻状况</label><select id="marriage"><option selected>单身</option><option>恋爱中</option><option>已婚未育</option><option>已婚已育</option><option>离异独居</option></select></div>
-    <div class="field"><label for="dev">身体开发等级</label><select id="dev"><option selected>未开发</option><option>初窥门径</option><option>经验丰富</option><option>重度开发</option><option>极限重塑</option><option>清醒肉器</option></select></div>
-    <div class="field"><label for="attitude">性态度</label><select id="attitude"><option selected>嘴硬身软型</option><option>饥渴主动型</option><option>温顺配合型</option><option>演技派</option><option>掌控主导型</option><option>紧张生涩型</option><option>温柔服务型</option><option>热情投入型</option><option>冷淡应付型</option><option>观察学习型</option><option>敏感多水型</option><option>慢热型</option></select></div>
-    <div class="field"><label for="open">性开放程度</label><select id="open"><option>性冷淡型</option><option selected>传统保守型</option><option>正常 moderate</option><option>开放探索型</option><option>表面开放型</option><option>身体解放型</option><option>接受度高型</option><option>极限开放型</option><option>创伤回避型</option><option>工具化型</option></select></div>
-    <div class="field"><label for="libido">性欲程度</label><select id="libido"><option>性冷淡</option><option>低性欲</option><option selected>正常 moderate</option><option>高性欲</option><option>极强/成瘾</option><option>周期波动型</option><option>情境依赖型</option><option>压抑型</option><option>心理型</option><option>目标驱动型</option><option>被动唤起型</option></select></div>
-    <div class="field"><label for="channel">认识渠道</label><select id="channel"><option>血亲</option><option>隔壁邻居</option><option>同学长辈</option><option>服务行业</option><option>曾经师生</option><option selected>完全陌生</option><option>工作同事</option><option>网络社交</option><option>朋友介绍</option><option>医患关系</option><option>健身场所</option><option>房东租客</option><option>餐饮偶遇</option><option>娱乐社交</option><option>旅途偶遇</option><option>直播打赏</option><option>业务关系</option></select></div>
-    <div class="field"><label for="relation">关系性质</label><select id="relation"><option selected>单方面关注</option><option>刚认识</option><option>普通朋友</option><option>暧昧对象</option><option>炮友关系</option><option>男女朋友</option><option>夫妻</option><option>主奴关系</option><option>复杂关系</option><option>前任</option><option>地下情人</option><option>包养关系</option><option>竞争对手</option><option>求助关系</option><option>职场关系</option></select></div>
-    <div class="field"><label for="emotion">情感深度</label><select id="emotion"><option>完全陌生</option><option selected>刚认识</option><option>普通熟人</option><option>有点好感</option><option>暧昧期</option><option>单方面喜欢</option><option>激情迷恋</option><option>互相喜欢</option><option>深度绑定</option><option>复杂情感</option></select></div>
-    <div class="field"><label for="intimacy">亲密程度</label><select id="intimacy"><option selected>零接触</option><option>轻微接触</option><option>接吻</option><option>手交</option><option>口交</option><option>边缘性行为</option><option>带套性交</option><option>无套内射</option><option>特殊性行为</option><option>常规性关系</option><option>一夜情</option><option>复杂身体史</option></select></div>
-    <div class="field"><label for="life">生活渗透度</label><select id="life"><option selected>纯线上</option><option>见过面</option><option>去过私人空间</option><option>过夜</option><option>金钱往来</option><option>见过亲友</option><option>互赠礼物</option><option>生活照顾</option><option>共同经历</option><option>知道隐私</option><option>互相帮忙</option><option>伪装关系</option></select></div>
-    <div class="field"><label for="fetish">性癖偏好</label><select id="fetish"><option selected>尺寸崇拜</option><option>内射癖</option><option>怀孕/生殖癖</option><option>后入癖</option><option>口交癖</option><option>潮吹癖</option><option>轻微露出</option><option>拍摄记录癖</option><option>被视奸/偷窥癖</option><option>户外/野外癖</option><option>被羞辱/贬低癖</option><option>ddlg/幼化癖</option><option>女王/被崇拜癖</option><option>束缚/控制癖</option><option>角色扮演癖</option><option>禁忌/乱伦幻想</option><option>NTR/绿帽癖</option><option>职场权力癖</option><option>偷情感</option><option>气味癖</option><option>声音癖</option><option>疼痛癖</option><option>交换癖</option><option>多人癖</option><option>奉献癖</option></select></div>
-    <div class="field wide"><label for="extra">额外要求</label><textarea id="extra" placeholder="如：保留某种职业气质、补几个身体细节、想要哪类边缘癖好、名字风格等"></textarea></div>
+    <div class="field">
+      <label for="age">年龄区间</label>
+      <div class="desc">决定人物的大致人生阶段，主要影响年龄、职业成熟度和整体气质。</div>
+      <select id="age"><option>18-22岁</option><option selected>23-27岁</option><option>28-32岁</option><option>33-40岁</option><option>40岁以上</option></select>
+    </div>
+    <div class="field">
+      <label for="race">人种 / 外貌</label>
+      <div class="desc">决定她的基础面相风格和外观可见特征，影响命名与第一眼印象。</div>
+      <select id="race"><option selected>东亚婉约</option><option>混血立体</option><option>少数民族</option><option>欧美辣妹</option><option>拉美风情</option><option>异域感强</option></select>
+    </div>
+    <div class="field">
+      <label for="job">职业类型</label>
+      <div class="desc">决定她对外的现实身份与公开头衔，也影响她的气场和生活背景。</div>
+      <select id="job"><option selected>学生</option><option>教师</option><option>OL白领</option><option>医护</option><option>金融</option><option>艺术</option><option>科技</option><option>体制内</option><option>自由职业</option><option>全职太太</option><option>娱乐行业</option><option>服务行业</option></select>
+    </div>
+    <div class="field">
+      <label for="title">公开头衔</label>
+      <div class="desc">如果你想钉死她的对外身份，就手填。留空则根据职业自动生成。</div>
+      <input id="title" placeholder="如：法学院研究生、外企行政总监、主治医师">
+    </div>
+    <div class="field">
+      <label for="body">身材类型</label>
+      <div class="desc">决定身材轮廓与外观印象，不代表玩家已经知道她的隐私身体数据。</div>
+      <select id="body"><option>娇小纤细</option><option selected>匀称标准</option><option>丰腴肉感</option><option>高挑修长</option><option>健身紧致</option><option>骨感清冷</option></select>
+    </div>
+    <div class="field">
+      <label for="face">颜值水平</label>
+      <div class="desc">影响第一眼吸引力和描述强度，主要落在外观可见特征与命名气质。</div>
+      <select id="face"><option>顶级(9-10分)</option><option selected>中上(7-8分)</option><option>中等(5-6分)</option><option>偏下(3-4分)</option><option>底层(1-2分)</option></select>
+    </div>
+    <div class="field">
+      <label for="personality">性格底色</label>
+      <div class="desc">决定她日常给人的情绪与相处方式，主要影响角色性格和心境基调。</div>
+      <select id="personality"><option selected>冰山脸</option><option>刀子嘴豆腐心</option><option>软柿子好捏</option><option>闷葫芦</option><option>人来疯</option><option>玻璃心</option><option>强装冷静</option><option>温柔克制</option></select>
+    </div>
+    <div class="field">
+      <label for="marriage">婚姻状况</label>
+      <div class="desc">影响她的社会位置和关系边界，不直接决定剧情，但会影响人物设定质感。</div>
+      <select id="marriage"><option selected>单身</option><option>恋爱中</option><option>已婚未育</option><option>已婚已育</option><option>离异独居</option></select>
+    </div>
+    <div class="field">
+      <label for="dev">身体开发等级</label>
+      <div class="desc">表示她底层身体经历与开发程度，但前端详情页初期仍会按“未知”遮罩处理。</div>
+      <select id="dev"><option selected>未开发</option><option>初窥门径</option><option>经验丰富</option><option>重度开发</option><option>极限重塑</option><option>清醒肉器</option></select>
+    </div>
+    <div class="field">
+      <label for="attitude">性态度</label>
+      <div class="desc">表示她在亲密场景中的行为姿态和习惯反应，主要影响性向数据里的性态度。</div>
+      <select id="attitude"><option selected>嘴硬身软型</option><option>饥渴主动型</option><option>温顺配合型</option><option>演技派</option><option>掌控主导型</option><option>紧张生涩型</option><option>温柔服务型</option><option>热情投入型</option><option>冷淡应付型</option><option>观察学习型</option><option>敏感多水型</option><option>慢热型</option></select>
+    </div>
+    <div class="field">
+      <label for="open">性开放程度</label>
+      <div class="desc">表示她对亲密行为和边界的接纳程度，主要影响性开放程度与开场气质。</div>
+      <select id="open"><option>性冷淡型</option><option selected>传统保守型</option><option>普通适中型</option><option>开放探索型</option><option>表面开放型</option><option>身体解放型</option><option>接受度高型</option><option>极限开放型</option><option>创伤回避型</option><option>工具化型</option></select>
+    </div>
+    <div class="field">
+      <label for="libido">性欲程度</label>
+      <div class="desc">表示欲望强度或唤起频率，主要影响性欲程度，但不会在初期前端里直接公开显示。</div>
+      <select id="libido"><option>性冷淡</option><option>低性欲</option><option selected>普通适中</option><option>高性欲</option><option>极强/成瘾</option><option>周期波动型</option><option>情境依赖型</option><option>压抑型</option><option>心理型</option><option>目标驱动型</option><option>被动唤起型</option></select>
+    </div>
+    <div class="field">
+      <label for="channel">认识渠道</label>
+      <div class="desc">表示你们最初是通过什么现实或线上渠道接触到，主要影响社交与从属里的认识渠道。</div>
+      <select id="channel"><option>血亲</option><option>隔壁邻居</option><option>同学长辈</option><option>服务行业</option><option>曾经师生</option><option selected>完全陌生</option><option>工作同事</option><option>网络社交</option><option>朋友介绍</option><option>医患关系</option><option>健身场所</option><option>房东租客</option><option>餐饮偶遇</option><option>娱乐社交</option><option>旅途偶遇</option><option>直播打赏</option><option>业务关系</option></select>
+    </div>
+    <div class="field">
+      <label for="relation">关系性质</label>
+      <div class="desc">表示你和她现在处于什么关系状态，只决定人物定位，不决定后续剧情走向。</div>
+      <select id="relation"><option selected>单方面关注</option><option>刚认识</option><option>普通朋友</option><option>暧昧对象</option><option>炮友关系</option><option>男女朋友</option><option>夫妻</option><option>主奴关系</option><option>复杂关系</option><option>前任</option><option>地下情人</option><option>包养关系</option><option>竞争对手</option><option>求助关系</option><option>职场关系</option></select>
+    </div>
+    <div class="field">
+      <label for="emotion">情感深度</label>
+      <div class="desc">表示双方情感绑定程度，主要影响情感深度字段与她对你的心理距离。</div>
+      <select id="emotion"><option>完全陌生</option><option selected>刚认识</option><option>普通熟人</option><option>有点好感</option><option>暧昧期</option><option>单方面喜欢</option><option>激情迷恋</option><option>互相喜欢</option><option>深度绑定</option><option>复杂情感</option></select>
+    </div>
+    <div class="field">
+      <label for="intimacy">亲密程度</label>
+      <div class="desc">表示身体接触层级。它会写进变量，但角色详情页初期默认按“未知/认知不足”处理。</div>
+      <select id="intimacy"><option selected>零接触</option><option>轻微接触</option><option>接吻</option><option>手交</option><option>口交</option><option>边缘性行为</option><option>带套性交</option><option>无套内射</option><option>特殊性行为</option><option>常规性关系</option><option>一夜情</option><option>复杂身体史</option></select>
+    </div>
+    <div class="field">
+      <label for="life">生活渗透度</label>
+      <div class="desc">表示她进入你现实生活的程度，影响你们的交集深浅，但不直接推进剧情。</div>
+      <select id="life"><option selected>纯线上</option><option>见过面</option><option>去过私人空间</option><option>过夜</option><option>金钱往来</option><option>见过亲友</option><option>互赠礼物</option><option>生活照顾</option><option>共同经历</option><option>知道隐私</option><option>互相帮忙</option><option>伪装关系</option></select>
+    </div>
+    <div class="field">
+      <label for="fetish">性癖偏好</label>
+      <div class="desc">表示她底层偏好，会写进性癖好与性癖字段，但不应该被初识阶段的前端直接透出。</div>
+      <select id="fetish"><option selected>尺寸崇拜</option><option>内射癖</option><option>怀孕/生殖癖</option><option>后入癖</option><option>口交癖</option><option>潮吹癖</option><option>轻微露出</option><option>拍摄记录癖</option><option>被视奸/偷窥癖</option><option>户外/野外癖</option><option>被羞辱/贬低癖</option><option>ddlg/幼化癖</option><option>女王/被崇拜癖</option><option>束缚/控制癖</option><option>角色扮演癖</option><option>禁忌/乱伦幻想</option><option>NTR/绿帽癖</option><option>职场权力癖</option><option>偷情癖</option><option>气味癖</option><option>声音癖</option><option>疼痛癖</option><option>交换癖</option><option>多人癖</option><option>奉献癖</option></select>
+    </div>
+    <div class="field wide">
+      <label for="extra">额外要求</label>
+      <div class="desc">这里补充你想钉死的细节，例如名字风格、额外外观、职业气质、不要出现的倾向等。</div>
+      <textarea id="extra" placeholder="如：名字偏冷一点，保留高学历感，不要过于艳俗，不要主动型气质。"></textarea>
+    </div>
   </div>
-  <div class="tips">首轮硬要求只有两条：1. 必须先把角色写进固定槽位。2. <code>&lt;UpdateVariable&gt;</code> 结束后，可见正文只能是 <code>【注册主页】</code> 和 <code>&lt;StatusPlaceHolderImpl/&gt;</code> 两行。</div>
+  <div class="tips">首轮硬要求只有两条：1. 必须先把角色写进 `女角色档案.档案1`，其余镜像可选。2. `<UpdateVariable>` 结束后，可见正文只能是 `【注册主页】` 和 `<StatusPlaceHolderImpl/>` 两行。</div>
   <div class="footer">
-    <div class="summary">定制的是角色，不是剧情。这里只负责把第一位角色稳定建档进角色页，后续剧情交给注册页之后继续跑。</div>
-    <div class="actions"><button class="btn btn-secondary" type="button" onclick="Forum1Selector.resetDefaults()">恢复默认</button><button class="btn btn-primary" type="button" onclick="Forum1Selector.fillOnly()">填入输入栏</button></div>
+    <div class="summary">定制的是角色，不是剧情。这里负责建立第一位角色档案，并把人物倾向映射进变量；注册页与后续互动仍由后面的回复继续承接。</div>
+    <div class="actions">
+      <button class="btn btn-secondary" type="button" onclick="Forum1Selector.resetDefaults()">恢复默认</button>
+      <button class="btn btn-primary" type="button" onclick="Forum1Selector.fillOnly()">填入输入栏</button>
+    </div>
   </div>
 </div>
 <script>
@@ -166,10 +252,19 @@
       try { if (window.parent && window.parent.SillyTavern && typeof window.parent.SillyTavern.getContext === "function") return window.parent.SillyTavern.getContext(); } catch (error) {}
       return null;
     }
+    function getHostDocument() {
+      try { if (window.parent && window.parent.document) return window.parent.document; } catch (error) {}
+      return document;
+    }
     function setDomInput(text) {
-      const textarea = document.querySelector("#send_textarea") || document.querySelector('textarea[name="message"]') || document.querySelector(".message-input textarea") || document.querySelector('[data-testid="chat-input"] textarea') || document.querySelector("textarea");
+      const doc = getHostDocument();
+      const textarea = doc.querySelector("#send_textarea")
+        || doc.querySelector('textarea[name="message"]')
+        || doc.querySelector(".message-input textarea")
+        || doc.querySelector('[data-testid="chat-input"] textarea')
+        || doc.querySelector("textarea");
       if (!textarea) return false;
-      const desc = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value");
+      const desc = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value");
       if (desc && typeof desc.set === "function") desc.set.call(textarea, text); else textarea.value = text;
       textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
       textarea.dispatchEvent(new Event("change", { bubbles: true }));
@@ -181,7 +276,8 @@
       if (ctx && typeof ctx.executeSlashCommands === "function") {
         try {
           await ctx.executeSlashCommands(`/setinput ${text}`);
-          const textarea = document.querySelector("#send_textarea");
+          const doc = getHostDocument();
+          const textarea = doc.querySelector("#send_textarea");
           if (textarea && String(textarea.value || "").trim()) return true;
         } catch (error) {}
       }
@@ -195,7 +291,7 @@
       return [
         "【定制女角色并首轮建档】",
         "",
-        "请只根据以下条件定制一名女角色，并写入当前 MVU 固定槽位。",
+        "请只根据以下条件定制一名女角色，并写入当前 MVU 变量系统。",
         `年龄区间：${valueOf("age")}`,
         `人种/外貌：${valueOf("race")}`,
         `职业类型：${valueOf("job")}`,
@@ -218,18 +314,38 @@
         "",
         "硬性要求：",
         "1. 同一条回复里，先且只输出一个合法的 <UpdateVariable> 块。",
-        "2. 首轮只能写固定槽位：/角色索引/档案1、/角色详情/档案1、/女角色档案/档案1。",
-        "3. 首轮至少写入这些摘要字段：角色名、是否已建档、当前是否在场、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
-        "4. 角色索引和角色详情里都要写角色名，不能留空。",
+        "2. 首轮主写入源必须是 /女角色档案/档案1，不要用角色名作为顶层 key。",
+        "3. 如环境稳定，可同步镜像到 /角色索引/档案1 与 /角色详情/档案1；如果不稳定，优先保证 女角色档案.档案1 成功落地。",
+        "4. 首轮至少写入这些字段：角色名、是否已建档、当前是否在场、现实身份.公开头衔、社交与从属.关系性质、心理与状态.情感深度、社交与从属.生活渗透度、身体数据.亲密程度、最近更新。",
         "5. 注册开场阶段必须设置：是否已建档=true、当前是否在场=false、最近更新=注册前建档。",
         "6. 不要写关系走向，不要输出角色档案总结，不要输出字段回显。",
-        "7. 只能使用 RFC 6902 的 replace，不允许 insert、delta、append、remove、move。",
-        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。",
+        "7. 只允许使用 RFC 6902 的 replace，不允许 insert、delta、append、remove、move。",
+        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行 <StatusPlaceHolderImpl/>。",
         "9. 不允许 raw html、fenced html、thinking、analysis_block、undefined。",
-        "10. 这是定制角色，不是开剧情，当前任务仅是稳定建档并进入注册页。"
+        "10. 这是定制角色，不是开剧情；当前任务只是稳定建档并进入注册页。"
       ].join("\\n");
     }
-    const defaults = { age: "23-27岁", race: "东亚婉约", job: "学生", title: "", body: "匀称标准", face: "中上(7-8分)", personality: "冰山脸", marriage: "单身", dev: "未开发", attitude: "嘴硬身软型", open: "传统保守型", libido: "正常 moderate", channel: "完全陌生", relation: "单方面关注", emotion: "刚认识", intimacy: "零接触", life: "纯线上", fetish: "尺寸崇拜", extra: "" };
+    const defaults = {
+      age: "23-27岁",
+      race: "东亚婉约",
+      job: "学生",
+      title: "",
+      body: "匀称标准",
+      face: "中上(7-8分)",
+      personality: "冰山脸",
+      marriage: "单身",
+      dev: "未开发",
+      attitude: "嘴硬身软型",
+      open: "传统保守型",
+      libido: "普通适中",
+      channel: "完全陌生",
+      relation: "单方面关注",
+      emotion: "刚认识",
+      intimacy: "零接触",
+      life: "纯线上",
+      fetish: "尺寸崇拜",
+      extra: ""
+    };
     window.Forum1Selector = {
       async fillOnly() { await setInput(buildPrompt()); },
       resetDefaults() { Object.keys(defaults).forEach((key) => { const el = document.getElementById(key); if (el) el.value = defaults[key]; }); }

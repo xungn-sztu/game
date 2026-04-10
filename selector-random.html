@@ -51,8 +51,8 @@
 </style>
 <div class="panel">
   <h1>随机生成并首轮建档</h1>
-  <p>这一条入口只要求模型先把第一位角色稳定写进固定槽位，然后直接跳到注册页和状态栏。不要生成额外正文，不要先讲剧情。</p>
-  <div class="box">最低成功标准只有一个：状态栏角色页里立刻出现第一位角色，而不是 0 或空白。</div>
+  <p>这个入口用于随机生成第一位角色。重点仍然是先把人物档案写进变量，再进入注册页与状态栏，而不是先讲剧情。</p>
+  <div class="box">最低成功标准只有一个：角色页里立刻出现第一位角色。镜像能写则写，不能写也不能耽误 `女角色档案.档案1` 成功落地。</div>
   <div class="actions">
     <button class="btn" type="button" onclick="Forum1Random.fillOnly()">填入输入栏</button>
   </div>
@@ -64,10 +64,19 @@
       try { if (window.parent && window.parent.SillyTavern && typeof window.parent.SillyTavern.getContext === "function") return window.parent.SillyTavern.getContext(); } catch (error) {}
       return null;
     }
+    function getHostDocument() {
+      try { if (window.parent && window.parent.document) return window.parent.document; } catch (error) {}
+      return document;
+    }
     function setDomInput(text) {
-      const textarea = document.querySelector("#send_textarea") || document.querySelector('textarea[name="message"]') || document.querySelector(".message-input textarea") || document.querySelector('[data-testid="chat-input"] textarea') || document.querySelector("textarea");
+      const doc = getHostDocument();
+      const textarea = doc.querySelector("#send_textarea")
+        || doc.querySelector('textarea[name="message"]')
+        || doc.querySelector(".message-input textarea")
+        || doc.querySelector('[data-testid="chat-input"] textarea')
+        || doc.querySelector("textarea");
       if (!textarea) return false;
-      const desc = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value");
+      const desc = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value");
       if (desc && typeof desc.set === "function") desc.set.call(textarea, text); else textarea.value = text;
       textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
       textarea.dispatchEvent(new Event("change", { bubbles: true }));
@@ -79,7 +88,8 @@
       if (ctx && typeof ctx.executeSlashCommands === "function") {
         try {
           await ctx.executeSlashCommands(`/setinput ${text}`);
-          const textarea = document.querySelector("#send_textarea");
+          const doc = getHostDocument();
+          const textarea = doc.querySelector("#send_textarea");
           if (textarea && String(textarea.value || "").trim()) return true;
         } catch (error) {}
       }
@@ -89,18 +99,18 @@
       return [
         "【随机生成女角色并首轮建档】",
         "",
-        "请随机生成一名完整女角色，并写入当前 MVU 固定槽位。",
+        "请随机生成一名完整女角色，并写入当前 MVU 变量系统。",
         "随机时优先补齐：公开头衔、关系性质、情感深度、生活渗透度、亲密程度、认识渠道、性态度、性欲程度。",
         "",
         "硬性要求：",
         "1. 同一条回复里，先且只输出一个合法的 <UpdateVariable> 块。",
-        "2. 首轮只能写固定槽位：/角色索引/档案1、/角色详情/档案1、/女角色档案/档案1。",
-        "3. 角色索引和角色详情里都要写角色名，不能留空。",
+        "2. 首轮主写入源必须是 /女角色档案/档案1，不要用角色名作为顶层 key。",
+        "3. 如环境稳定，可同步镜像到 /角色索引/档案1 与 /角色详情/档案1；如果不稳定，优先保证 女角色档案.档案1 成功落地。",
         "4. 首轮至少写入：角色名、是否已建档、当前是否在场、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
         "5. 注册开场阶段必须设置：是否已建档=true、当前是否在场=false、最近更新=注册前建档。",
-        "6. 只能使用 replace，不允许 insert、delta、append、remove、move。",
+        "6. 只允许使用 replace，不允许 insert、delta、append、remove、move。",
         "7. 不要输出角色档案总结、字段回显、raw html、fenced html、thinking。",
-        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。"
+        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行 <StatusPlaceHolderImpl/>。"
       ].join("\\n");
     }
     window.Forum1Random = {

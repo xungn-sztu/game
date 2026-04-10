@@ -73,7 +73,8 @@
     font-size: 12px;
   }
 
-  .tab.active {
+  .tab.active,
+  .detail-tab.active-detail-tab {
     border-color: var(--accent);
     color: var(--accent);
     background: var(--accent-bg);
@@ -126,6 +127,11 @@
     word-break: break-word;
   }
 
+  .muted-value {
+    color: #90a0b5;
+    font-style: italic;
+  }
+
   .pill-row {
     display: flex;
     gap: 8px;
@@ -160,7 +166,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
   }
 
   .char-name {
@@ -174,15 +179,6 @@
     font-size: 11px;
     color: var(--muted);
   }
-
-  .char-detail {
-    display: none;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.08);
-  }
-
-  .char-detail.open { display: block; }
 
   .pager {
     display: flex;
@@ -201,12 +197,21 @@
     font-size: 11px;
   }
 
-  .debug {
+  .debug,
+  .notice {
     margin-top: 10px;
     color: #8ea2ba;
     font-size: 11px;
     line-height: 1.7;
     white-space: pre-wrap;
+  }
+
+  .notice {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border: 1px dashed rgba(102, 181, 255, 0.35);
+    border-radius: 10px;
+    background: rgba(15, 24, 35, 0.55);
   }
 
   @media (max-width: 640px) {
@@ -221,6 +226,7 @@
   </div>
   <div class="tabs">
     <button class="tab active" data-tab="overview">概览</button>
+    <button class="tab" data-tab="present">在场</button>
     <button class="tab" data-tab="chars">角色</button>
     <button class="tab" data-tab="forum">论坛</button>
     <button class="tab" data-tab="account">账户/市场</button>
@@ -236,4 +242,4 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/gh/xungn-sztu/game@6edb3a5/dist/status-app.js"></script>
+<script src="./status-app.js"></script>
