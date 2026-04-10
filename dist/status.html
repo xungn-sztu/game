@@ -1,158 +1,239 @@
+<meta charset="utf-8">
 <style>
-  :root { --panel:#111823; --panel2:#182230; --line:#334153; --text:#dbe4ee; --muted:#95a5b7; --accent:#4ea8ff; --accentbg:rgba(78,168,255,.15); }
-  * { box-sizing:border-box; }
-  body { margin:0; padding:12px; background:transparent; color:var(--text); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
-  .card { max-width:780px; margin:0 auto; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:linear-gradient(180deg,#0d141d,#182230); box-shadow:0 16px 32px rgba(0,0,0,.25); }
-  .head { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); }
-  .title { font-size:16px; font-weight:700; color:#f8fbff; }
-  .meta { font-size:11px; line-height:1.5; color:var(--muted); text-align:right; }
-  .tabs { display:flex; gap:8px; overflow:auto; padding:10px 12px; border-bottom:1px solid var(--line); background:rgba(0,0,0,.12); }
-  .tab { border:1px solid #425368; border-radius:999px; padding:8px 12px; background:#17202c; color:#9db0c3; cursor:pointer; font-size:12px; }
-  .tab.active { color:var(--accent); border-color:var(--accent); background:var(--accentbg); }
-  .content { padding:14px; }
-  .section { margin-bottom:12px; padding:12px; border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.12); }
-  .section:last-child { margin-bottom:0; }
-  .section h3 { margin:0 0 10px; font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
-  .badge { padding:2px 8px; border:1px solid #425368; border-radius:999px; font-size:10px; color:#9db0c3; }
-  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-  .k { color:var(--muted); font-size:12px; }
-  .v { margin-top:3px; font-size:13px; word-break:break-word; }
-  .char { margin-bottom:8px; padding:10px; border:1px solid #425368; border-radius:10px; background:rgba(0,0,0,.16); }
-  .char-head { display:flex; justify-content:space-between; gap:8px; align-items:center; cursor:pointer; }
-  .char-name { font-size:13px; font-weight:700; color:#f8fbff; }
-  .char-sub { margin-top:3px; color:var(--muted); font-size:11px; }
-  .char-detail { display:none; margin-top:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,.08); }
-  .char-detail.open { display:block; }
-  .actions { display:flex; gap:8px; flex-wrap:wrap; }
-  .action { border:1px solid #425368; border-radius:999px; padding:8px 12px; background:#17202c; color:#dbe4ee; cursor:pointer; font-size:12px; }
-  .pager { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,.06); }
-  .empty { text-align:center; padding:12px 0; color:var(--muted); font-size:11px; }
-  .hint { color:var(--muted); font-size:12px; }
-  @media (max-width:640px) { .grid { grid-template-columns:1fr; } }
+  :root {
+    --panel: rgba(17, 24, 35, 0.97);
+    --panel-2: rgba(20, 28, 40, 0.82);
+    --line: #2d3742;
+    --line-2: #344152;
+    --text: #dbe4ee;
+    --muted: #8fa1b5;
+    --accent: #66b5ff;
+    --accent-bg: rgba(44, 114, 185, 0.18);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 12px;
+    background: transparent;
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  .card {
+    max-width: 780px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(11, 16, 24, 0.98), rgba(20, 28, 40, 0.98));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f8fbff;
+  }
+
+  .meta {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    overflow: auto;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(13, 19, 28, 0.8);
+  }
+
+  .tab {
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: rgba(22, 30, 42, 0.88);
+    color: #90a0b5;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .tab.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  .content { padding: 14px; }
+
+  .section {
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel-2);
+  }
+
+  .section:last-child { margin-bottom: 0; }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: #f8fbff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .badge {
+    padding: 2px 8px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    color: #90a0b5;
+    font-size: 10px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .label {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .value {
+    margin-top: 3px;
+    word-break: break-word;
+  }
+
+  .pill-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pill,
+  .action {
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: rgba(22, 30, 42, 0.88);
+    color: #90a0b5;
+    cursor: pointer;
+  }
+
+  .action[disabled] {
+    cursor: default;
+    opacity: 0.45;
+  }
+
+  .char {
+    margin-bottom: 8px;
+    padding: 10px;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    background: rgba(12, 18, 27, 0.56);
+  }
+
+  .char-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .char-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f8fbff;
+  }
+
+  .char-sub {
+    margin-top: 3px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .char-detail {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  }
+
+  .char-detail.open { display: block; }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 12px 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .debug {
+    margin-top: 10px;
+    color: #8ea2ba;
+    font-size: 11px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+  }
 </style>
+
 <div class="card">
-  <div class="head">
-    <div class="title">&#35770;&#22363;1&#21495;</div>
-    <div class="meta" id="meta">&#31561;&#24453;&#21464;&#37327;&#21516;&#27493;</div>
+  <div class="header">
+    <div class="title">论坛1号</div>
+    <div class="meta" id="meta">未同步<br>电脑桌前</div>
   </div>
   <div class="tabs">
-    <button class="tab active" data-tab="overview">&#27010;&#35272;</button>
-    <button class="tab" data-tab="chars">&#35282;&#33394;</button>
-    <button class="tab" data-tab="forum">&#35770;&#22363;</button>
-    <button class="tab" data-tab="account">&#36134;&#25143;/&#24066;&#22330;</button>
+    <button class="tab active" data-tab="overview">概览</button>
+    <button class="tab" data-tab="chars">角色</button>
+    <button class="tab" data-tab="forum">论坛</button>
+    <button class="tab" data-tab="account">账户/市场</button>
   </div>
-  <div class="content" id="content"></div>
+  <div class="content" id="content">
+    <div class="section">
+      <div class="section-head">
+        <span>概览</span>
+        <span class="badge">初始化</span>
+      </div>
+      <div class="empty">正在等待变量载入</div>
+    </div>
+  </div>
 </div>
-<script src="./common.js"></script>
-<script>
-  (function () {
-    const state = { tab: "overview", page: 0, expanded: "" };
-    const PAGE_SIZE = 4;
 
-    function renderOverview(stat) {
-      return `
-        <section class="section">
-          <h3><span>&#27010;&#35272;</span><span class="badge">&#23454;&#26102;</span></h3>
-          <div class="grid">
-            <div><div class="k">&#26102;&#38388;</div><div class="v">${Forum1Common.esc(Forum1Common.formatTime(stat))}</div></div>
-            <div><div class="k">&#22320;&#28857;</div><div class="v">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.world, Forum1Common.U.K.place], "\u7535\u8111\u684c\u524d"))}</div></div>
-            <div><div class="k">&#37329;&#38065;</div><div class="v">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.player, Forum1Common.U.K.money], 0))}</div></div>
-            <div><div class="k">&#20307;&#21147;</div><div class="v">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.player, Forum1Common.U.K.stamina], "\u672a\u8bbe\u5b9a"))}</div></div>
-          </div>
-        </section>
-        <section class="section">
-          <h3><span>&#24555;&#25463;&#25805;&#20316;</span><span class="badge">&#22635;&#20837;&#36755;&#20837;&#26639;</span></h3>
-          <div class="actions">
-            <button class="action" data-fill="\u5237\u65b0\u8bba\u575b\u4e3b\u9875">&#21047;&#26032;&#35770;&#22363;&#20027;&#39029;</button>
-            <button class="action" data-fill="\u67e5\u770b\u6211\u7684\u8bba\u575b\u8d26\u6237">&#26597;&#30475;&#25105;&#30340;&#35770;&#22363;&#36134;&#25143;</button>
-            <button class="action" data-fill="\u6d4f\u89c8\u9ed1\u6599\u5e02\u573a">&#27983;&#35272;&#40657;&#26009;&#24066;&#22330;</button>
-            <button class="action" data-fill="\u67e5\u770b\u5df2\u8d2d\u9ed1\u6599">&#26597;&#30475;&#24050;&#36141;&#40657;&#26009;</button>
-          </div>
-        </section>`;
-    }
-
-    function renderChars(stat) {
-      const rows = Forum1Common.roleRows(stat);
-      if (!rows.length) {
-        return `<section class="section"><h3><span>&#35282;&#33394;</span><span class="badge">0</span></h3><div class="empty">&#24403;&#21069;&#27809;&#26377;&#35282;&#33394;&#26723;&#26696;</div></section>`;
-      }
-      const total = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-      if (state.page > total - 1) state.page = total - 1;
-      const slice = rows.slice(state.page * PAGE_SIZE, state.page * PAGE_SIZE + PAGE_SIZE);
-      const items = slice.map((row) => {
-        const summary = row.summary || {};
-        const detail = row.detail || {};
-        const social = detail[Forum1Common.U.K.social] || {};
-        const body = detail[Forum1Common.U.K.body] || {};
-        const open = state.expanded === row.slot;
-        return `<div class="char">
-          <div class="char-head" data-slot="${row.slot}">
-            <div>
-              <div class="char-name">${Forum1Common.esc(row.name)}</div>
-              <div class="char-sub">${Forum1Common.esc(summary[Forum1Common.U.K.title] || (detail[Forum1Common.U.K.realIdentity] || {})[Forum1Common.U.K.title] || "\u672a\u8bbe\u5b9a")} / ${Forum1Common.esc(summary[Forum1Common.U.K.relationNature] || social[Forum1Common.U.K.relationNature] || "\u672a\u8bbe\u5b9a")}</div>
-            </div>
-            <div class="badge">${Forum1Common.esc(row.slot)}</div>
-          </div>
-          <div class="char-detail ${open ? "open" : ""}">
-            <div class="grid">
-              <div><div class="k">&#20844;&#24320;&#22836;&#34900;</div><div class="v">${Forum1Common.esc(summary[Forum1Common.U.K.title] || (detail[Forum1Common.U.K.realIdentity] || {})[Forum1Common.U.K.title])}</div></div>
-              <div><div class="k">&#35748;&#35782;&#28192;&#36947;</div><div class="v">${Forum1Common.esc(social[Forum1Common.U.K.channel])}</div></div>
-              <div><div class="k">&#20851;&#31995;&#24615;&#36136;</div><div class="v">${Forum1Common.esc(summary[Forum1Common.U.K.relationNature] || social[Forum1Common.U.K.relationNature])}</div></div>
-              <div><div class="k">&#24773;&#24863;&#28145;&#24230;</div><div class="v">${Forum1Common.esc(summary[Forum1Common.U.K.relationDepth] || social[Forum1Common.U.K.relationDepth])}</div></div>
-              <div><div class="k">&#29983;&#27963;&#28183;&#36879;&#24230;</div><div class="v">${Forum1Common.esc(summary[Forum1Common.U.K.lifePenetration] || social[Forum1Common.U.K.lifePenetration])}</div></div>
-              <div><div class="k">&#20146;&#23494;&#31243;&#24230;</div><div class="v">${Forum1Common.esc(summary[Forum1Common.U.K.intimacy] || body[Forum1Common.U.K.intimacy])}</div></div>
-              <div><div class="k">&#20851;&#31995;&#36208;&#21521;</div><div class="v">${Forum1Common.esc(social[Forum1Common.U.K.route])}</div></div>
-              <div><div class="k">&#26368;&#36817;&#26356;&#26032;</div><div class="v">${Forum1Common.esc(summary[Forum1Common.U.K.latest])}</div></div>
-            </div>
-          </div>
-        </div>`;
-      }).join("");
-      return `<section class="section"><h3><span>&#35282;&#33394;</span><span class="badge">${rows.length}</span></h3>${items}<div class="pager"><button class="action" data-page="prev"${state.page <= 0 ? " disabled" : ""}>&#19978;&#19968;&#39029;</button><span>${state.page + 1} / ${total}</span><button class="action" data-page="next"${state.page >= total - 1 ? " disabled" : ""}>&#19979;&#19968;&#39029;</button></div></section>`;
-    }
-
-    function renderForum(stat) {
-      return `<section class="section"><h3><span>&#35770;&#22363;</span><span class="badge">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.forum, Forum1Common.U.K.zone], "\u672a\u8fdb\u5165"))}</span></h3><div class="hint">&#20808;&#20445;&#35777;&#27880;&#20876;&#39029;&#12289;&#29366;&#24577;&#26639;&#21644;&#35282;&#33394;&#26723;&#26696;&#31283;&#23450;&#21487;&#29992;&#65292;&#35770;&#22363;&#35814;&#24773;&#39029;&#21518;&#32493;&#20877;&#25193;&#23637;&#12290;</div></section>`;
-    }
-
-    function renderAccount(stat) {
-      return `<section class="section"><h3><span>&#36134;&#25143;/&#24066;&#22330;</span><span class="badge">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.forum, Forum1Common.U.K.account, Forum1Common.U.K.points], 0))}</span></h3><div class="grid"><div><div class="k">&#29992;&#25143;&#21517;</div><div class="v">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.forum, Forum1Common.U.K.account, "\u7528\u6237\u540d"], "\u672a\u6ce8\u518c"))}</div></div><div><div class="k">&#31561;&#32423;</div><div class="v">${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.forum, Forum1Common.U.K.account, "\u7b49\u7ea7"], "L0"))}</div></div></div></section>`;
-    }
-
-    async function refresh() {
-      const stat = await Forum1Common.getStatData();
-      document.getElementById("meta").innerHTML = `${Forum1Common.esc(Forum1Common.formatTime(stat))}<br />${Forum1Common.esc(Forum1Common.get(stat, [Forum1Common.U.K.world, Forum1Common.U.K.place], "\u7535\u8111\u684c\u524d"))}`;
-      document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.tab === state.tab));
-      const root = document.getElementById("content");
-      if (state.tab === "overview") root.innerHTML = renderOverview(stat);
-      else if (state.tab === "chars") root.innerHTML = renderChars(stat);
-      else if (state.tab === "forum") root.innerHTML = renderForum(stat);
-      else root.innerHTML = renderAccount(stat);
-
-      root.querySelectorAll("[data-fill]").forEach((btn) => {
-        btn.addEventListener("click", () => Forum1Common.fillInput(btn.getAttribute("data-fill")));
-      });
-      root.querySelectorAll("[data-slot]").forEach((el) => {
-        el.addEventListener("click", () => {
-          state.expanded = state.expanded === el.getAttribute("data-slot") ? "" : el.getAttribute("data-slot");
-          refresh();
-        });
-      });
-      root.querySelectorAll("[data-page]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          if (btn.getAttribute("data-page") === "prev" && state.page > 0) state.page -= 1;
-          if (btn.getAttribute("data-page") === "next") state.page += 1;
-          refresh();
-        });
-      });
-    }
-
-    document.querySelectorAll(".tab").forEach((tab) => {
-      tab.addEventListener("click", () => {
-        state.tab = tab.dataset.tab;
-        refresh();
-      });
-    });
-    refresh();
-    setInterval(refresh, 1500);
-  })();
-</script>
+<script src="./status-app.js"></script>

@@ -1,103 +1,82 @@
+<meta charset="utf-8">
 <style>
-  :root { --bg:#111823; --panel:#161f2b; --line:#334153; --text:#dbe4ee; --muted:#95a5b7; }
-  body { margin:0; padding:12px; background:transparent; color:var(--text); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
-  .box { max-width:780px; margin:0 auto; border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,#0d141d,#182230); box-shadow:0 16px 32px rgba(0,0,0,.25); padding:18px 20px; }
-  .head { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:14px; }
-  .title { font-size:18px; font-weight:700; color:#f8fbff; }
-  .meta { font-size:11px; line-height:1.5; color:var(--muted); text-align:right; }
-  .text { font-size:14px; line-height:1.85; }
-  .text + .text { margin-top:10px; }
-  .action { margin-top:14px; padding:12px 14px; border:1px solid #425368; border-radius:12px; background:rgba(0,0,0,.12); }
-  .label { font-size:12px; color:var(--muted); margin-bottom:6px; }
-  .value { font-size:13px; color:#f8fbff; }
-  .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-  .input { flex:1 1 240px; background:#0c1219; color:#eef3f8; border:1px solid #425368; border-radius:10px; padding:10px 12px; font-size:13px; }
-  .btn { cursor:pointer; border-radius:10px; padding:10px 14px; font-size:13px; font-weight:700; border:1px solid #425368; background:#17202c; color:#d7e0ea; }
-  .btn-primary { background:linear-gradient(135deg,#257bff,#51a8ff); color:#fff; border-color:transparent; }
+  :root {
+    --panel: rgba(17, 24, 35, 0.97);
+    --line: #2d3742;
+    --line-2: #344152;
+    --text: #dbe4ee;
+    --muted: #8fa1b5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 12px;
+    background: transparent;
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .box {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(11, 16, 24, 0.96), var(--panel));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f8fbff;
+  }
+  .meta {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--muted);
+    text-align: right;
+  }
+  .text {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--text);
+  }
+  .action {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
+    background: rgba(12, 18, 27, 0.56);
+  }
+  .label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .value {
+    font-size: 13px;
+    color: #f8fbff;
+  }
 </style>
 <div class="box">
   <div class="head">
-    <div class="title">&#35770;&#22363;&#27880;&#20876;&#39029;</div>
-    <div class="meta">&#21021;&#27425;&#36827;&#20837;<br />&#31561;&#24453;&#36755;&#20837;&#35770;&#22363;ID</div>
+    <div class="title">论坛注册页</div>
+    <div class="meta">初次进入<br />等待输入论坛ID</div>
   </div>
-  <div class="text">&#25105;&#22238;&#21040;&#23478;&#21518;&#65292;&#31532;&#19968;&#27425;&#25171;&#24320;&#20102;&#36825;&#20010;&#35770;&#22363;&#12290;&#39029;&#38754;&#27809;&#26377;&#30452;&#25509;&#36827;&#20837;&#20869;&#23481;&#65292;&#32780;&#26159;&#20808;&#20572;&#22312;&#27880;&#20876;&#39029;&#12290;</div>
-  <div class="text">&#29616;&#22312;&#23631;&#24149;&#19978;&#21482;&#26377;&#19968;&#20010;&#36755;&#20837;&#26694;&#65292;&#31561;&#24453;&#25105;&#22635;&#20889;&#35770;&#22363;ID&#12290;</div>
+  <div class="text">
+    夜里回到家后，我没有立刻去洗漱，只是把钥匙随手放到桌角，走到电脑前坐下。房间里只有主机启动后的轻微嗡鸣，屏幕亮起时，我第一次真正点开了那个藏在旧链接里的论坛页面。
+  </div>
+  <div class="text" style="margin-top: 10px;">
+    页面没有直接跳进内容区，而是先停在了注册页。冷白色的输入框悬在正中，安静地等我写下论坛ID。下方那些匿名板块和露骨标题已经露出了一角，像是在提醒我，我其实已经走到了门口，只差最后一步。
+  </div>
   <div class="action">
-    <div class="label">&#24403;&#21069;&#21160;&#20316;</div>
-    <div class="value">&#36755;&#20837;&#35770;&#22363;ID&#65292;&#23436;&#25104;&#31532;&#19968;&#27425;&#27880;&#20876;</div>
-    <div class="row">
-      <input class="input" id="forum-id-input" placeholder="&#36755;&#20837;&#35770;&#22363;ID">
-      <button class="btn" type="button" onclick="forum1RegisterFillOnly()">&#20165;&#22635;&#20837;</button>
-      <button class="btn btn-primary" type="button" onclick="forum1RegisterAndContinue()">&#27880;&#20876;&#24182;&#32487;&#32493;</button>
-    </div>
+    <div class="label">当前动作</div>
+    <div class="value">输入论坛ID，完成第一次注册</div>
   </div>
 </div>
-<script>
-    function hostWindow() {
-      try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
-      try { if (window.top && window.top !== window) return window.top; } catch (e) {}
-      return window;
-    }
-    function hostDocument() {
-      const host = hostWindow();
-      try { return host.document || document; } catch (e) { return document; }
-    }
-    function fillInput(text) {
-      const host = hostWindow();
-      const doc = hostDocument();
-      const input =
-        doc.querySelector("#send_textarea") ||
-        doc.querySelector("[contenteditable='true']") ||
-        doc.querySelector('textarea[name=\"message\"]') ||
-        doc.querySelector(".message-input textarea") ||
-        doc.querySelector('[data-testid=\"chat-input\"] textarea') ||
-        doc.querySelector("textarea");
-      if (!input) return false;
-      if (input.matches && input.matches("[contenteditable='true']")) {
-        input.textContent = text;
-      } else {
-        const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
-        const desc = Object.getOwnPropertyDescriptor(proto, "value");
-        if (desc && typeof desc.set === "function") desc.set.call(input, text);
-        else input.value = text;
-      }
-      try {
-        input.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text }));
-      } catch (e) {
-        input.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
-      }
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-      input.focus();
-      return true;
-    }
-    function clickSend() {
-      const doc = hostDocument();
-      const btn =
-        doc.querySelector("#send_but") ||
-        doc.querySelector('[data-testid=\"send-button\"]') ||
-        doc.querySelector("button[type='submit']");
-      if (!btn) return false;
-      btn.click();
-      return true;
-    }
-    function triggerCommand(command) {
-      const host = hostWindow();
-      try { if (typeof host.triggerSlash === "function") { host.triggerSlash(command); return true; } } catch (e) {}
-      try { if (typeof window.triggerSlash === "function") { window.triggerSlash(command); return true; } } catch (e) {}
-      return false;
-    }
-    function buildPrompt() {
-      const forumId = String(document.getElementById("forum-id-input").value || "").trim() || "xun";
-      return `id: ${forumId}\n\uff08\u66f4\u65b0\u6211\u7684\u8bba\u575b\u8d26\u6237\u5e76\u7ee7\u7eed\u5f53\u524d\u5267\u60c5\uff09`;
-    }
-    window.forum1RegisterFillOnly = function () {
-      return fillInput(buildPrompt());
-    };
-    window.forum1RegisterAndContinue = function () {
-      const message = buildPrompt();
-      const command = `/send ${message} | /trigger`;
-      if (!triggerCommand(command)) {
-        if (fillInput(message)) setTimeout(() => clickSend(), 80);
-      }
-    };
-</script>

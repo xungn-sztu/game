@@ -1,108 +1,110 @@
+<meta charset="utf-8">
 <style>
-  :root { --bg:#111823; --panel:#161f2b; --line:#334153; --text:#dbe4ee; --muted:#95a5b7; --accent:#4ea8ff; }
-  * { box-sizing:border-box; }
-  body { margin:0; padding:14px; background:transparent; color:var(--text); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
-  .panel { max-width:760px; margin:0 auto; border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,#0d141d,#182230); box-shadow:0 16px 32px rgba(0,0,0,.25); overflow:hidden; }
-  .inner { padding:20px; }
-  h1 { margin:0 0 8px; font-size:22px; }
-  p { margin:0 0 10px; font-size:13px; line-height:1.7; color:var(--muted); }
-  .tip { margin-top:12px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.12); }
-  .actions { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
-  .btn { cursor:pointer; border-radius:10px; padding:11px 16px; font-size:13px; font-weight:700; border:1px solid #425368; }
-  .btn-secondary { background:#17202c; color:#d7e0ea; }
-  .btn-primary { background:linear-gradient(135deg,#257bff,#51a8ff); color:#fff; border-color:transparent; }
+  :root {
+    --panel: rgba(18, 23, 32, 0.96);
+    --line: #2c3a4d;
+    --text: #d8e0ea;
+    --muted: #98a7ba;
+    --accent: #52a7ff;
+    --accent-2: #2878ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 18px;
+    background: transparent;
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .panel {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--panel);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  }
+  h1 { margin: 0 0 10px; font-size: 22px; color: #f4f7fb; }
+  p { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.75; }
+  .box {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #344152;
+    border-radius: 14px;
+    background: rgba(9, 13, 19, 0.56);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    border: 1px solid #41526a;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: #fff;
+    border-color: transparent;
+  }
 </style>
 <div class="panel">
-  <div class="inner">
-    <h1>&#38543;&#26426;&#29983;&#25104;&#24182;&#30452;&#25509;&#24320;&#22330;</h1>
-    <p>&#21482;&#36127;&#36131;&#24555;&#36895;&#24314;&#26723;&#65292;&#30446;&#26631;&#26159;&#35753;&#31532;&#19968;&#20301;&#35282;&#33394;&#31435;&#21051;&#20986;&#29616;&#22312;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#12290;</p>
-    <div class="tip">&#26368;&#20302;&#25104;&#21151;&#26631;&#20934;&#65306;&#29366;&#24577;&#26639;&#35282;&#33394;&#39029;&#35745;&#25968;&#22823;&#20110; 0&#65292;&#24182;&#31435;&#21051;&#21487;&#35265;&#31532;&#19968;&#20301;&#35282;&#33394;&#12290;</div>
-    <div class="actions">
-      <button class="btn btn-secondary" type="button" onclick="forum1RandomFillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
-      <button class="btn btn-primary" type="button" onclick="forum1RandomGenerateAndSend()">&#38543;&#26426;&#29983;&#25104;&#24182;&#24320;&#22330;</button>
-    </div>
+  <h1>随机生成并首轮建档</h1>
+  <p>这一条入口只要求模型先把第一位角色稳定写进固定槽位，然后直接跳到注册页和状态栏。不要生成额外正文，不要先讲剧情。</p>
+  <div class="box">最低成功标准只有一个：状态栏角色页里立刻出现第一位角色，而不是 0 或空白。</div>
+  <div class="actions">
+    <button class="btn" type="button" onclick="Forum1Random.fillOnly()">填入输入栏</button>
   </div>
 </div>
 <script>
-    function hostWindow() {
-      try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
-      try { if (window.top && window.top !== window) return window.top; } catch (e) {}
-      return window;
+  (function () {
+    function getContext() {
+      try { if (window.SillyTavern && typeof window.SillyTavern.getContext === "function") return window.SillyTavern.getContext(); } catch (error) {}
+      try { if (window.parent && window.parent.SillyTavern && typeof window.parent.SillyTavern.getContext === "function") return window.parent.SillyTavern.getContext(); } catch (error) {}
+      return null;
     }
-    function hostDocument() {
-      const host = hostWindow();
-      try { return host.document || document; } catch (e) { return document; }
-    }
-    function fillInput(text) {
-      const host = hostWindow();
-      const doc = hostDocument();
-      const input =
-        doc.querySelector("#send_textarea") ||
-        doc.querySelector("[contenteditable='true']") ||
-        doc.querySelector('textarea[name=\"message\"]') ||
-        doc.querySelector(".message-input textarea") ||
-        doc.querySelector('[data-testid=\"chat-input\"] textarea') ||
-        doc.querySelector("textarea");
-      if (!input) return false;
-      if (input.matches && input.matches("[contenteditable='true']")) {
-        input.textContent = text;
-      } else {
-        const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
-        const desc = Object.getOwnPropertyDescriptor(proto, "value");
-        if (desc && typeof desc.set === "function") desc.set.call(input, text);
-        else input.value = text;
-      }
-      try {
-        input.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text }));
-      } catch (e) {
-        input.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
-      }
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-      input.focus();
+    function setDomInput(text) {
+      const textarea = document.querySelector("#send_textarea") || document.querySelector('textarea[name="message"]') || document.querySelector(".message-input textarea") || document.querySelector('[data-testid="chat-input"] textarea') || document.querySelector("textarea");
+      if (!textarea) return false;
+      const desc = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value");
+      if (desc && typeof desc.set === "function") desc.set.call(textarea, text); else textarea.value = text;
+      textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      textarea.dispatchEvent(new Event("change", { bubbles: true }));
+      textarea.focus();
       return true;
     }
-    function clickSend() {
-      const doc = hostDocument();
-      const btn =
-        doc.querySelector("#send_but") ||
-        doc.querySelector('[data-testid=\"send-button\"]') ||
-        doc.querySelector("button[type='submit']");
-      if (!btn) return false;
-      btn.click();
-      return true;
+    async function setInput(text) {
+      const ctx = getContext();
+      if (ctx && typeof ctx.executeSlashCommands === "function") {
+        try {
+          await ctx.executeSlashCommands(`/setinput ${text}`);
+          const textarea = document.querySelector("#send_textarea");
+          if (textarea && String(textarea.value || "").trim()) return true;
+        } catch (error) {}
+      }
+      return setDomInput(text);
     }
-    function triggerCommand(command) {
-      const host = hostWindow();
-      try { if (typeof host.triggerSlash === "function") { host.triggerSlash(command); return true; } } catch (e) {}
-      try { if (typeof window.triggerSlash === "function") { window.triggerSlash(command); return true; } } catch (e) {}
-      return false;
-    }
-    function promptText() {
+    function buildPrompt() {
       return [
-        "\u3010\u968f\u673a\u751f\u6210\u5973\u89d2\u8272\u5e76\u76f4\u63a5\u5f00\u573a\u3011",
+        "【随机生成女角色并首轮建档】",
         "",
-        "\u8bf7\u968f\u673a\u751f\u6210\u4e00\u540d\u5b8c\u6574\u5973\u89d2\u8272\uff0c\u5e76\u5199\u5165\u5f53\u524d MVU \u53d8\u91cf\u7cfb\u7edf\u3002",
-        "\u968f\u673a\u65f6\u4f18\u5148\u8865\u9f50\uff1a\u516c\u5f00\u5934\u8854\u3001\u5173\u7cfb\u6027\u8d28\u3001\u60c5\u611f\u6df1\u5ea6\u3001\u751f\u6d3b\u6e17\u900f\u5ea6\u3001\u4eb2\u5bc6\u7a0b\u5ea6\u3001\u8ba4\u8bc6\u6e20\u9053\u3002",
+        "请随机生成一名完整女角色，并写入当前 MVU 固定槽位。",
+        "随机时优先补齐：公开头衔、关系性质、情感深度、生活渗透度、亲密程度、认识渠道、性态度、性欲程度。",
         "",
-        "\u786c\u6027\u8981\u6c42\uff1a",
-        "1. \u9996\u8f6e\u53ea\u5141\u8bb8\u5bf9 /\u89d2\u8272\u7d22\u5f15/\u6863\u68481-4 \u4f7f\u7528 replace \u3002",
-        "2. \u81f3\u5c11\u5199\u5165\uff1a\u89d2\u8272\u540d\u3001\u5f53\u524d\u662f\u5426\u5728\u573a\u3001\u662f\u5426\u5df2\u5efa\u6863\u3001\u516c\u5f00\u5934\u8854\u3001\u5173\u7cfb\u6027\u8d28\u3001\u60c5\u611f\u6df1\u5ea6\u3001\u751f\u6d3b\u6e17\u900f\u5ea6\u3001\u4eb2\u5bc6\u7a0b\u5ea6\u3001\u6700\u8fd1\u66f4\u65b0\u3002",
-        "3. \u8bbe\u4e3a\uff1a\u5f53\u524d\u662f\u5426\u5728\u573a=false\uff0c\u662f\u5426\u5df2\u5efa\u6863=true\uff0c\u6700\u8fd1\u66f4\u65b0=\u6ce8\u518c\u524d\u5efa\u6863\u3002",
-        "4. \u4e0d\u8981\u8f93\u51fa insert\u3001delta\u3001append\u3001raw html \u6216\u6863\u6848\u603b\u7ed3\u3002",
-        "5. </UpdateVariable> \u4e4b\u540e\u6b63\u6587\u53ea\u80fd\u8f93\u51fa\u4e24\u884c\uff1a\u7b2c\u4e00\u884c\u3010\u6ce8\u518c\u4e3b\u9875\u3011\uff1b\u7b2c\u4e8c\u884c <StatusPlaceHolderImpl/> \u3002"
+        "硬性要求：",
+        "1. 同一条回复里，先且只输出一个合法的 <UpdateVariable> 块。",
+        "2. 首轮只能写固定槽位：/角色索引/档案1、/角色详情/档案1、/女角色档案/档案1。",
+        "3. 角色索引和角色详情里都要写角色名，不能留空。",
+        "4. 首轮至少写入：角色名、是否已建档、当前是否在场、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
+        "5. 注册开场阶段必须设置：是否已建档=true、当前是否在场=false、最近更新=注册前建档。",
+        "6. 只能使用 replace，不允许 insert、delta、append、remove、move。",
+        "7. 不要输出角色档案总结、字段回显、raw html、fenced html、thinking。",
+        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。"
       ].join("\\n");
     }
-    function sendPrompt() {
-      const message = promptText();
-      const command = `/send ${message} | /trigger`;
-      if (!triggerCommand(command)) {
-        if (fillInput(message)) setTimeout(() => clickSend(), 80);
-      }
-    }
-    window.forum1RandomFillOnly = function () {
-      return fillInput(promptText());
+    window.Forum1Random = {
+      async fillOnly() { await setInput(buildPrompt()); }
     };
-    window.forum1RandomGenerateAndSend = function () {
-      return sendPrompt();
-    };
+  })();
 </script>

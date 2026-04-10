@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <style>
   :root {
     --panel: rgba(17, 24, 35, 0.97);
@@ -9,7 +10,9 @@
     --accent: #66b5ff;
     --accent-bg: rgba(44, 114, 185, 0.18);
   }
+
   * { box-sizing: border-box; }
+
   body {
     margin: 0;
     padding: 12px;
@@ -17,6 +20,7 @@
     color: var(--text);
     font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   }
+
   .card {
     max-width: 780px;
     margin: 0 auto;
@@ -26,6 +30,7 @@
     background: linear-gradient(180deg, rgba(11, 16, 24, 0.98), rgba(20, 28, 40, 0.98));
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
   }
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -35,8 +40,20 @@
     border-bottom: 1px solid var(--line);
     background: rgba(0, 0, 0, 0.2);
   }
-  .title { font-size: 16px; font-weight: 700; color: #f8fbff; }
-  .meta { font-size: 11px; line-height: 1.5; color: var(--muted); text-align: right; }
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f8fbff;
+  }
+
+  .meta {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--muted);
+    text-align: right;
+  }
+
   .tabs {
     display: flex;
     gap: 8px;
@@ -45,6 +62,7 @@
     border-bottom: 1px solid var(--line);
     background: rgba(13, 19, 28, 0.8);
   }
+
   .tab {
     border: 1px solid var(--line-2);
     border-radius: 999px;
@@ -54,12 +72,15 @@
     cursor: pointer;
     font-size: 12px;
   }
+
   .tab.active {
     border-color: var(--accent);
     color: var(--accent);
     background: var(--accent-bg);
   }
+
   .content { padding: 14px; }
+
   .section {
     margin-bottom: 12px;
     padding: 12px;
@@ -67,7 +88,9 @@
     border-radius: 12px;
     background: var(--panel-2);
   }
+
   .section:last-child { margin-bottom: 0; }
+
   .section-head {
     display: flex;
     justify-content: space-between;
@@ -78,6 +101,7 @@
     font-size: 13px;
     font-weight: 700;
   }
+
   .badge {
     padding: 2px 8px;
     border: 1px solid var(--line-2);
@@ -85,15 +109,31 @@
     color: #90a0b5;
     font-size: 10px;
   }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
-  .label { color: var(--muted); font-size: 12px; }
-  .value { margin-top: 3px; word-break: break-word; }
-  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pill, .action {
+
+  .label {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .value {
+    margin-top: 3px;
+    word-break: break-word;
+  }
+
+  .pill-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pill,
+  .action {
     border: 1px solid var(--line-2);
     border-radius: 999px;
     padding: 8px 12px;
@@ -101,7 +141,12 @@
     color: #90a0b5;
     cursor: pointer;
   }
-  .action[disabled] { cursor: default; opacity: 0.45; }
+
+  .action[disabled] {
+    cursor: default;
+    opacity: 0.45;
+  }
+
   .char {
     margin-bottom: 8px;
     padding: 10px;
@@ -109,6 +154,7 @@
     border-radius: 10px;
     background: rgba(12, 18, 27, 0.56);
   }
+
   .char-head {
     display: flex;
     justify-content: space-between;
@@ -116,15 +162,28 @@
     gap: 8px;
     cursor: pointer;
   }
-  .char-name { font-size: 13px; font-weight: 700; color: #f8fbff; }
-  .char-sub { margin-top: 3px; font-size: 11px; color: var(--muted); }
+
+  .char-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f8fbff;
+  }
+
+  .char-sub {
+    margin-top: 3px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
   .char-detail {
     display: none;
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px dashed rgba(255, 255, 255, 0.08);
   }
+
   .char-detail.open { display: block; }
+
   .pager {
     display: flex;
     justify-content: space-between;
@@ -134,26 +193,31 @@
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
+
   .empty {
     text-align: center;
     padding: 12px 0;
     color: var(--muted);
     font-size: 11px;
   }
-  .error {
-    margin-top: 8px;
-    color: #ff9d9d;
-    font-size: 12px;
+
+  .debug {
+    margin-top: 10px;
+    color: #8ea2ba;
+    font-size: 11px;
+    line-height: 1.7;
     white-space: pre-wrap;
   }
+
   @media (max-width: 640px) {
     .grid { grid-template-columns: 1fr; }
   }
 </style>
+
 <div class="card">
   <div class="header">
     <div class="title">论坛1号</div>
-    <div class="meta" id="meta">等待变量载入</div>
+    <div class="meta" id="meta">未同步<br>电脑桌前</div>
   </div>
   <div class="tabs">
     <button class="tab active" data-tab="overview">概览</button>
@@ -161,174 +225,15 @@
     <button class="tab" data-tab="forum">论坛</button>
     <button class="tab" data-tab="account">账户/市场</button>
   </div>
-  <div class="content" id="content"></div>
+  <div class="content" id="content">
+    <div class="section">
+      <div class="section-head">
+        <span>概览</span>
+        <span class="badge">初始化</span>
+      </div>
+      <div class="empty">正在等待变量载入</div>
+    </div>
+  </div>
 </div>
-<script>
-  (function () {
-    const state = { tab: "overview", charPage: 0, postPage: 0, expanded: null, zone: "", lastError: "" };
-    const PAGE_SIZE = 4;
-    function hostWindow() {
-      try { if (window.parent && window.parent !== window) return window.parent; } catch (error) {}
-      return window;
-    }
-    function safe(value, fallback = "—") {
-      return value === undefined || value === null || value === "" ? fallback : value;
-    }
-    function get(obj, path, fallback) {
-      let current = obj;
-      for (const key of path) {
-        if (current === undefined || current === null || typeof current !== "object") return fallback;
-        current = current[key];
-      }
-      return current === undefined ? fallback : current;
-    }
-    function slotNames() { return ["档案1", "档案2", "档案3", "档案4"]; }
-    async function getStatData() {
-      const host = hostWindow();
-      try {
-        if (typeof host.getCurrentMessageId === "function" && typeof host.getChatMessages === "function") {
-          const currentId = host.getCurrentMessageId();
-          const messages = await host.getChatMessages(currentId);
-          if (messages && messages.length && messages[0] && messages[0].data && messages[0].data.stat_data) {
-            state.lastError = "";
-            return messages[0].data.stat_data;
-          }
-        }
-      } catch (error) {
-        state.lastError = `getChatMessages 失败: ${error.message || error}`;
-      }
-      try {
-        if (typeof host.getAllVariables === "function") {
-          const all = host.getAllVariables();
-          const stat = get(all, ["stat_data"], {});
-          if (stat && typeof stat === "object") {
-            state.lastError = "";
-            return stat;
-          }
-        }
-      } catch (error) {
-        state.lastError = `getAllVariables 失败: ${error.message || error}`;
-      }
-      return {};
-    }
-    function fillInput(text) {
-      const host = hostWindow();
-      let doc;
-      try { doc = host.document || document; } catch (error) { doc = document; }
-      const el = doc.querySelector("#send_textarea") || doc.querySelector('textarea[name="message"]') || doc.querySelector(".message-input textarea") || doc.querySelector('[data-testid="chat-input"] textarea') || doc.querySelector("textarea");
-      if (!el) return false;
-      const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
-      const desc = Object.getOwnPropertyDescriptor(proto, "value");
-      if (desc && typeof desc.set === "function") desc.set.call(el, text); else el.value = text;
-      try { el.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text })); }
-      catch (error) { el.dispatchEvent(new Event("input", { bubbles: true, cancelable: true })); }
-      el.dispatchEvent(new Event("change", { bubbles: true }));
-      el.focus();
-      return true;
-    }
-    function setTabs() {
-      document.querySelectorAll(".tab").forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === state.tab));
-    }
-    function formatTime(stat) {
-      const t = get(stat, ["世界", "详细时间"], {});
-      if (!t || t.年 === undefined) return "时间未同步";
-      const pad = (n) => String(n || 0).padStart(2, "0");
-      return `${t.年}-${pad(t.月)}-${pad(t.日)} ${pad(t.时)}:${pad(t.分)} ${safe(t.星期, "")}`.trim();
-    }
-    function section(title, badge, body) {
-      return `<section class="section"><div class="section-head"><span>${title}</span><span class="badge">${badge}</span></div>${body}</section>`;
-    }
-    function pager(kind, pageIndex, total) {
-      return `<div class="pager"><button class="action" data-action="${kind}-prev" ${pageIndex <= 0 ? "disabled" : ""}>上一页</button><span>${pageIndex + 1} / ${total}</span><button class="action" data-action="${kind}-next" ${pageIndex >= total - 1 ? "disabled" : ""}>下一页</button></div>`;
-    }
-    function summaryFromSlot(stat, slot) { return get(stat, ["角色索引", slot], {}); }
-    function detailFromSlot(stat, slot) {
-      const detail = get(stat, ["角色详情", slot], {});
-      if (detail && Object.keys(detail).length) return detail;
-      return get(stat, ["女角色档案", slot], {});
-    }
-    function charRows(stat) {
-      const rows = [];
-      for (const slot of slotNames()) {
-        const summary = summaryFromSlot(stat, slot) || {};
-        const detail = detailFromSlot(stat, slot) || {};
-        const built = !!(summary.是否已建档 || detail.是否已建档);
-        const name = safe(summary.角色名 || detail.角色名, "");
-        if (!built || !name) continue;
-        rows.push({ slot, summary, detail, name });
-      }
-      return rows;
-    }
-    function renderOverview(stat) {
-      const world = get(stat, ["世界"], {});
-      const player = get(stat, ["主角"], {});
-      const account = get(stat, ["暗网论坛", "我的账户"], {});
-      return [
-        section("概览", "实时", `<div class="grid"><div><div class="label">时间</div><div class="value">${safe(formatTime(stat))}</div></div><div><div class="label">地点</div><div class="value">${safe(world.地点, "电脑桌前")}</div></div><div><div class="label">金钱</div><div class="value">${Number(player.金钱 || 0).toLocaleString()}</div></div><div><div class="label">积分</div><div class="value">${Number(account.积分 || 0).toLocaleString()}</div></div><div><div class="label">体力</div><div class="value">${safe(player.体力, "未知")}</div></div><div><div class="label">状态</div><div class="value">${safe(player.勃起状态, "未启用")} / ${safe(player.射精阈值, "未启用")}</div></div></div>`),
-        section("快捷操作", "填入输入栏", `<div class="pill-row"><button class="action" data-fill="刷新论坛首页">刷新论坛首页</button><button class="action" data-fill="查看我的论坛账户">查看我的论坛账户</button><button class="action" data-fill="浏览黑料市场">浏览黑料市场</button><button class="action" data-fill="查看已购黑料">查看已购黑料</button></div>`)
-      ].join("");
-    }
-    function renderChars(stat) {
-      const rows = charRows(stat);
-      const total = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-      if (state.charPage > total - 1) state.charPage = total - 1;
-      const current = rows.slice(state.charPage * PAGE_SIZE, state.charPage * PAGE_SIZE + PAGE_SIZE);
-      const body = current.length ? current.map((row) => {
-        const open = state.expanded === row.slot;
-        const social = get(row.detail, ["社交与从属"], {});
-        const physical = get(row.detail, ["身体数据"], {});
-        return `<div class="char"><div class="char-head" data-slot="${row.slot}"><div><div class="char-name">${row.name}</div><div class="char-sub">${safe(row.summary.公开头衔 || get(row.detail, ["现实身份", "公开头衔"]), "点击展开详情")}</div></div><span class="badge">${row.summary.当前是否在场 ? "在场" : "离场"}</span></div><div class="char-detail ${open ? "open" : ""}"><div class="grid"><div><div class="label">关系性质</div><div class="value">${safe(row.summary.关系性质 || social.关系性质)}</div></div><div><div class="label">情感深度</div><div class="value">${safe(row.summary.情感深度 || social.情感深度)}</div></div><div><div class="label">生活渗透度</div><div class="value">${safe(row.summary.生活渗透度 || social.生活渗透度)}</div></div><div><div class="label">亲密程度</div><div class="value">${safe(row.summary.亲密程度 || physical.亲密程度)}</div></div><div><div class="label">认识渠道</div><div class="value">${safe(social.认识渠道)}</div></div><div><div class="label">最近更新</div><div class="value">${safe(row.summary.最近更新)}</div></div></div><div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="查看${row.name}的详细档案">查看详细档案</button><button class="action" data-fill="给${row.name}发送私信：">私信</button></div></div></div>`;
-      }).join("") : '<div class="empty">当前没有角色档案</div>';
-      return section("角色", String(rows.length), body + pager("char", state.charPage, total));
-    }
-    function renderForum(stat) {
-      const zoneMap = get(stat, ["暗网论坛", "分区数据"], {}) || {};
-      const zones = Object.keys(zoneMap);
-      if (!state.zone || zones.indexOf(state.zone) === -1) state.zone = get(stat, ["暗网论坛", "当前分区"], zones[0] || "");
-      const postsObj = get(stat, ["暗网论坛", "分区数据", state.zone, "帖子列表"], {}) || {};
-      const posts = Object.values(postsObj);
-      const total = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
-      if (state.postPage > total - 1) state.postPage = total - 1;
-      const current = posts.slice(state.postPage * PAGE_SIZE, state.postPage * PAGE_SIZE + PAGE_SIZE);
-      return section("论坛", safe(state.zone, "无分区"), `<div class="pill-row" style="margin-bottom:10px;">${zones.map((z) => `<button class="pill ${z === state.zone ? "active" : ""}" data-zone="${z}" style="${z === state.zone ? "border-color:#66b5ff;color:#66b5ff;background:rgba(44,114,185,.18);" : ""}">${z}</button>`).join("")}<button class="action" data-fill="刷新【${safe(state.zone, "论坛")}】帖子">刷新</button></div>${current.length ? current.map((post) => `<div class="char"><div class="label">标题</div><div class="value">${safe(post.标题, "未命名帖子")}</div><div class="label" style="margin-top:6px;">发帖人</div><div class="value">${safe(post.发帖人, "匿名")}</div><div class="label" style="margin-top:6px;">热度</div><div class="value">${safe(post.热度, 0)}</div><div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="查看帖子：${safe(post.标题, "")}">查看帖子</button></div></div>`).join("") : '<div class="empty">当前分区没有帖子</div>'}${pager("post", state.postPage, total)}`);
-    }
-    function renderAccount(stat) {
-      const account = get(stat, ["暗网论坛", "我的账户"], {});
-      const services = get(stat, ["暗网论坛", "服务商店"], {});
-      return [
-        section("账户", safe(account.等级, "游客"), `<div class="grid"><div><div class="label">用户名</div><div class="value">${safe(account.用户名, "游客")}</div></div><div><div class="label">积分</div><div class="value">${Number(account.积分 || 0).toLocaleString()}</div></div><div><div class="label">已购黑料</div><div class="value">${Object.keys(account.已购黑料 || {}).length}</div></div><div><div class="label">已购服务</div><div class="value">${Object.keys(account.已购服务 || {}).length}</div></div></div><div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="查看我的论坛账户">查看账户详情</button><button class="action" data-fill="浏览黑料市场">黑料市场</button></div>`),
-        section("服务", String(Object.keys(services).length), Object.keys(services).length ? Object.entries(services).map(([name, item]) => `<div class="char"><div class="label">项目</div><div class="value">${name}</div><div class="label" style="margin-top:6px;">价格</div><div class="value">${safe(item.价格)}</div><div class="label" style="margin-top:6px;">描述</div><div class="value">${safe(item.描述)}</div><div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="购买服务：${name}">购买服务</button></div></div>`).join("") : '<div class="empty">暂无服务</div>')
-      ].join("");
-    }
-    async function render() {
-      const stat = await getStatData();
-      setTabs();
-      document.getElementById("meta").innerHTML = `${safe(formatTime(stat))}<br>${safe(get(stat, ["世界", "地点"], "电脑桌前"))}`;
-      let html = state.tab === "chars" ? renderChars(stat) : state.tab === "forum" ? renderForum(stat) : state.tab === "account" ? renderAccount(stat) : renderOverview(stat);
-      if (state.lastError) html += `<div class="error">状态栏调试信息：${state.lastError}</div>`;
-      document.getElementById("content").innerHTML = html;
-    }
-    document.addEventListener("click", async function (event) {
-      const tab = event.target.closest("[data-tab]");
-      if (tab) { state.tab = tab.dataset.tab; await render(); return; }
-      const fill = event.target.closest("[data-fill]");
-      if (fill) { fillInput(fill.dataset.fill); return; }
-      const zone = event.target.closest("[data-zone]");
-      if (zone) { state.zone = zone.dataset.zone; state.postPage = 0; await render(); return; }
-      const charHead = event.target.closest("[data-slot]");
-      if (charHead) { const slot = charHead.dataset.slot; state.expanded = state.expanded === slot ? null : slot; await render(); return; }
-      const action = event.target.closest("[data-action]");
-      if (!action) return;
-      const name = action.dataset.action;
-      if (name === "char-prev" && state.charPage > 0) state.charPage -= 1;
-      if (name === "char-next") state.charPage += 1;
-      if (name === "post-prev" && state.postPage > 0) state.postPage -= 1;
-      if (name === "post-next") state.postPage += 1;
-      await render();
-    });
-    setTimeout(render, 0);
-    setTimeout(render, 300);
-    setTimeout(render, 1200);
-    setInterval(render, 2000);
-  })();
-</script>
+
+<script src="./status-app.js"></script>

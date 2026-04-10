@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <style>
   :root {
     --panel: rgba(18, 23, 32, 0.96);
@@ -26,72 +27,84 @@
   }
   h1 { margin: 0 0 10px; font-size: 22px; color: #f4f7fb; }
   p { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.75; }
-  .box { margin-top: 14px; padding: 14px; border: 1px solid #344152; border-radius: 14px; background: rgba(9, 13, 19, 0.56); font-size: 13px; line-height: 1.8; }
+  .box {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #344152;
+    border-radius: 14px;
+    background: rgba(9, 13, 19, 0.56);
+    font-size: 13px;
+    line-height: 1.8;
+  }
   .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn { border: 1px solid #41526a; border-radius: 10px; padding: 11px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
-  .secondary { background: rgba(18, 24, 33, 0.9); color: #c2ccd8; }
-  .primary { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; border-color: transparent; }
+  .btn {
+    border: 1px solid #41526a;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: #fff;
+    border-color: transparent;
+  }
 </style>
 <div class="panel">
-  <h1>随机生成并直接开场</h1>
-  <p>这条入口不再尝试动态创建角色名键。首轮只要求模型先把第一位角色写进固定槽位，让状态栏角色页立刻出现人。</p>
-  <div class="box">最低成功标准只有一个：状态栏里的角色页不再是 0，而是立刻出现第一位角色。</div>
+  <h1>随机生成并首轮建档</h1>
+  <p>这一条入口只要求模型先把第一位角色稳定写进固定槽位，然后直接跳到注册页和状态栏。不要生成额外正文，不要先讲剧情。</p>
+  <div class="box">最低成功标准只有一个：状态栏角色页里立刻出现第一位角色，而不是 0 或空白。</div>
   <div class="actions">
-    <button class="btn secondary" type="button" onclick="Forum1Random.fillOnly()">仅填入输入栏</button>
-    <button class="btn primary" type="button" onclick="Forum1Random.generateAndSend()">随机生成并开场</button>
+    <button class="btn" type="button" onclick="Forum1Random.fillOnly()">填入输入栏</button>
   </div>
 </div>
 <script>
   (function () {
-    function parentWindow() {
-      try { if (window.parent && window.parent !== window) return window.parent; } catch (error) {}
-      return window;
+    function getContext() {
+      try { if (window.SillyTavern && typeof window.SillyTavern.getContext === "function") return window.SillyTavern.getContext(); } catch (error) {}
+      try { if (window.parent && window.parent.SillyTavern && typeof window.parent.SillyTavern.getContext === "function") return window.parent.SillyTavern.getContext(); } catch (error) {}
+      return null;
     }
-    function parentDocument() {
-      const host = parentWindow();
-      try { return host.document || document; } catch (error) { return document; }
-    }
-    function fillInput(text) {
-      const host = parentWindow();
-      const doc = parentDocument();
-      const textarea = doc.querySelector("#send_textarea") || doc.querySelector('textarea[name="message"]') || doc.querySelector(".message-input textarea") || doc.querySelector('[data-testid="chat-input"] textarea') || doc.querySelector("textarea");
+    function setDomInput(text) {
+      const textarea = document.querySelector("#send_textarea") || document.querySelector('textarea[name="message"]') || document.querySelector(".message-input textarea") || document.querySelector('[data-testid="chat-input"] textarea') || document.querySelector("textarea");
       if (!textarea) return false;
-      const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
-      const setter = Object.getOwnPropertyDescriptor(proto, "value");
-      if (setter && typeof setter.set === "function") setter.set.call(textarea, text); else textarea.value = text;
-      try { textarea.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text })); }
-      catch (error) { textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true })); }
+      const desc = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value");
+      if (desc && typeof desc.set === "function") desc.set.call(textarea, text); else textarea.value = text;
+      textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
       textarea.dispatchEvent(new Event("change", { bubbles: true }));
       textarea.focus();
       return true;
     }
-    function clickSend() {
-      const doc = parentDocument();
-      const btn = doc.querySelector("#send_but") || doc.querySelector('[data-testid="send-button"]') || doc.querySelector("button[type='submit']");
-      if (!btn) return false;
-      btn.click();
-      return true;
+    async function setInput(text) {
+      const ctx = getContext();
+      if (ctx && typeof ctx.executeSlashCommands === "function") {
+        try {
+          await ctx.executeSlashCommands(`/setinput ${text}`);
+          const textarea = document.querySelector("#send_textarea");
+          if (textarea && String(textarea.value || "").trim()) return true;
+        } catch (error) {}
+      }
+      return setDomInput(text);
     }
     function buildPrompt() {
       return [
-        "【随机生成女角色并直接开场】",
+        "【随机生成女角色并首轮建档】",
         "",
-        "请随机生成一名完整女角色，并写入当前 MVU 变量系统。",
-        "随机时优先补齐：公开头衔、关系性质、情感深度、生活渗透度、亲密程度、认识渠道。",
+        "请随机生成一名完整女角色，并写入当前 MVU 固定槽位。",
+        "随机时优先补齐：公开头衔、关系性质、情感深度、生活渗透度、亲密程度、认识渠道、性态度、性欲程度。",
         "",
         "硬性要求：",
         "1. 同一条回复里，先且只输出一个合法的 <UpdateVariable> 块。",
-        "2. 首轮只允许使用固定槽位：档案1、档案2、档案3、档案4。",
-        "3. 只对固定槽位使用 replace。",
-        "4. 首轮至少写入：角色名、当前是否在场、是否已建档、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
-        "5. 注册开场阶段必须设置：当前是否在场=false，是否已建档=true，最近更新=注册前建档。",
-        "6. 严禁输出 insert、delta、append、thinking、raw html、档案总结。",
-        "7. <UpdateVariable> 结束后，正文只能输出两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。"
+        "2. 首轮只能写固定槽位：/角色索引/档案1、/角色详情/档案1、/女角色档案/档案1。",
+        "3. 角色索引和角色详情里都要写角色名，不能留空。",
+        "4. 首轮至少写入：角色名、是否已建档、当前是否在场、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
+        "5. 注册开场阶段必须设置：是否已建档=true、当前是否在场=false、最近更新=注册前建档。",
+        "6. 只能使用 replace，不允许 insert、delta、append、remove、move。",
+        "7. 不要输出角色档案总结、字段回显、raw html、fenced html、thinking。",
+        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。"
       ].join("\\n");
     }
     window.Forum1Random = {
-      fillOnly() { fillInput(buildPrompt()); },
-      generateAndSend() { if (fillInput(buildPrompt())) setTimeout(function () { clickSend(); }, 80); }
+      async fillOnly() { await setInput(buildPrompt()); }
     };
   })();
 </script>

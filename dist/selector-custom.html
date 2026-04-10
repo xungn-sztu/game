@@ -1,151 +1,238 @@
+<meta charset="utf-8">
 <style>
-  :root { --bg:#111823; --panel:#161f2b; --line:#334153; --text:#dbe4ee; --muted:#95a5b7; --accent:#4ea8ff; }
-  * { box-sizing:border-box; }
-  body { margin:0; padding:14px; background:transparent; color:var(--text); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
-  .panel { max-width:860px; margin:0 auto; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:linear-gradient(180deg,#0d141d,#182230); box-shadow:0 16px 32px rgba(0,0,0,.25); }
-  .head { padding:18px 20px; border-bottom:1px solid var(--line); background:rgba(78,168,255,.08); }
-  .head h1 { margin:0 0 8px; font-size:22px; }
-  .head p { margin:0; color:var(--muted); font-size:13px; line-height:1.7; }
-  .grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; padding:16px; }
-  .field { border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(0,0,0,.12); }
-  .field label { display:block; margin-bottom:8px; color:#c4d1dd; font-size:12px; font-weight:700; }
-  .field input, .field select, .field textarea { width:100%; background:#0c1219; color:#eef3f8; border:1px solid #425368; border-radius:10px; padding:10px 12px; font-size:13px; }
-  .field textarea { min-height:88px; resize:vertical; }
-  .wide { grid-column:1 / -1; }
-  .foot { display:flex; justify-content:space-between; gap:12px; padding:16px; border-top:1px solid var(--line); align-items:center; }
-  .tip { color:var(--muted); font-size:12px; line-height:1.7; }
-  .actions { display:flex; gap:10px; flex-wrap:wrap; }
-  .btn { cursor:pointer; border-radius:10px; padding:11px 16px; font-size:13px; font-weight:700; border:1px solid #425368; }
-  .btn-secondary { background:#17202c; color:#d7e0ea; }
-  .btn-primary { background:linear-gradient(135deg,#257bff,#51a8ff); color:#fff; border-color:transparent; }
-  @media (max-width: 800px) { .grid { grid-template-columns:1fr; } .foot { flex-direction:column; align-items:stretch; } .btn { width:100%; } }
+  :root {
+    --panel: rgba(18, 23, 32, 0.96);
+    --panel-2: rgba(11, 16, 24, 0.72);
+    --line: #2c3a4d;
+    --line-2: #3a4a60;
+    --text: #d8e0ea;
+    --muted: #98a7ba;
+    --accent: #52a7ff;
+    --accent-2: #2878ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 18px;
+    background: transparent;
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .panel {
+    max-width: 980px;
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  }
+  .hero {
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(135deg, rgba(63, 95, 143, 0.18), rgba(18, 24, 33, 0.4));
+  }
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    color: #f4f7fb;
+  }
+  .hero p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+  .field {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel-2);
+    padding: 12px;
+  }
+  .field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #bcc7d4;
+  }
+  .field select,
+  .field input,
+  .field textarea {
+    width: 100%;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    background: #0c1219;
+    color: #edf2f8;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .field textarea {
+    min-height: 96px;
+    resize: vertical;
+  }
+  .wide { grid-column: 1 / -1; }
+  .tips {
+    margin: 0 16px 16px;
+    padding: 12px 14px;
+    border: 1px dashed #40526a;
+    border-radius: 12px;
+    color: #96a5b7;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .summary {
+    color: #8e9caf;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    border: 1px solid #41526a;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-secondary {
+    background: rgba(18, 24, 33, 0.9);
+    color: #c2ccd8;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: #fff;
+    border-color: transparent;
+  }
+  @media (max-width: 920px) {
+    .grid { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; }
+    .btn { width: 100%; }
+  }
 </style>
 <div class="panel">
-  <div class="head">
-    <h1>&#23450;&#21046;&#24320;&#22330;&#35282;&#33394;</h1>
-    <p>&#21482;&#23450;&#21046;&#35282;&#33394;&#26723;&#26696;&#65292;&#19981;&#25512;&#21160;&#21095;&#24773;&#12290;&#39318;&#36718;&#30446;&#26631;&#26159;&#20808;&#25226;&#31532;&#19968;&#20301;&#22899;&#35282;&#33394;&#31283;&#23450;&#20889;&#20837;&#29366;&#24577;&#26639;&#12290;</p>
+  <div class="hero">
+    <h1>定制开场角色</h1>
+    <p>这一步只负责把第一位角色稳定写进固定槽位，并让注册页与状态栏在首轮同时出现。这里不生成剧情走向，也不要求首轮把所有详情写满。</p>
   </div>
   <div class="grid">
-    <div class="field"><label for="age">&#24180;&#40836;&#21306;&#38388;</label><select id="age"><option>18-22</option><option selected>23-27</option><option>28-32</option><option>33-40</option><option>40+</option></select></div>
-    <div class="field"><label for="title">&#20844;&#24320;&#22836;&#34900;</label><input id="title" placeholder="&#22914;&#65306;&#30740;&#31350;&#29983;&#12289;&#22806;&#20225;&#34892;&#25919;&#24635;&#30417;"></div>
-    <div class="field"><label for="body">&#36523;&#26448;</label><select id="body"><option selected>&#23159;&#23567;&#32420;&#32454;</option><option>&#21248;&#31216;&#26631;&#20934;</option><option>&#39640;&#25361;&#20462;&#38271;</option><option>&#20016;&#33100;&#32905;&#24863;</option><option>&#20581;&#36523;&#32039;&#33268;</option><option>&#34588;&#26691;&#20016;&#33216;</option><option>&#32420;&#33136;&#38271;&#33151;</option><option>&#23567;&#39592;&#26550;&#32905;&#24863;</option><option>&#25104;&#29087;&#20016;&#28070;</option></select></div>
-    <div class="field"><label for="job">&#32844;&#19994;</label><select id="job"><option selected>&#23398;&#29983;</option><option>&#25945;&#24072;</option><option>&#30333;&#39046;</option><option>HR / &#34892;&#25919;</option><option>&#37329;&#34701;</option><option>&#31185;&#25216;</option><option>&#27861;&#24459;</option><option>&#21307;&#25252;</option><option>&#26381;&#21153;&#19994;</option><option>&#33402;&#26415;&#20174;&#19994;&#32773;</option><option>&#20010;&#20307;&#32463;&#33829;</option><option>&#20840;&#32844;&#22826;&#22826;</option></select></div>
-    <div class="field"><label for="channel">&#35748;&#35782;&#28192;&#36947;</label><select id="channel"><option selected>&#23436;&#20840;&#38476;&#29983;</option><option>&#37051;&#23621;</option><option>&#32593;&#32476;&#31038;&#20132;</option><option>&#24037;&#20316;&#20851;&#31995;</option><option>&#26379;&#21451;&#20171;&#32461;</option><option>&#26657;&#22253;&#25509;&#35302;</option><option>&#21516;&#27004;/&#21516;&#23567;&#21306;</option><option>&#31532;&#19977;&#20154;&#29278;&#32447;</option></select></div>
-    <div class="field"><label for="relation">&#20851;&#31995;&#24615;&#36136;</label><select id="relation"><option selected>&#21333;&#21521;&#35266;&#23519;</option><option>&#21018;&#35748;&#35782;</option><option>&#26222;&#36890;&#26379;&#21451;</option><option>&#29087;&#20154;</option><option>&#26167;&#26167;&#35797;&#25506;</option><option>&#31192;&#23494;&#20851;&#31995;</option><option>&#22320;&#19979;&#24773;</option><option>&#21033;&#30410;&#20132;&#25442;</option><option>&#31454;&#20105;/&#20105;&#23456;</option><option>&#27714;&#21161;&#20381;&#38468;</option><option>&#32844;&#22330;&#21387;&#21046;</option><option>&#21253;&#20859;&#20542;&#21521;</option><option>&#20559;&#20027;&#20174;</option><option>&#34987;&#38271;&#26399;&#35266;&#23519;</option></select></div>
-    <div class="field"><label for="emotion">&#24773;&#24863;&#28145;&#24230;</label><select id="emotion"><option selected>&#26080;&#24863;</option><option>&#28129;&#28448;</option><option>&#30053;&#26377;&#22909;&#24863;</option><option>&#24515;&#21160;</option><option>&#21916;&#27426;</option><option>&#20381;&#36182;</option><option>&#36855;&#24651;</option><option>&#39135;&#39592;&#19981;&#31163;</option></select></div>
-    <div class="field"><label for="intimacy">&#20146;&#23494;&#31243;&#24230;</label><select id="intimacy"><option selected>&#38646;&#25509;&#35302;</option><option>&#36731;&#24494;&#25509;&#35302;</option><option>&#22833;&#25163;&#30896;&#35302;</option><option>&#25317;&#25265;</option><option>&#25509;&#21563;</option><option>&#25242;&#25720;</option><option>&#36731;&#24230;&#20146;&#23494;</option><option>&#28145;&#24230;&#20146;&#23494;</option></select></div>
-    <div class="field"><label for="life">&#29983;&#27963;&#28183;&#36879;&#24230;</label><select id="life"><option selected>&#38476;&#29983;</option><option>&#32593;&#21451;</option><option>&#20598;&#23572;&#32852;&#31995;</option><option>&#23450;&#26399;&#35265;&#38754;</option><option>&#20849;&#20139;&#26085;&#24120;</option><option>&#20849;&#20139;&#24037;&#20316;&#22330;&#26223;</option><option>&#22810;&#32447;&#28183;&#20837;</option><option>&#24050;&#32463;&#28183;&#36879;&#21040;&#24037;&#20316;/&#29983;&#27963;</option></select></div>
-    <div class="field"><label for="openness">&#24320;&#25918;&#31243;&#24230;</label><select id="openness"><option selected>&#26497;&#24230;&#20445;&#23432;</option><option>&#20559;&#20445;&#23432;</option><option>&#25671;&#25670;</option><option>&#21487;&#20197;&#24341;&#23548;</option><option>&#26131;&#34987;&#25788;&#21160;</option><option>&#22806;&#20855;&#20811;&#21046;</option><option>&#20869;&#24515;&#36291;&#20110;&#23581;&#35797;</option></select></div>
-    <div class="field"><label for="sexAttitude">&#24615;&#24577;&#24230;</label><select id="sexAttitude"><option selected>&#24615;&#20919;&#28129;</option><option>&#34920;&#38754;&#20811;&#21046;</option><option>&#34987;&#21160;&#25509;&#21463;</option><option>&#20282;&#25298;&#36824;&#36814;</option><option>&#26263;&#33258;&#26399;&#24453;</option><option>&#20027;&#21160;&#32034;&#21462;</option><option>&#34920;&#38754;&#27491;&#32463;&#20869;&#37324;&#39578;&#21160;</option></select></div>
-    <div class="field"><label for="desire">&#24615;&#27442;&#31243;&#24230;</label><select id="desire"><option selected>&#24615;&#20919;&#28129;</option><option>&#20302;</option><option>&#20013;&#20302;</option><option>&#20013;&#31561;</option><option>&#36739;&#39640;</option><option>&#24378;&#28872;</option><option>&#21387;&#25233;&#22411;&#24378;&#28872;</option></select></div>
-    <div class="field"><label for="fetish">&#20027;&#24615;&#30214;</label><select id="fetish"><option selected>&#26080;&#26126;&#30830;&#20542;&#21521;</option><option>&#34987;&#25903;&#37197;</option><option>&#34920;&#38754;&#31105;&#27442;</option><option>&#20107;&#21518;&#32670;&#24841;</option><option>&#20599;&#24863;/&#31192;&#23494;&#24863;</option><option>&#20307;&#38754;&#30772;&#25439;</option><option>&#20381;&#36182;&#24863;</option><option>&#34987;&#30475;&#31359;</option><option>&#34987;&#36843;&#38382;/&#34987;&#25311;&#21387;</option><option>&#28287;&#21619;&#32599;&#36896;</option></select></div>
-    <div class="field wide"><label for="extra">&#39069;&#22806;&#35201;&#27714;</label><textarea id="extra" placeholder="&#21487;&#22635;&#20889;&#29305;&#27530;&#32454;&#33410;&#12289;&#36523;&#20221;&#27668;&#36136;&#25110;&#24615;&#30230;&#20542;&#21521;"></textarea></div>
+    <div class="field"><label for="age">年龄区间</label><select id="age"><option>18-22岁</option><option selected>23-27岁</option><option>28-32岁</option><option>33-40岁</option><option>40岁以上</option></select></div>
+    <div class="field"><label for="race">人种 / 外貌</label><select id="race"><option selected>东亚婉约</option><option>混血立体</option><option>少数民族</option><option>欧美辣妹</option><option>拉美风情</option><option>异域感强</option></select></div>
+    <div class="field"><label for="job">职业类型</label><select id="job"><option selected>学生</option><option>教师</option><option>OL白领</option><option>医护</option><option>金融</option><option>艺术</option><option>科技</option><option>体制内</option><option>自由职业</option><option>全职太太</option><option>娱乐行业</option><option>服务行业</option></select></div>
+    <div class="field"><label for="title">公开头衔</label><input id="title" placeholder="如：法学院研究生、外企行政总监、主治医师"></div>
+    <div class="field"><label for="body">身材类型</label><select id="body"><option>娇小纤细</option><option selected>匀称标准</option><option>丰满肉感</option><option>高挑修长</option><option>健身紧致</option><option>骨感清冷</option></select></div>
+    <div class="field"><label for="face">颜值水平</label><select id="face"><option>顶级(9-10分)</option><option selected>中上(7-8分)</option><option>中等(5-6分)</option><option>偏下(3-4分)</option><option>底层(1-2分)</option></select></div>
+    <div class="field"><label for="personality">性格底色</label><select id="personality"><option selected>冰山脸</option><option>刀子嘴豆腐心</option><option>软柿子好捏</option><option>闷葫芦</option><option>人来疯</option><option>玻璃心</option><option>强装冷静</option><option>温柔克制</option></select></div>
+    <div class="field"><label for="marriage">婚姻状况</label><select id="marriage"><option selected>单身</option><option>恋爱中</option><option>已婚未育</option><option>已婚已育</option><option>离异独居</option></select></div>
+    <div class="field"><label for="dev">身体开发等级</label><select id="dev"><option selected>未开发</option><option>初窥门径</option><option>经验丰富</option><option>重度开发</option><option>极限重塑</option><option>清醒肉器</option></select></div>
+    <div class="field"><label for="attitude">性态度</label><select id="attitude"><option selected>嘴硬身软型</option><option>饥渴主动型</option><option>温顺配合型</option><option>演技派</option><option>掌控主导型</option><option>紧张生涩型</option><option>温柔服务型</option><option>热情投入型</option><option>冷淡应付型</option><option>观察学习型</option><option>敏感多水型</option><option>慢热型</option></select></div>
+    <div class="field"><label for="open">性开放程度</label><select id="open"><option>性冷淡型</option><option selected>传统保守型</option><option>正常 moderate</option><option>开放探索型</option><option>表面开放型</option><option>身体解放型</option><option>接受度高型</option><option>极限开放型</option><option>创伤回避型</option><option>工具化型</option></select></div>
+    <div class="field"><label for="libido">性欲程度</label><select id="libido"><option>性冷淡</option><option>低性欲</option><option selected>正常 moderate</option><option>高性欲</option><option>极强/成瘾</option><option>周期波动型</option><option>情境依赖型</option><option>压抑型</option><option>心理型</option><option>目标驱动型</option><option>被动唤起型</option></select></div>
+    <div class="field"><label for="channel">认识渠道</label><select id="channel"><option>血亲</option><option>隔壁邻居</option><option>同学长辈</option><option>服务行业</option><option>曾经师生</option><option selected>完全陌生</option><option>工作同事</option><option>网络社交</option><option>朋友介绍</option><option>医患关系</option><option>健身场所</option><option>房东租客</option><option>餐饮偶遇</option><option>娱乐社交</option><option>旅途偶遇</option><option>直播打赏</option><option>业务关系</option></select></div>
+    <div class="field"><label for="relation">关系性质</label><select id="relation"><option selected>单方面关注</option><option>刚认识</option><option>普通朋友</option><option>暧昧对象</option><option>炮友关系</option><option>男女朋友</option><option>夫妻</option><option>主奴关系</option><option>复杂关系</option><option>前任</option><option>地下情人</option><option>包养关系</option><option>竞争对手</option><option>求助关系</option><option>职场关系</option></select></div>
+    <div class="field"><label for="emotion">情感深度</label><select id="emotion"><option>完全陌生</option><option selected>刚认识</option><option>普通熟人</option><option>有点好感</option><option>暧昧期</option><option>单方面喜欢</option><option>激情迷恋</option><option>互相喜欢</option><option>深度绑定</option><option>复杂情感</option></select></div>
+    <div class="field"><label for="intimacy">亲密程度</label><select id="intimacy"><option selected>零接触</option><option>轻微接触</option><option>接吻</option><option>手交</option><option>口交</option><option>边缘性行为</option><option>带套性交</option><option>无套内射</option><option>特殊性行为</option><option>常规性关系</option><option>一夜情</option><option>复杂身体史</option></select></div>
+    <div class="field"><label for="life">生活渗透度</label><select id="life"><option selected>纯线上</option><option>见过面</option><option>去过私人空间</option><option>过夜</option><option>金钱往来</option><option>见过亲友</option><option>互赠礼物</option><option>生活照顾</option><option>共同经历</option><option>知道隐私</option><option>互相帮忙</option><option>伪装关系</option></select></div>
+    <div class="field"><label for="fetish">性癖偏好</label><select id="fetish"><option selected>尺寸崇拜</option><option>内射癖</option><option>怀孕/生殖癖</option><option>后入癖</option><option>口交癖</option><option>潮吹癖</option><option>轻微露出</option><option>拍摄记录癖</option><option>被视奸/偷窥癖</option><option>户外/野外癖</option><option>被羞辱/贬低癖</option><option>ddlg/幼化癖</option><option>女王/被崇拜癖</option><option>束缚/控制癖</option><option>角色扮演癖</option><option>禁忌/乱伦幻想</option><option>NTR/绿帽癖</option><option>职场权力癖</option><option>偷情感</option><option>气味癖</option><option>声音癖</option><option>疼痛癖</option><option>交换癖</option><option>多人癖</option><option>奉献癖</option></select></div>
+    <div class="field wide"><label for="extra">额外要求</label><textarea id="extra" placeholder="如：保留某种职业气质、补几个身体细节、想要哪类边缘癖好、名字风格等"></textarea></div>
   </div>
-  <div class="foot">
-    <div class="tip">&#21482;&#23450;&#21046;&#35282;&#33394;&#26723;&#26696;&#65306;&#20808; <code>&lt;UpdateVariable&gt;</code> &#65292;&#28982;&#21518;&#22266;&#23450;&#36755;&#20986; <code>&#12304;&#27880;&#20876;&#20027;&#39029;&#12305;</code> &#21644; <code>&lt;StatusPlaceHolderImpl/&gt;</code>&#12290;</div>
-    <div class="actions">
-      <button class="btn btn-secondary" type="button" onclick="forum1FillOnly()">&#20165;&#22635;&#20837;&#36755;&#20837;&#26639;</button>
-      <button class="btn btn-primary" type="button" onclick="forum1GenerateAndSend()">&#29983;&#25104;&#24182;&#24320;&#22330;</button>
-    </div>
+  <div class="tips">首轮硬要求只有两条：1. 必须先把角色写进固定槽位。2. <code>&lt;UpdateVariable&gt;</code> 结束后，可见正文只能是 <code>【注册主页】</code> 和 <code>&lt;StatusPlaceHolderImpl/&gt;</code> 两行。</div>
+  <div class="footer">
+    <div class="summary">定制的是角色，不是剧情。这里只负责把第一位角色稳定建档进角色页，后续剧情交给注册页之后继续跑。</div>
+    <div class="actions"><button class="btn btn-secondary" type="button" onclick="Forum1Selector.resetDefaults()">恢复默认</button><button class="btn btn-primary" type="button" onclick="Forum1Selector.fillOnly()">填入输入栏</button></div>
   </div>
 </div>
 <script>
-    function hostWindow() {
-      try { if (window.parent && window.parent !== window) return window.parent; } catch (e) {}
-      try { if (window.top && window.top !== window) return window.top; } catch (e) {}
-      return window;
+  (function () {
+    function getContext() {
+      try { if (window.SillyTavern && typeof window.SillyTavern.getContext === "function") return window.SillyTavern.getContext(); } catch (error) {}
+      try { if (window.parent && window.parent.SillyTavern && typeof window.parent.SillyTavern.getContext === "function") return window.parent.SillyTavern.getContext(); } catch (error) {}
+      return null;
     }
-    function hostDocument() {
-      const host = hostWindow();
-      try { return host.document || document; } catch (e) { return document; }
-    }
-    function fillInput(text) {
-      const host = hostWindow();
-      const doc = hostDocument();
-      const input =
-        doc.querySelector("#send_textarea") ||
-        doc.querySelector("[contenteditable='true']") ||
-        doc.querySelector('textarea[name=\"message\"]') ||
-        doc.querySelector(".message-input textarea") ||
-        doc.querySelector('[data-testid=\"chat-input\"] textarea') ||
-        doc.querySelector("textarea");
-      if (!input) return false;
-      if (input.matches && input.matches("[contenteditable='true']")) {
-        input.textContent = text;
-      } else {
-        const proto = host.HTMLTextAreaElement ? host.HTMLTextAreaElement.prototype : HTMLTextAreaElement.prototype;
-        const desc = Object.getOwnPropertyDescriptor(proto, "value");
-        if (desc && typeof desc.set === "function") desc.set.call(input, text);
-        else input.value = text;
-      }
-      try {
-        input.dispatchEvent(new host.InputEvent("input", { bubbles: true, cancelable: true, inputType: "insertText", data: text }));
-      } catch (e) {
-        input.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
-      }
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-      input.focus();
+    function setDomInput(text) {
+      const textarea = document.querySelector("#send_textarea") || document.querySelector('textarea[name="message"]') || document.querySelector(".message-input textarea") || document.querySelector('[data-testid="chat-input"] textarea') || document.querySelector("textarea");
+      if (!textarea) return false;
+      const desc = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value");
+      if (desc && typeof desc.set === "function") desc.set.call(textarea, text); else textarea.value = text;
+      textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      textarea.dispatchEvent(new Event("change", { bubbles: true }));
+      textarea.focus();
       return true;
     }
-    function clickSend() {
-      const doc = hostDocument();
-      const btn =
-        doc.querySelector("#send_but") ||
-        doc.querySelector('[data-testid=\"send-button\"]') ||
-        doc.querySelector("button[type='submit']");
-      if (!btn) return false;
-      btn.click();
-      return true;
+    async function setInput(text) {
+      const ctx = getContext();
+      if (ctx && typeof ctx.executeSlashCommands === "function") {
+        try {
+          await ctx.executeSlashCommands(`/setinput ${text}`);
+          const textarea = document.querySelector("#send_textarea");
+          if (textarea && String(textarea.value || "").trim()) return true;
+        } catch (error) {}
+      }
+      return setDomInput(text);
     }
-    function triggerCommand(command) {
-      const host = hostWindow();
-      try { if (typeof host.triggerSlash === "function") { host.triggerSlash(command); return true; } } catch (e) {}
-      try { if (typeof window.triggerSlash === "function") { window.triggerSlash(command); return true; } } catch (e) {}
-      return false;
-    }
-    function value(id) {
+    function valueOf(id) {
       const el = document.getElementById(id);
       return el ? String(el.value || "").trim() : "";
     }
-    function promptText() {
+    function buildPrompt() {
       return [
-        "\u3010\u5b9a\u5236\u5973\u89d2\u8272\u5e76\u76f4\u63a5\u5f00\u573a\u3011",
+        "【定制女角色并首轮建档】",
         "",
-        "\u8bf7\u6839\u636e\u4e0b\u5217\u6761\u4ef6\u751f\u6210\u4e00\u540d\u5b8c\u6574\u5973\u89d2\u8272\uff0c\u5e76\u5199\u5165\u5f53\u524d MVU \u53d8\u91cf\u7cfb\u7edf\u3002",
-        "\u5e74\u9f84\u533a\u95f4\uff1a" + value("age"),
-        "\u516c\u5f00\u5934\u8854\uff1a" + (value("title") || value("job")),
-        "\u8eab\u6750\uff1a" + value("body"),
-        "\u804c\u4e1a\uff1a" + value("job"),
-        "\u8ba4\u8bc6\u6e20\u9053\uff1a" + value("channel"),
-        "\u5173\u7cfb\u6027\u8d28\uff1a" + value("relation"),
-        "\u60c5\u611f\u6df1\u5ea6\uff1a" + value("emotion"),
-        "\u4eb2\u5bc6\u7a0b\u5ea6\uff1a" + value("intimacy"),
-        "\u751f\u6d3b\u6e17\u900f\u5ea6\uff1a" + value("life"),
-        "\u5f00\u653e\u7a0b\u5ea6\uff1a" + value("openness"),
-        "\u6027\u6001\u5ea6\uff1a" + value("sexAttitude"),
-        "\u6027\u6b32\u7a0b\u5ea6\uff1a" + value("desire"),
-        "\u4e3b\u6027\u7656\uff1a" + value("fetish"),
-        "\u989d\u5916\u8981\u6c42\uff1a" + (value("extra") || "\u65e0"),
+        "请只根据以下条件定制一名女角色，并写入当前 MVU 固定槽位。",
+        `年龄区间：${valueOf("age")}`,
+        `人种/外貌：${valueOf("race")}`,
+        `职业类型：${valueOf("job")}`,
+        `公开头衔：${valueOf("title") || "根据职业自动生成"}`,
+        `身材类型：${valueOf("body")}`,
+        `颜值水平：${valueOf("face")}`,
+        `性格底色：${valueOf("personality")}`,
+        `婚姻状况：${valueOf("marriage")}`,
+        `身体开发等级：${valueOf("dev")}`,
+        `性态度：${valueOf("attitude")}`,
+        `性开放程度：${valueOf("open")}`,
+        `性欲程度：${valueOf("libido")}`,
+        `认识渠道：${valueOf("channel")}`,
+        `关系性质：${valueOf("relation")}`,
+        `情感深度：${valueOf("emotion")}`,
+        `亲密程度：${valueOf("intimacy")}`,
+        `生活渗透度：${valueOf("life")}`,
+        `性癖偏好：${valueOf("fetish")}`,
+        `额外要求：${valueOf("extra") || "无"}`,
         "",
-        "\u786c\u6027\u8981\u6c42\uff1a",
-        "1. \u9996\u8f6e\u53ea\u5141\u8bb8\u5bf9 /\u89d2\u8272\u7d22\u5f15/\u6863\u68481-4 \u4f7f\u7528 replace \u5199\u5165\u3002",
-        "2. \u81f3\u5c11\u5199\u5165\uff1a\u89d2\u8272\u540d\u3001\u5f53\u524d\u662f\u5426\u5728\u573a\u3001\u662f\u5426\u5df2\u5efa\u6863\u3001\u516c\u5f00\u5934\u8854\u3001\u5173\u7cfb\u6027\u8d28\u3001\u60c5\u611f\u6df1\u5ea6\u3001\u751f\u6d3b\u6e17\u900f\u5ea6\u3001\u4eb2\u5bc6\u7a0b\u5ea6\u3001\u6700\u8fd1\u66f4\u65b0\u3002",
-        "3. \u8bbe\u4e3a\uff1a\u5f53\u524d\u662f\u5426\u5728\u573a=false\uff0c\u662f\u5426\u5df2\u5efa\u6863=true\uff0c\u6700\u8fd1\u66f4\u65b0=\u6ce8\u518c\u524d\u5efa\u6863\u3002",
-        "4. \u4e0d\u8981\u4f7f\u7528\u52a8\u6001\u89d2\u8272\u540d\u8def\u5f84\uff0c\u4e0d\u8981\u8f93\u51fa insert\u3001delta\u3001append\u3002",
-        "5. </UpdateVariable> \u4e4b\u540e\u6b63\u6587\u53ea\u80fd\u8f93\u51fa\u4e24\u884c\uff1a\u7b2c\u4e00\u884c\u3010\u6ce8\u518c\u4e3b\u9875\u3011\uff1b\u7b2c\u4e8c\u884c <StatusPlaceHolderImpl/> \u3002"
+        "硬性要求：",
+        "1. 同一条回复里，先且只输出一个合法的 <UpdateVariable> 块。",
+        "2. 首轮只能写固定槽位：/角色索引/档案1、/角色详情/档案1、/女角色档案/档案1。",
+        "3. 首轮至少写入这些摘要字段：角色名、是否已建档、当前是否在场、公开头衔、关系性质、情感深度、生活渗透度、亲密程度、最近更新。",
+        "4. 角色索引和角色详情里都要写角色名，不能留空。",
+        "5. 注册开场阶段必须设置：是否已建档=true、当前是否在场=false、最近更新=注册前建档。",
+        "6. 不要写关系走向，不要输出角色档案总结，不要输出字段回显。",
+        "7. 只能使用 RFC 6902 的 replace，不允许 insert、delta、append、remove、move。",
+        "8. <UpdateVariable> 结束后，可见正文只能有两行：第一行【注册主页】；第二行<StatusPlaceHolderImpl/>。",
+        "9. 不允许 raw html、fenced html、thinking、analysis_block、undefined。",
+        "10. 这是定制角色，不是开剧情，当前任务仅是稳定建档并进入注册页。"
       ].join("\\n");
     }
-    function sendPrompt() {
-      const message = promptText();
-      const command = `/send ${message} | /trigger`;
-      if (!triggerCommand(command)) {
-        if (fillInput(message)) setTimeout(() => clickSend(), 80);
-      }
-    }
-    window.forum1FillOnly = function () {
-      return fillInput(promptText());
+    const defaults = { age: "23-27岁", race: "东亚婉约", job: "学生", title: "", body: "匀称标准", face: "中上(7-8分)", personality: "冰山脸", marriage: "单身", dev: "未开发", attitude: "嘴硬身软型", open: "传统保守型", libido: "正常 moderate", channel: "完全陌生", relation: "单方面关注", emotion: "刚认识", intimacy: "零接触", life: "纯线上", fetish: "尺寸崇拜", extra: "" };
+    window.Forum1Selector = {
+      async fillOnly() { await setInput(buildPrompt()); },
+      resetDefaults() { Object.keys(defaults).forEach((key) => { const el = document.getElementById(key); if (el) el.value = defaults[key]; }); }
     };
-    window.forum1GenerateAndSend = function () {
-      return sendPrompt();
-    };
+  })();
 </script>
