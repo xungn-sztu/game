@@ -198,17 +198,93 @@
     return get(stat, [K.compatRole, slot], {}) || {};
   }
 
+  function isPlainObject(value) {
+    return !!value && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  function isSlotKey(key) {
+    return SLOT_NAMES.includes(key);
+  }
+
+  function getDisplayName(rawName, fallbackName) {
+    return rawName || fallbackName || '';
+  }
+
+  function normalizeCharacterRow(nameHint, slot, summary, detail, source) {
+    const summaryData = isPlainObject(summary) ? summary : {};
+    const detailData = isPlainObject(detail) ? detail : {};
+    const displayName = getDisplayName(summaryData[K.roleName] || detailData[K.roleName], nameHint);
+    const built = !!(
+      summaryData[K.built]
+      || detailData[K.built]
+      || displayName
+      || Object.keys(summaryData).length
+      || Object.keys(detailData).length
+    );
+    if (!built || !displayName) return null;
+    return {
+      slot: slot || displayName,
+      summary: summaryData,
+      detail: detailData,
+      name: displayName,
+      source: source || 'unknown',
+    };
+  }
+
+  function mergeCharacterRow(map, name, slot, summary, detail, source) {
+    const row = normalizeCharacterRow(name, slot, summary, detail, source);
+    if (!row) return;
+
+    const key = row.slot || row.name;
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, row);
+      return;
+    }
+
+    map.set(key, {
+      slot: existing.slot || row.slot,
+      name: existing.name || row.name,
+      source: existing.source || row.source,
+      summary: Object.assign({}, row.summary, existing.summary),
+      detail: Object.assign({}, row.detail, existing.detail),
+    });
+  }
+
+  function collectDynamicRows(stat, map, containerKey, source) {
+    const container = get(stat, [containerKey], {});
+    if (!isPlainObject(container)) return;
+
+    Object.entries(container).forEach(([key, value]) => {
+      if (!isPlainObject(value) || isSlotKey(key)) return;
+
+      if (containerKey === K.roleIndex) {
+        const summary = value;
+        const detail = get(stat, [K.roleDetail, key], get(stat, [K.compatRole, key], {}));
+        mergeCharacterRow(map, key, key, summary, detail, source);
+        return;
+      }
+
+      const detail = value;
+      const summary = get(stat, [K.roleIndex, key], {});
+      mergeCharacterRow(map, key, key, summary, detail, source);
+    });
+  }
+
   function getCharacterRows(stat) {
-    const rows = [];
+    const rows = new Map();
+
     for (const slot of SLOT_NAMES) {
       const summary = getSummarySlot(stat, slot);
       const detail = getDetailSlot(stat, slot);
-      const built = !!(summary[K.built] || detail[K.built]);
-      const name = summary[K.roleName] || detail[K.roleName] || '';
-      if (!built || !name) continue;
-      rows.push({ slot, summary, detail, name });
+      mergeCharacterRow(rows, '', slot, summary, detail, 'fixed-slot');
     }
-    return rows;
+
+    collectDynamicRows(stat, rows, K.roleIndex, 'dynamic-index');
+    collectDynamicRows(stat, rows, K.roleDetail, 'dynamic-detail');
+    collectDynamicRows(stat, rows, K.compatRole, 'dynamic-compat');
+
+    return Array.from(rows.values());
   }
 
   function renderOverview(stat) {
