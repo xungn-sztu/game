@@ -330,8 +330,9 @@
     return Array.from(rows.values());
   }
 
-  function field(label, value, muted) {
-    return `<div><div class="label">${label}</div><div class="value${muted ? ' muted-value' : ''}">${text(value, UNKNOWN)}</div></div>`;
+  function field(label, value, tone) {
+    const className = tone ? ` ${tone}` : '';
+    return `<div><div class="label">${label}</div><div class="value${className}">${text(value, UNKNOWN)}</div></div>`;
   }
 
   function joinList(value) {
@@ -440,7 +441,7 @@
 
   function bodyDisplayRows(detail) {
     const bodyData = get(detail, [K.body], {}) || {};
-    const direct = [
+    const known = [
       ['年龄', bodyData[K.age]],
       ['身高', bodyData[K.height] ? `${bodyData[K.height]} cm` : undefined],
       ['体重', bodyData[K.weight] ? `${bodyData[K.weight]} kg` : undefined],
@@ -448,48 +449,59 @@
       ['外观可见特征', bodyData[K.visibleTraits]],
     ];
 
-    const masked = [
-      ['三围', UNKNOWN],
-      ['罩杯', UNKNOWN],
+    const inferred = [
+      ['三围', bodyData[K.bustWaistHip] || '可推测'],
+      ['罩杯', bodyData[K.cup] || '可推测'],
+    ];
+
+    const unknown = [
       ['私处', UNKNOWN],
       ['身体缺陷', UNKNOWN],
       ['身体开发等级', UNKNOWN],
       ['亲密程度', UNKNOWN],
     ];
 
-    const directHtml = direct.map(([label, value]) => field(label, value, false)).join('');
-    const maskedHtml = masked.map(([label, value]) => field(label, value, true)).join('');
+    const knownHtml = known.map(([label, value]) => field(label, value, 'known-value')).join('');
+    const inferredHtml = inferred.map(([label, value]) => field(label, value, 'inferred-value')).join('');
+    const unknownHtml = unknown.map(([label, value]) => field(label, value, 'unknown-value')).join('');
 
     return {
-      directHtml,
-      maskedHtml,
+      knownHtml,
+      inferredHtml,
+      unknownHtml,
     };
   }
 
   function statusDisplayRows(detail) {
     const mind = get(detail, [K.mind], {}) || {};
+    const sex = get(detail, [K.sex], {}) || {};
+    const social = get(detail, [K.social], {}) || {};
 
-    const direct = [
-      ['情感深度', mind[K.emotionDepth] || get(detail, [K.social, K.emotionDepth]), false],
-      ['最近更新', detail[K.lastUpdate], false],
+    const known = [
+      ['情感深度', mind[K.emotionDepth] || social[K.emotionDepth]],
+      ['最近更新', detail[K.lastUpdate]],
     ];
 
-    const masked = [
-      ['性态度', UNKNOWN],
-      ['性开放程度', UNKNOWN],
+    const inferred = [
+      ['性态度', sex[K.sexualAttitude] || '可推测'],
+      ['性开放程度', sex[K.sexualOpenLevel] || '可推测'],
+      ['性欲', sex[K.libido] || '可推测'],
+      ['好感度', mind[K.favor] === undefined ? '可推测' : '可推测'],
+    ];
+
+    const unknown = [
       ['性经验', UNKNOWN],
-      ['性欲', UNKNOWN],
       ['性癖好', UNKNOWN],
       ['性癖', UNKNOWN],
       ['开放度', UNKNOWN],
-      ['好感度', UNKNOWN],
       ['形态适应度', UNKNOWN],
       ['病态依赖度', UNKNOWN],
     ];
 
     return {
-      directHtml: direct.map(([label, value]) => field(label, value, false)).join(''),
-      maskedHtml: masked.map(([label, value]) => field(label, value, true)).join(''),
+      knownHtml: known.map(([label, value]) => field(label, value, 'known-value')).join(''),
+      inferredHtml: inferred.map(([label, value]) => field(label, value, 'inferred-value')).join(''),
+      unknownHtml: unknown.map(([label, value]) => field(label, value, 'unknown-value')).join(''),
     };
   }
 
@@ -522,13 +534,13 @@
     let detailBody = summaryTab;
     let badge = '摘要';
     if (state.selectedCharTab === 'body') {
-      badge = '当前可得认知';
-      detailBody = `<div class="notice">身体页展示的是当前合理可知的信息；其余底层变量仍然保留，但此阶段统一显示为“未知”。</div>`
-        + `<div class="grid">${bodyRows.directHtml}${bodyRows.maskedHtml}</div>`;
+      badge = '已知 / 可推测 / 未知';
+      detailBody = `<div class="notice">身体页分成三级：已知表示当前合理可知；可推测表示可以从外观粗略判断；未知表示底层变量存在，但当前不该直接得知。</div>`
+        + `<div class="grid">${bodyRows.knownHtml}${bodyRows.inferredHtml}${bodyRows.unknownHtml}</div>`;
     } else if (state.selectedCharTab === 'status') {
-      badge = '认知遮罩';
-      detailBody = `<div class="notice">性向与心理状态默认不直接公开。只有当前可推断字段可见，其余保持“未知”。</div>`
-        + `<div class="grid">${statusRows.directHtml}${statusRows.maskedHtml}</div>`;
+      badge = '已知 / 可推测 / 未知';
+      detailBody = `<div class="notice">性向与状态页分成三级：已知为当前互动中能确认的内容；可推测为能从相处气质中猜到的倾向；未知则继续遮罩。</div>`
+        + `<div class="grid">${statusRows.knownHtml}${statusRows.inferredHtml}${statusRows.unknownHtml}</div>`;
     }
 
     return section(
