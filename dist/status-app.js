@@ -132,6 +132,20 @@
     return !!value && typeof value === 'object' && !Array.isArray(value);
   }
 
+  function normalizeStatData(value) {
+    if (isPlainObject(value)) return value;
+    if (typeof value !== 'string') return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    try {
+      const parsed = JSON.parse(trimmed);
+      return isPlainObject(parsed) ? parsed : null;
+    } catch (error) {
+      state.debug = `stat_data JSON parse failed: ${error.message || error}`;
+      return null;
+    }
+  }
+
   function getContext() {
     try {
       if (window.SillyTavern && typeof window.SillyTavern.getContext === 'function') return window.SillyTavern.getContext();
@@ -190,8 +204,8 @@
       if (typeof window.getCurrentMessageId === 'function' && typeof window.getChatMessages === 'function') {
         const currentId = window.getCurrentMessageId();
         const messages = await window.getChatMessages(currentId);
-        const stat = get(messages, [0, 'data', 'stat_data'], null);
-        if (stat && typeof stat === 'object') {
+        const stat = normalizeStatData(get(messages, [0, 'data', 'stat_data'], null));
+        if (stat) {
           state.debug = '';
           return stat;
         }
@@ -203,8 +217,8 @@
     try {
       if (typeof window.getAllVariables === 'function') {
         const all = window.getAllVariables();
-        const stat = get(all, ['stat_data'], null);
-        if (stat && typeof stat === 'object') {
+        const stat = normalizeStatData(get(all, ['stat_data'], null));
+        if (stat) {
           state.debug = '';
           return stat;
         }
@@ -215,8 +229,8 @@
 
     try {
       if (ctx && ctx.variables && ctx.variables.local && typeof ctx.variables.local.get === 'function') {
-        const stat = ctx.variables.local.get('stat_data');
-        if (stat && typeof stat === 'object') {
+        const stat = normalizeStatData(ctx.variables.local.get('stat_data'));
+        if (stat) {
           state.debug = '';
           return stat;
         }
