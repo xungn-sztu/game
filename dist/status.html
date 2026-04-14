@@ -257,4 +257,10 @@
   </div>
 </div>
 
-<script src="./status-app.js"></script>
+<script>
+  (function () {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/xungn-sztu/game@main/dist/status-app.js?ts=' + Date.now();
+    document.body.appendChild(script);
+  })();
+</script>
