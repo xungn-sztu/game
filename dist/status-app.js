@@ -419,26 +419,56 @@
 
   function renderVisible(stat) {
     const visible = get(stat, [K.visible], {}) || {};
-    const rows = Object.entries(visible).filter(([, value]) => isPlainObject(value));
-    if (!rows.length) {
-      return section('在场角色', '观察层', '<div class="empty">当前视线内没有可观察角色</div>');
+    const visibleRows = Object.entries(visible).filter(([, value]) => isPlainObject(value));
+    
+    const allChars = getCharacterRows(stat);
+    const presentChars = allChars.filter(row => String(row.summary[K.inScene] ?? row.detail[K.inScene]).toLowerCase() === "true");
+
+    let html = '';
+
+    if (!visibleRows.length && !presentChars.length) {
+      return section('在场角色', '0', '<div class="empty">当前没有在场或视线内可观察角色</div>');
     }
 
-    const body = rows.map(([name, value]) => {
-      return `<div class="char">`
-        + `<div class="char-name">${text(name, '未命名角色')}</div>`
-        + `<div class="char-sub">${text(value[K.currentObservation], '当前看到的外观层，不等于完整档案')}</div>`
-        + `<div class="grid" style="margin-top:10px;">`
-        + field('面貌', value[K.face], false)
-        + field('发型发色', value[K.hair], false)
-        + field('配饰', value[K.accessory], false)
-        + field('上衣', value[K.top], false)
-        + field('下装', value[K.bottom], false)
-        + `</div>`
-        + `</div>`;
-    }).join('');
+    if (presentChars.length) {
+      const pBody = presentChars.map(row => {
+        const displayTitle = row.summary[K.publicTitle] || get(row.detail, [K.realIdentity, K.publicTitle], '');
+        const social = get(row.detail, [K.social], {});
+        const bodyData = get(row.detail, [K.body], {});
+        return `<div class="char">
+          <div class="char-head">
+            <div><div class="char-name">${row.name}</div><div class="char-sub">${text(displayTitle, '档案角色')}</div></div>
+            <span class="badge">在场</span>
+          </div>
+          <div class="grid" style="margin-top:10px;">
+            ${field('关系性质', row.summary[K.relationNature] || social[K.relationNature], false)}
+            ${field('情感深度', row.summary[K.emotionDepth] || social[K.emotionDepth] || get(row.detail, [K.mind, K.emotionDepth]), false)}
+            ${field('亲密程度', row.summary[K.intimacy] || bodyData[K.intimacy], false)}
+            ${field('最近更新', row.summary[K.lastUpdate] || row.detail[K.lastUpdate], false)}
+          </div>
+        </div>`;
+      }).join('');
+      html += section('已知在场角色', String(presentChars.length), pBody);
+    }
 
-    return section('在场角色', String(rows.length), body);
+    if (visibleRows.length) {
+      const vBody = visibleRows.map(([name, value]) => {
+        return `<div class="char">
+          <div class="char-name">${text(name, '未命名角色')}</div>
+          <div class="char-sub">${text(value[K.currentObservation], '当前看到的外观层')}</div>
+          <div class="grid" style="margin-top:10px;">
+            ${field('面貌', value[K.face], false)}
+            ${field('发型发色', value[K.hair], false)}
+            ${field('配饰', value[K.accessory], false)}
+            ${field('上衣', value[K.top], false)}
+            ${field('下装', value[K.bottom], false)}
+          </div>
+        </div>`;
+      }).join('');
+      html += section('视线内对象', String(visibleRows.length), vBody);
+    }
+
+    return html;
   }
 
   function renderCharList(stat) {
@@ -459,7 +489,7 @@
         return `<div class="char">`
           + `<div class="char-head">`
           + `<div><div class="char-name">${row.name}</div><div class="char-sub">${text(displayTitle, '可查看详细档案')}</div></div>`
-          + `<span class="badge">${row.summary[K.inScene] || row.detail[K.inScene] ? '在场' : '离场'}</span>`
+          + `<span class="badge">${(String(row.summary[K.inScene] ?? row.detail[K.inScene]).toLowerCase() === "true") ? '在场' : '离场'}</span>`
           + `</div>`
           + `<div class="grid" style="margin-top:10px;">`
           + field('关系性质', row.summary[K.relationNature] || social[K.relationNature], false)
