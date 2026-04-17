@@ -155,6 +155,19 @@
     }
   }
 
+  function getMessageStatData(message) {
+    const direct = normalizeStatData(get(message, ['data', 'stat_data'], null));
+    if (direct) return direct;
+
+    const variables = Array.isArray(message && message.variables) ? message.variables : [];
+    for (let i = variables.length - 1; i >= 0; i -= 1) {
+      const stat = normalizeStatData(get(variables[i], ['stat_data'], null));
+      if (stat) return stat;
+    }
+
+    return null;
+  }
+
   function getContext() {
     try {
       if (window.SillyTavern && typeof window.SillyTavern.getContext === 'function') return window.SillyTavern.getContext();
@@ -215,7 +228,7 @@
       if (typeof window.getCurrentMessageId === 'function' && typeof window.getChatMessages === 'function') {
         const currentId = window.getCurrentMessageId();
         const messages = await window.getChatMessages(currentId);
-        const stat = normalizeStatData(get(messages, [0, 'data', 'stat_data'], null));
+        const stat = getMessageStatData(messages && messages[0]);
         if (stat) {
           state.debug = '';
           return stat;
