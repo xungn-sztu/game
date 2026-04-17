@@ -24,7 +24,7 @@
 (function(){
 const zones=[['记录区','记录进展、后续、评论发酵，帖子火了会带来私信和新联系。'],['约会区','同城、试探、临时邀约，真假混杂但不做重交易。'],['夫妻/关系区','关系偏移、隐瞒、边界后移和轻度NTL压力。'],['调教/经验区','长期塑造、聊天任务和边界讨论，避免教程化。'],['闲聊/打假区','质疑、拱火、吐槽和论坛真实噪音。']];
 function doc(){try{return window.parent&&window.parent.document?window.parent.document:document}catch(e){return document}}
-function fill(v){const t=doc().querySelector('#send_textarea')||doc().querySelector('textarea');if(!t)return;const d=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,'value');if(d&&d.set)d.set.call(t,v);else t.value=v;t.dispatchEvent(new Event('input',{bubbles:true,cancelable:true}));t.dispatchEvent(new Event('change',{bubbles:true}));t.focus()}
+function fill(v){const d=doc();const t=d.querySelector('#send_textarea')||d.querySelector('textarea[name="message"]')||d.querySelector('textarea');if(!t)return;const proto=(t.ownerDocument.defaultView||window).HTMLTextAreaElement.prototype;const desc=Object.getOwnPropertyDescriptor(proto,'value');if(desc&&desc.set)desc.set.call(t,v);else t.value=v;t.dispatchEvent(new Event('input',{bubbles:true,cancelable:true}));t.dispatchEvent(new Event('change',{bubbles:true}));t.focus()}
 document.getElementById('meta').textContent='等级 / 声望';
 document.getElementById('zones').innerHTML=zones.map(z=>`<div class="card"><div class="name">${z[0]}</div><div class="desc">${z[1]}</div><div class="desc hot">点击进入会把指令填入输入栏。</div><p><button data-fill="进入论坛分区：${z[0]}">进入</button> <button data-fill="查看${z[0]}热帖">热帖</button></p></div>`).join('');
 document.addEventListener('click',e=>{const b=e.target.closest('[data-fill]');if(b)fill(b.dataset.fill)});
