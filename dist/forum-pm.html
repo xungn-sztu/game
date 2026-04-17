@@ -1,0 +1,36 @@
+<meta charset="utf-8">
+<style>
+  :root{--panel:#0d1725;--line:#27364a;--text:#dbe8f6;--muted:#8ca1b8;--accent:#6eb7ff;--bubble:#15263a;--mine:#1b3652}
+  *{box-sizing:border-box} body{margin:0;padding:14px;background:transparent;color:var(--text);font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .app{max-width:760px;margin:0 auto;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#08111d,#111b2a);box-shadow:0 20px 48px rgba(0,0,0,.34)}
+  .head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}.title{font-size:18px;font-weight:700}.sub{color:var(--muted);font-size:12px;margin-top:4px}.badge{padding:5px 9px;border:1px solid rgba(110,183,255,.35);border-radius:999px;color:var(--accent);font-size:12px;align-self:flex-start}
+  .chat{padding:16px;display:grid;gap:10px}.msg{max-width:78%;border:1px solid var(--line);border-radius:15px;padding:10px 12px;background:var(--bubble);line-height:1.6;font-size:13px}.msg.mine{justify-self:end;background:var(--mine)}.meta{margin-top:5px;color:var(--muted);font-size:11px}.bar{padding:12px 16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;background:rgba(8,14,23,.72)}button{border:1px solid #344961;border-radius:999px;padding:8px 12px;background:#132235;color:#cfe2f7;cursor:pointer}button:hover{border-color:var(--accent);color:var(--accent)}.notice{margin:0 16px 12px;padding:10px 12px;border:1px dashed rgba(110,183,255,.28);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.6}
+</style>
+<div class="app">
+  <div class="head">
+    <div><div class="title">论坛私信</div><div class="sub">聊天框只展示当前可见消息，不替你回复。</div></div>
+    <div class="badge" id="badge">载入中</div>
+  </div>
+  <div class="chat" id="chat"></div>
+  <div class="notice">私信内容是线上互动，现实关系变化仍需时间、回应和明确事件确认。</div>
+  <div class="bar">
+    <button data-fill="查看论坛私信列表">私信列表</button>
+    <button data-fill="回复私信：">回复私信</button>
+    <button data-fill="查看对方资料">查看资料</button>
+    <button data-fill="约她线下见面：">试探见面</button>
+  </div>
+</div>
+<script>
+(function(){
+  function hostDoc(){try{return window.parent&&window.parent.document?window.parent.document:document}catch(e){return document}}
+  function setDomInput(v){const d=hostDoc();const t=d.querySelector('#send_textarea')||d.querySelector('textarea[name="message"]')||d.querySelector('textarea');if(!t)return false;const desc=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,'value');if(desc&&desc.set)desc.set.call(t,v);else t.value=v;t.dispatchEvent(new Event('input',{bubbles:true,cancelable:true}));t.dispatchEvent(new Event('change',{bubbles:true}));t.focus();return true}
+  async function fill(v){if(setDomInput(v))return;try{const ctx=(window.SillyTavern||window.parent.SillyTavern).getContext();if(ctx&&ctx.executeSlashCommands)await ctx.executeSlashCommands('/setinput '+v)}catch(e){}}
+  function get(o,p,f){let c=o;for(const k of p){if(!c||typeof c!=='object')return f;c=c[k]}return c===undefined?f:c}
+  function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  function norm(v){if(v&&typeof v==='object')return v;if(typeof v==='string'){try{return JSON.parse(v)}catch(e){}}return {}}
+  function allVars(){try{if(window.getAllVariables)return norm(window.getAllVariables().stat_data)}catch(e){}try{const ctx=(window.SillyTavern||window.parent.SillyTavern).getContext();if(ctx&&ctx.variables&&ctx.variables.local)return norm(ctx.variables.local.get('stat_data'))}catch(e){}return {}}
+  function render(){const stat=allVars();const unread=Number(get(stat,['论坛状态','未读私信'],0)||0);document.getElementById('badge').textContent=unread?unread+' 未读':'无未读';const hot=get(stat,['论坛状态','热帖摘要'],'');document.getElementById('chat').innerHTML=`<div class="msg"><div>系统提示：当前私信页已打开。</div><div class="meta">论坛 · 传闻层</div></div><div class="msg"><div>${esc(hot||'暂时没有新的私信内容。你可以先刷新私信列表，或主动给某个已知角色发消息。')}</div><div class="meta">未读摘要</div></div><div class="msg mine"><div>等待你在输入栏里决定要回复什么。</div><div class="meta">你</div></div>`}
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-fill]');if(b)fill(b.dataset.fill)});
+  render();setInterval(render,2500);
+})();
+</script>

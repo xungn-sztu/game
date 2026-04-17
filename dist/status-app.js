@@ -120,6 +120,14 @@
     return value === undefined || value === null || value === '' ? finalFallback : value;
   }
 
+  function attr(value) {
+    return String(value === undefined || value === null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
   function get(obj, path, fallback) {
     let current = obj;
     for (const key of path) {
@@ -186,6 +194,8 @@
   }
 
   async function setInput(textValue) {
+    if (setDomInput(textValue)) return true;
+
     const ctx = getContext();
     if (ctx && typeof ctx.executeSlashCommands === 'function') {
       try {
@@ -195,7 +205,7 @@
         if (textarea && String(textarea.value || '').trim()) return true;
       } catch (error) {}
     }
-    return setDomInput(textValue);
+    return false;
   }
 
   async function getStatData() {
@@ -408,7 +418,8 @@
         '快捷操作',
         '填入输入栏',
         `<div class="pill-row">`
-          + `<button class="action" data-fill="刷新论坛首页">刷新论坛首页</button>`
+          + `<button class="action" data-fill="打开论坛主页">打开论坛主页</button>`
+          + `<button class="action" data-fill="查看论坛私信">查看论坛私信</button>`
           + `<button class="action" data-fill="查看我的论坛账户">查看我的论坛账户</button>`
           + `<button class="action" data-fill="浏览黑料市场">浏览黑料市场</button>`
           + `<button class="action" data-fill="查看已购黑料">查看已购黑料</button>`
@@ -509,7 +520,7 @@
           + `</div>`
           + `<div class="pill-row" style="margin-top:10px;">`
           + `<button class="action" data-action="open-char-detail" data-slot="${row.slot}">查看详细档案</button>`
-          + `<button class="action" data-fill="给${row.name}发送私信：">私信</button>`
+          + `<button class="action" data-fill="${attr(`给${row.name}发送私信：`)}">私信</button>`
           + `</div>`
           + `</div>`;
       }).join('');
@@ -645,49 +656,36 @@
   function renderForum(stat) {
     const zoneMap = get(stat, [K.forum, K.zoneMap], {}) || {};
     const zones = Object.keys(zoneMap);
-    if (!state.currentZone || !zones.includes(state.currentZone)) {
-      state.currentZone = get(stat, [K.forum, K.currentZone], zones[0] || '');
-    }
+    const currentZone = get(stat, [K.forum, K.currentZone], zones[0] || '未进入');
+    const account = get(stat, [K.forum, K.account], {});
+    const unreadPm = Number(get(stat, ['论坛状态', '未读私信'], 0) || 0);
+    const hotSummary = get(stat, ['论坛状态', '热帖摘要'], '');
+    const pageState = get(stat, ['论坛状态', '当前页面'], '未打开');
+    const zoneSummary = zones.length
+      ? zones.slice(0, 4).map((zone) => {
+        const posts = get(stat, [K.forum, K.zoneMap, zone, K.posts], {}) || {};
+        const style = mapForumStyle(zone);
+        return `<div class="mini-card"><div class="char-name">${zone}</div><div class="char-sub">${style.title} · ${Object.keys(posts).length} 条线索</div></div>`;
+      }).join('')
+      : '<div class="empty">暂无论坛分区摘要</div>';
 
-    const postsObject = get(stat, [K.forum, K.zoneMap, state.currentZone, K.posts], {}) || {};
-    const posts = Object.values(postsObject);
-    const total = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
-    if (state.postPage > total - 1) state.postPage = total - 1;
-    const current = posts.slice(state.postPage * PAGE_SIZE, state.postPage * PAGE_SIZE + PAGE_SIZE);
+    const body = `<div class="notice">论坛已从状态栏降级为通知与快捷入口。完整浏览、帖子详情和私信聊天会在独立页面中显示；论坛内容只代表传闻层，不会自动覆盖现实真值。</div>`
+      + `<div class="grid">`
+      + field('当前入口', pageState, false)
+      + field('当前分区', currentZone, false)
+      + field('未读私信', unreadPm, false)
+      + field('账户等级', text(account[K.level], '游客'), false)
+      + `</div>`
+      + `<div class="notice">热帖摘要：${text(hotSummary, '暂无需要处理的论坛线索')}</div>`
+      + `<div class="pill-row" style="margin-bottom:10px;">`
+      + `<button class="action" data-fill="打开论坛主页">打开论坛主页</button>`
+      + `<button class="action" data-fill="查看论坛私信">查看论坛私信</button>`
+      + `<button class="action" data-fill="浏览黑料市场">浏览黑料市场</button>`
+      + `</div>`
+      + section('分区摘要', String(zones.length), zoneSummary);
 
-    let zoneButtons = '<span class="empty" style="padding:0;">暂无分区数据</span>';
-    if (zones.length) {
-      zoneButtons = zones.map((zone) => {
-        const activeStyle = zone === state.currentZone
-          ? 'border-color:#66b5ff;color:#66b5ff;background:rgba(44,114,185,.18);'
-          : '';
-        return `<button class="pill" data-zone="${zone}" style="${activeStyle}">${zone}</button>`;
-      }).join('');
-    }
-
-    let list = '<div class="empty">当前分区没有帖子</div>';
-      if (current.length) {
-        list = current.map((post) => {
-          const postTitle = text(post[K.title], '未命名帖子');
-          const styleTag = text(post[K.styleTag], mapForumStyle(state.currentZone).title);
-          const credibility = text(post[K.credibility], '未证实');
-          return `<div class="char">`
-            + field('标题', postTitle, false)
-            + detailField('发帖人', text(post[K.author], '匿名'), false, '来源：论坛爆料')
-            + detailField('热度', text(post[K.hotness], 0), false, `${styleTag} · ${credibility}`)
-            + field('摘要', text(post[K.contentSummary], post[K.desc]), false)
-            + `<div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="查看帖子：${postTitle}">查看帖子</button></div>`
-            + `</div>`;
-        }).join('');
-      }
-
-      const style = mapForumStyle(state.currentZone);
-      return section(
-        '论坛',
-        `${text(state.currentZone, '暂无')} · ${style.title}`,
-        `<div class="notice">${style.desc}</div><div class="pill-row" style="margin-bottom:10px;">${zoneButtons}<button class="action" data-fill="刷新【${text(state.currentZone, '论坛')}】帖子">刷新</button></div>${list}${pager('post', state.postPage, total)}`
-      );
-    }
+    return section('论坛通知', unreadPm ? `${unreadPm} 未读` : '快捷入口', body);
+  }
 
   function mapForumStyle(zone) {
     const mapping = {
@@ -728,7 +726,7 @@
           + field('项目', name, false)
           + field('价格', item[K.price], false)
           + field('描述', item[K.desc], false)
-          + `<div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="购买服务：${name}">购买服务</button></div>`
+          + `<div class="pill-row" style="margin-top:10px;"><button class="action" data-fill="${attr(`购买服务：${name}`)}">购买服务</button></div>`
           + `</div>`;
       }).join('');
     }

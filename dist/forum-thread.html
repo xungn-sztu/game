@@ -1,0 +1,31 @@
+<meta charset="utf-8">
+<style>
+  :root { --bg:#07101a; --panel:#101b2a; --line:#2a3a4e; --text:#dbe8f6; --muted:#8ca0b6; --accent:#6eb7ff; --orange:#d99645; }
+  *{box-sizing:border-box} body{margin:0;padding:14px;background:transparent;color:var(--text);font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .app{max-width:860px;margin:0 auto;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#08111d,#111b2a);box-shadow:0 20px 48px rgba(0,0,0,.34)}
+  .head{padding:16px 18px;border-bottom:1px solid var(--line)} h1{margin:0;font-size:19px}.sub{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.6}
+  .body{padding:16px;display:grid;gap:12px}.post,.reply,.notice{border:1px solid var(--line);border-radius:14px;background:rgba(14,24,38,.82);padding:13px}.post-title{font-size:16px;font-weight:700}.meta{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.6}.reply{background:rgba(9,17,29,.68)}.floor{color:var(--orange);font-size:12px;margin-bottom:5px}button{border:1px solid #344961;border-radius:999px;padding:8px 12px;background:#132235;color:#cfe2f7;cursor:pointer}button:hover{border-color:var(--accent);color:var(--accent)}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.notice{color:var(--muted);font-size:12px;line-height:1.7}
+</style>
+<div class="app">
+  <div class="head">
+    <h1>帖子详情</h1>
+    <div class="sub">当前页面只显示论坛传闻材料。未经线下确认，帖子内容不能当成事实。</div>
+  </div>
+  <div class="body" id="content"><div class="notice">正在读取帖子线索...</div></div>
+</div>
+<script>
+(function(){
+  const K={forum:'暗网论坛',zoneMap:'分区数据',posts:'帖子列表',title:'标题',author:'发帖人',hotness:'热度',cred:'可信度',summary:'内容摘要',desc:'描述'};
+  function hostDoc(){try{return window.parent&&window.parent.document?window.parent.document:document}catch(e){return document}}
+  function setDomInput(v){const d=hostDoc();const t=d.querySelector('#send_textarea')||d.querySelector('textarea[name="message"]')||d.querySelector('textarea');if(!t)return false;const desc=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,'value');if(desc&&desc.set)desc.set.call(t,v);else t.value=v;t.dispatchEvent(new Event('input',{bubbles:true,cancelable:true}));t.dispatchEvent(new Event('change',{bubbles:true}));t.focus();return true}
+  async function fill(v){if(setDomInput(v))return;try{const ctx=(window.SillyTavern||window.parent.SillyTavern).getContext();if(ctx&&ctx.executeSlashCommands)await ctx.executeSlashCommands('/setinput '+v)}catch(e){}}
+  function get(o,p,f){let c=o;for(const k of p){if(!c||typeof c!=='object')return f;c=c[k]}return c===undefined?f:c}
+  function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  function norm(v){if(v&&typeof v==='object')return v;if(typeof v==='string'){try{return JSON.parse(v)}catch(e){}}return {}}
+  function allVars(){try{if(window.getAllVariables)return norm(window.getAllVariables().stat_data)}catch(e){}try{const ctx=(window.SillyTavern||window.parent.SillyTavern).getContext();if(ctx&&ctx.variables&&ctx.variables.local)return norm(ctx.variables.local.get('stat_data'))}catch(e){}return {}}
+  function pickPost(stat){const map=get(stat,[K.forum,K.zoneMap],{})||{};for(const zone of Object.keys(map)){const posts=Object.values(get(map,[zone,K.posts],{})||{});if(posts.length)return {zone,post:posts[0]}}return {zone:'未分区',post:{[K.title]:'暂无帖子', [K.author]:'系统', [K.cred]:'未证实', [K.summary]:'当前没有可读帖子。'}}}
+  function render(){const {zone,post}=pickPost(allVars());const title=post[K.title]||'当前帖子';const author=post[K.author]||'匿名';document.getElementById('content').innerHTML=`<div class="post"><div class="post-title">${esc(post[K.title]||'未命名帖子')}</div><div class="meta">分区：${esc(zone)}｜发帖人：${esc(author)}｜热度：${esc(post[K.hotness]||0)}｜可信度：${esc(post[K.cred]||'未证实')}</div><div class="meta">${esc(post[K.summary]||post[K.desc]||'没有摘要。')}</div><div class="tags"><button data-fill="${esc('回复帖子：'+title+'，内容：')}">回复</button><button data-fill="${esc('私信楼主：'+author+'，内容：')}">私信楼主</button><button data-fill="${esc('核实帖子线索：'+title)}">线下核实</button></div></div><div class="notice">提示：帖子只能提供兴趣点和线索，真正的档案更新必须来自亲眼所见、本人表露或明确事件。</div><div class="reply"><div class="floor">#2 匿名回复</div><div class="meta">“先别当真，论坛里吹牛的太多。真要查，得看现实里有没有对应的人和时间。”</div></div>`}
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-fill]');if(b)fill(b.dataset.fill)});
+  render();setInterval(render,2500);
+})();
+</script>
