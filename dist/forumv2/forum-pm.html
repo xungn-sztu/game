@@ -1,0 +1,9 @@
+<meta charset="utf-8">
+<style>
+body{margin:0;padding:14px;background:transparent;color:#eee;font-family:"Segoe UI","Microsoft YaHei",sans-serif}.wrap{max-width:760px;margin:0 auto;background:#151515;border:1px solid rgba(224,49,49,.25);border-radius:16px;overflow:hidden}.head{background:#c92a2a;color:#fff;padding:13px 16px}.list{padding:12px;display:grid;gap:10px}.item{background:#202020;border:1px solid rgba(224,49,49,.22);border-radius:12px;padding:11px}.name{font-weight:800}.msg{color:#aaa;margin-top:5px;font-size:13px}.tag{float:right;color:#ffb3b3;font-size:12px}button{border:1px solid rgba(224,49,49,.42);background:#2a1719;color:#f5d6d6;border-radius:999px;padding:7px 11px;cursor:pointer;margin-top:8px}
+</style>
+<div class="wrap"><div class="head"><b>论坛私信</b><div style="font-size:12px;opacity:.82">站内信是入口，深入聊天建议转微信。</div></div><div class="list">
+<div class="item"><span class="tag">新</span><div class="name">灰猫</div><div class="msg">看了你那条帖子，有个细节想问你。</div><button data-fill="查看灰猫的论坛私信">打开</button> <button data-fill="回复灰猫：">回复</button></div>
+<div class="item"><div class="name">路过女号</div><div class="msg">你现实里也这么会说话？</div><button data-fill="查看路过女号的论坛私信">打开</button> <button data-fill="尝试转微信：路过女号">转微信</button></div>
+</div></div>
+<script>(function(){function d(){try{return window.parent&&window.parent.document?window.parent.document:document}catch(e){return document}}function f(v){const t=d().querySelector('#send_textarea')||d().querySelector('textarea');if(!t)return;t.value=v;t.dispatchEvent(new Event('input',{bubbles:true,cancelable:true}));t.focus()}document.addEventListener('click',e=>{const b=e.target.closest('[data-fill]');if(b)f(b.dataset.fill)})})();</script>
