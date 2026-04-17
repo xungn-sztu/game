@@ -180,6 +180,40 @@
     return null;
   }
 
+  function getHostWindow() {
+    try {
+      if (window.parent && window.parent !== window) return window.parent;
+    } catch (error) {}
+    return window;
+  }
+
+  function getHostFunction(name) {
+    try {
+      if (typeof window[name] === 'function') return window[name].bind(window);
+    } catch (error) {}
+    try {
+      const host = getHostWindow();
+      if (host && typeof host[name] === 'function') return host[name].bind(host);
+    } catch (error) {}
+    return null;
+  }
+
+  function findStatInMessages(messages) {
+    if (!Array.isArray(messages)) return getMessageStatData(messages);
+
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const stat = getMessageStatData(messages[i]);
+      if (stat) return stat;
+    }
+
+    for (let i = 0; i < messages.length; i += 1) {
+      const stat = getMessageStatData(messages[i]);
+      if (stat) return stat;
+    }
+
+    return null;
+  }
+
   function getHostDocument() {
     try {
       if (window.parent && window.parent.document) return window.parent.document;
@@ -225,10 +259,12 @@
     const ctx = getContext();
 
     try {
-      if (typeof window.getCurrentMessageId === 'function' && typeof window.getChatMessages === 'function') {
-        const currentId = window.getCurrentMessageId();
-        const messages = await window.getChatMessages(currentId);
-        const stat = getMessageStatData(messages && messages[0]);
+      const getCurrentMessageId = getHostFunction('getCurrentMessageId');
+      const getChatMessages = getHostFunction('getChatMessages');
+      if (getCurrentMessageId && getChatMessages) {
+        const currentId = getCurrentMessageId();
+        const messages = await getChatMessages(currentId);
+        const stat = findStatInMessages(messages);
         if (stat) {
           state.debug = '';
           return stat;
@@ -239,9 +275,15 @@
     }
 
     try {
-      if (typeof window.getAllVariables === 'function') {
-        const all = window.getAllVariables();
-        const stat = normalizeStatData(get(all, ['stat_data'], null));
+      const getAllVariables = getHostFunction('getAllVariables');
+      if (getAllVariables) {
+        const all = getAllVariables();
+        const stat = normalizeStatData(get(all, ['stat_data'], null))
+          || normalizeStatData(get(all, ['local', 'stat_data'], null))
+          || normalizeStatData(get(all, ['global', 'stat_data'], null))
+          || normalizeStatData(get(all, ['chat', 'stat_data'], null))
+          || normalizeStatData(get(all, ['character', 'stat_data'], null))
+          || normalizeStatData(get(all, ['persona', 'stat_data'], null));
         if (stat) {
           state.debug = '';
           return stat;
@@ -252,8 +294,29 @@
     }
 
     try {
+      const chat = Array.isArray(ctx && ctx.chat) ? ctx.chat : get(ctx, ['chat', 'messages'], null);
+      const chatStat = findStatInMessages(chat);
+      if (chatStat) {
+        state.debug = '';
+        return chatStat;
+      }
+
       if (ctx && ctx.variables && ctx.variables.local && typeof ctx.variables.local.get === 'function') {
         const stat = normalizeStatData(ctx.variables.local.get('stat_data'));
+        if (stat) {
+          state.debug = '';
+          return stat;
+        }
+      }
+      if (ctx && ctx.variables && ctx.variables.global && typeof ctx.variables.global.get === 'function') {
+        const stat = normalizeStatData(ctx.variables.global.get('stat_data'));
+        if (stat) {
+          state.debug = '';
+          return stat;
+        }
+      }
+      if (ctx && ctx.variables && ctx.variables.character && typeof ctx.variables.character.get === 'function') {
+        const stat = normalizeStatData(ctx.variables.character.get('stat_data'));
         if (stat) {
           state.debug = '';
           return stat;
