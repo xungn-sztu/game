@@ -55,6 +55,7 @@
     lastUpdate: '最近更新',
     realIdentity: '现实身份',
     social: '社交与从属',
+    outfit: '服装',
     body: '身体数据',
     mind: '心理与状态',
     sex: '性向数据',
@@ -420,9 +421,11 @@
   function renderVisible(stat) {
     const visible = get(stat, [K.visible], {}) || {};
     const visibleRows = Object.entries(visible).filter(([, value]) => isPlainObject(value));
-    
     const allChars = getCharacterRows(stat);
-    const presentChars = allChars.filter(row => String(row.summary[K.inScene] ?? row.detail[K.inScene]).toLowerCase() === "true");
+    const presentChars = allChars.filter((row) => {
+      const value = row.summary[K.inScene] ?? row.detail[K.inScene];
+      return value === true || String(value).toLowerCase() === 'true' || value === '在场';
+    });
 
     let html = '';
 
@@ -435,6 +438,7 @@
         const displayTitle = row.summary[K.publicTitle] || get(row.detail, [K.realIdentity, K.publicTitle], '');
         const social = get(row.detail, [K.social], {});
         const bodyData = get(row.detail, [K.body], {});
+        const outfit = get(row.detail, [K.outfit], {}) || {};
         return `<div class="char">
           <div class="char-head">
             <div><div class="char-name">${row.name}</div><div class="char-sub">${text(displayTitle, '档案角色')}</div></div>
@@ -445,6 +449,10 @@
             ${field('情感深度', row.summary[K.emotionDepth] || social[K.emotionDepth] || get(row.detail, [K.mind, K.emotionDepth]), false)}
             ${field('亲密程度', row.summary[K.intimacy] || bodyData[K.intimacy], false)}
             ${field('最近更新', row.summary[K.lastUpdate] || row.detail[K.lastUpdate], false)}
+            ${field('当前观察', bodyData[K.currentFeeling] || row.summary[K.lastUpdate] || '当前在场，暂无观察短句', false)}
+            ${field('上衣', outfit[K.top] || outfit['上衣'], false)}
+            ${field('下装', outfit[K.bottom] || outfit['下装'], false)}
+            ${field('配饰', outfit[K.accessory] || outfit['配饰'], false)}
           </div>
         </div>`;
       }).join('');
