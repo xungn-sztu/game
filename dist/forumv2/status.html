@@ -127,13 +127,12 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
     return `<div class="card"><div class="actions"><button class="btn secondary" data-action="back-roles">返回角色列表</button></div><div class="role-top" style="margin-top:12px"><div><div class="name">${esc(role.name)}</div><div class="muted">${esc(role.job)} · ${esc(role.inScene?'当前在场':'当前不在场')}</div></div></div><div class="detail-tabs"><button class="detail-tab ${state.selectedRoleTab==='summary'?'active':''}" data-detail-tab="summary">摘要</button><button class="detail-tab ${state.selectedRoleTab==='body'?'active':''}" data-detail-tab="body">身体</button><button class="detail-tab ${state.selectedRoleTab==='exam'?'active':''}" data-detail-tab="exam">体检</button><button class="detail-tab ${state.selectedRoleTab==='intimacy'?'active':''}" data-detail-tab="intimacy">性与关系</button><button class="detail-tab ${state.selectedRoleTab==='network'?'active':''}" data-detail-tab="network">社会关系</button></div>${inner}</div>`;
   }
   function renderExam(exam){
-    const overview = rec(exam.概况), base = rec(exam.基础数据), measure = rec(exam.围度体态), health = rec(exam.健康状态), priv = rec(exam.私密确认);
-    const tabs = [['overview','概况'],['base','基础数据'],['measure','围度体态'],['health','健康状态'],['private','私密确认']];
+    const overview = rec(exam.概况), base = rec(exam.基础数据), measure = rec(exam.围度体态), priv = rec(exam.私密确认);
+    const tabs = [['overview','概况'],['base','基础数据'],['measure','围度体态'],['private','私密确认']];
     let body = '';
     if(state.selectedExamTab==='overview') body = `<div class="grid">${kv('目标角色',overview.目标角色)}${kv('最近体检时间',overview.最近体检时间)}${kv('最近体检来源',overview.最近体检来源)}${kv('可信度',overview.可信度)}${kv('记录摘要',overview.记录摘要)}</div>`;
     else if(state.selectedExamTab==='base') body = `<div class="grid">${kv('身高',base.身高)}${kv('体重',base.体重)}${kv('BMI',base.BMI)}${kv('体脂率',base.体脂率)}</div>`;
     else if(state.selectedExamTab==='measure') body = `<div class="grid">${kv('胸围',measure.胸围)}${kv('腰围',measure.腰围)}${kv('臀围',measure.臀围)}${kv('大腿围',measure.大腿围)}${kv('罩杯',measure.罩杯)}${kv('胸型',measure.胸型)}${kv('臀型',measure.臀型)}</div>`;
-    else if(state.selectedExamTab==='health') body = `<div class="grid">${kv('睡眠状态',health.睡眠状态)}${kv('压力状态',health.压力状态)}${kv('周期状态',health.周期状态)}${kv('近期疲劳',health.近期疲劳)}</div>`;
     else {
       const fertility = rec(priv.生育与避孕), cycle = rec(priv.生理状态), vulva = rec(priv.阴部确认), anal = rec(priv.后庭确认);
       body = `<div class="grid">${kv('确认状态',priv.状态)}${kv('确认来源',priv.确认来源)}${kv('确认时间',priv.确认时间)}${kv('可信度',priv.可信度)}</div><div class="card"><h3>生育与避孕</h3><div class="grid">${kv('避孕方式',fertility.避孕方式)}${kv('风险状态',fertility.风险状态)}${kv('最近确认',fertility.最近确认)}${kv('是否需要复查',fertility.是否需要复查)}</div></div><div class="card"><h3>生理状态</h3><div class="grid">${kv('周期规律',cycle.周期规律)}${kv('近期周期',cycle.近期周期)}${kv('妇科健康',cycle.妇科健康)}${kv('近期不适',cycle.近期不适)}</div></div><div class="card"><h3>阴部确认</h3><div class="grid">${kv('颜色',vulva.颜色)}${kv('毛发管理',vulva.毛发管理)}${kv('紧致度',vulva.紧致度)}${kv('湿润度',vulva.湿润度)}${kv('敏感度',vulva.敏感度)}${kv('气味',vulva.气味)}${kv('入口状态',vulva.入口状态)}${kv('近期痕迹',vulva.近期痕迹)}${kv('恢复情况',vulva.恢复情况)}</div></div><div class="card"><h3>后庭确认</h3><div class="grid">${kv('颜色',anal.颜色)}${kv('紧致度',anal.紧致度)}${kv('湿润度',anal.湿润度)}${kv('敏感度',anal.敏感度)}${kv('接受程度',anal.接受程度)}${kv('入口状态',anal.入口状态)}${kv('近期痕迹',anal.近期痕迹)}${kv('恢复情况',anal.恢复情况)}</div></div>`;
@@ -141,7 +140,7 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
     return `<div class="exam-tabs">${tabs.map(([id,label])=>`<button class="exam-tab ${state.selectedExamTab===id?'active':''}" data-exam-tab="${id}">${label}</button>`).join('')}</div><div style="margin-top:12px">${body}</div>`;
   }
   function renderSocialGraph(graph){
-    return `<div class="grid">${kv('配偶/伴侣',graph.配偶伴侣)}${kv('家庭关系',graph.家庭关系)}${kv('工作圈',graph.工作圈)}${kv('熟人圈',graph.熟人圈)}${kv('论坛联系人',graph.论坛联系人)}${kv('微信联系人',graph.微信联系人)}${kv('牵连角色',arr(graph.牵连角色).join('、') || '暂无')}${kv('关系压力',graph.关系压力)}${kv('可触发事件',arr(graph.可触发事件).join('、') || '暂无')}${kv('最近牵连事件',graph.最近牵连事件)}${kv('信息来源',graph.信息来源)}${kv('可信度',graph.可信度)}</div>`;
+    return `<div class="grid">${kv('配偶/伴侣',graph.配偶伴侣)}${kv('家庭关系',graph.家庭关系)}${kv('工作圈',graph.工作圈)}${kv('熟人圈',graph.熟人圈)}</div>`;
   }
   function renderSocial(data){
     const social = rec(get(data,'社交状态',{})); const forum = rec(get(data,'论坛状态',{}));
