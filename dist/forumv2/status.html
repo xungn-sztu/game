@@ -82,8 +82,11 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
   function kv(k,v,meta=''){ return `<div class="kv"><div class="k">${esc(k)}</div><div class="v">${esc(val(v))}</div>${metaHtml(meta)}</div>`; }
   function deriveOverview(data){
     const main = rec(get(data,'主角简档',{})); const social = rec(get(data,'社交状态',{})); const forum = rec(get(data,'论坛状态',{}));
+    const dt = rec(get(data,'世界.详细时间',{}));
+    const clock = dt.时 != null && dt.分 != null ? `${String(dt.时).padStart(2,'0')}:${String(dt.分).padStart(2,'0')}` : '';
+    const concreteTime = dt.年 && dt.月 && dt.日 ? `${dt.年}年${dt.月}月${dt.日}日 ${dt.星期 || ''} ${clock}`.trim() : '';
     return {
-      time: val(get(data,'世界.时间','未同步')), place: val(get(data,'世界.地点','未知地点')), money: val(main.身上的钱),
+      time: val(concreteTime || get(data,'世界.时间','未同步')), place: val(get(data,'世界.地点','未知地点')), money: val(main.身上的钱),
       currentState: val(main.当前状态, Object.keys(rec(get(data,'视线内对象',{}))).length ? '环境中有人在场' : '当前无人进入视线'),
       phoneState: val(main.手机状态, Number(social.微信未读||0)>0 ? `微信有 ${social.微信未读} 条未读` : '手机安静'),
       recentMovement: val(main.最近动向 || social.最近聊天对象 || forum.最近记录帖, '暂无明显变化'),
