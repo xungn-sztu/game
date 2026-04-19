@@ -41,7 +41,7 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
 <script>
 (function(){
   const state = { activeTab: 'overview', selectedRole: null, selectedRoleTab: 'summary', selectedExamTab: 'overview' };
-  const slotNames = ['档案1','档案2','档案3','档案4'];
+  const slotNames = ['档案1','档案2','档案3','档案4','档案5','档案6','档案7','档案8'];
   const unknown = '未知';
   function hostDocument(){ try { return window.parent && window.parent.document ? window.parent.document : document; } catch(e){ return document; } }
   function fillInput(text){
@@ -163,9 +163,25 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
   function renderSocialGraph(graph){
     return `<div class="grid">${kv('配偶/伴侣',graph.配偶伴侣)}${kv('家庭关系',graph.家庭关系)}${kv('工作圈',graph.工作圈)}${kv('熟人圈',graph.熟人圈)}</div>`;
   }
+
+  function renderContacts(data){
+    const contacts = rec(get(data,'联系人薄',{}));
+    const items = Object.entries(contacts).filter(([slot,item]) => {
+      item = rec(item);
+      return item.是否已记录 || item.昵称 || item.最近互动;
+    });
+    if(!items.length) return '<div class="card"><h3>联系人薄</h3><div class="empty">当前还没有轻量联系人。</div></div>';
+    return '<div class="card"><h3>联系人薄</h3><div class="list">' + items.map(([slot,item]) => {
+      item = rec(item);
+      const title = val(item.昵称, slot);
+      const tag = item.绑定档案 ? item.绑定档案 : (item.是否重点候选 ? '重点候选' : '联系人');
+      return '<div class="role-card"><div class="role-top"><div><div class="name">' + esc(title) + '</div><div class="muted">' + esc(val(item.大概身份, '身份未知')) + ' · ' + esc(val(item.来源, '来源未知')) + '</div></div><span class="tag">' + esc(tag) + '</span></div><div class="row">' + kv('联系方式', item.联系方式) + kv('最近互动', item.最近互动) + kv('关系温度', item.关系温度) + kv('备注', item.备注) + '</div><div class="actions"><button class="btn secondary" data-fill="把' + esc(title) + '设为重点角色：">设为重点</button><button class="btn secondary" data-fill="联系' + esc(title) + '：">联系</button></div></div>';
+    }).join('') + '</div></div>';
+  }
+
   function renderSocial(data){
     const social = rec(get(data,'社交状态',{})); const forum = rec(get(data,'论坛状态',{}));
-    return `<div class="card"><h3>社交通知</h3><div class="mini-grid">${kv('微信未读',val(social.微信未读,'0'))}${kv('论坛私信',val(forum.未读私信,'0'))}${kv('帖子热度',forum.帖子热度 || '暂无')}</div></div><div class="card"><h3>最近动态</h3><div class="grid">${kv('最近聊天对象',social.最近聊天对象 || '暂无')}${kv('最近社交暗示',social.最近社交暗示 || '暂无')}${kv('最近热帖',forum.最近热帖 || '暂无')}</div><div class="quick-actions"><button class="btn" data-fill="打开微信聊天">打开微信</button><button class="btn" data-fill="打开论坛主页">打开论坛</button><button class="btn secondary" data-fill="查看论坛私信">看论坛私信</button></div></div>`;
+    return `<div class="card"><h3>社交通知</h3><div class="mini-grid">${kv('微信未读',val(social.微信未读,'0'))}${kv('论坛私信',val(forum.未读私信,'0'))}${kv('帖子热度',forum.帖子热度 || '暂无')}</div></div><div class="card"><h3>最近动态</h3><div class="grid">${kv('最近聊天对象',social.最近聊天对象 || '暂无')}${kv('最近社交暗示',social.最近社交暗示 || '暂无')}${kv('最近热帖',forum.最近热帖 || '暂无')}</div><div class="quick-actions"><button class="btn" data-fill="打开微信聊天">打开微信</button><button class="btn" data-fill="打开论坛主页">打开论坛</button><button class="btn secondary" data-fill="查看论坛私信">看论坛私信</button></div></div>${renderContacts(data)}`;
   }
   function render(){
     const data = allVars();
