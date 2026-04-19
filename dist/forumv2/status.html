@@ -110,9 +110,27 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
   function socialGraphFromSlot(data,slot){ return rec(get(data,`社会关系网.${slot}`, {})); }
   function deriveRoles(data){
     const summarySlots = rec(get(data,'角色索引',{}));
-    return slotNames.map(slot => [slot, rec(summarySlots[slot])]).filter(([,item])=>!!item.是否已建档).map(([slot,item])=>({
-      slot, name: val(item.角色名,slot), job: val(item.职业,'身份未明'), relation: val(item.感情关系,'未知'), bodyRelation: val(item.肉体关系,'未知'), updated: val(item.最近更新,'暂无更新'), inScene: !!item.当前是否在场, profile: profileFromSlot(data,slot), exam: examFromSlot(data,slot), graph: socialGraphFromSlot(data,slot)
-    }));
+    return slotNames.map(slot => {
+      const item = rec(summarySlots[slot]);
+      const profile = profileFromSlot(data,slot);
+      const basic = rec(profile.基础资料);
+      const relationState = rec(profile.关系状态);
+      const sex = rec(profile.性与亲密);
+      const built = !!(item.是否已建档 || basic.是否已建档 || item.角色名 || basic.角色名);
+      return {
+        slot,
+        built,
+        name: val(item.角色名 || basic.角色名, slot),
+        job: val(item.职业 || basic.职业, '身份未明'),
+        relation: val(item.感情关系 || relationState.感情关系, '未知'),
+        bodyRelation: val(item.肉体关系 || sex.肉体关系, '未知'),
+        updated: val(item.最近更新 || relationState.最近线下互动 || relationState.最近私聊, '暂无更新'),
+        inScene: !!(item.当前是否在场 || basic.当前是否在场),
+        profile,
+        exam: examFromSlot(data,slot),
+        graph: socialGraphFromSlot(data,slot)
+      };
+    }).filter(role => role.built);
   }
   function renderRoles(data){
     const roles = deriveRoles(data); if(!roles.length) return `<div class="card"><div class="empty">当前还没有已建档角色。</div></div>`;
