@@ -101,7 +101,25 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
   }
   function renderOnsite(data){
     const onsite = rec(get(data,'视线内对象',{}));
-    const items = Object.entries(onsite);
+    let items = Object.entries(onsite);
+    if(!items.length){
+      const fallbackRoles = deriveRoles(data).filter(role => role.inScene);
+      items = fallbackRoles.map(role => {
+        const basic = rec(role.profile && role.profile.基础资料);
+        const body = rec(role.profile && role.profile.外观身体);
+        return [role.name, {
+          当前观察: val(body.当前观感 || body.可观察体态 || role.updated, '已在当前场景中出现'),
+          动作姿态: '未记录',
+          可感知来源: '剧情在场',
+          面貌: val(basic.外貌类型, '未记录'),
+          发型发色: '未记录',
+          配饰: '未记录',
+          上衣: '未记录',
+          下装: '未记录',
+          距离感: '同一场域内'
+        }];
+      });
+    }
     if(!items.length) return `<div class="card"><div class="empty">当前视线内没有可观察角色。</div></div>`;
     return `<div class="card"><h3>在场角色</h3><div class="list">${items.map(([name,info])=>`<div class="role-card"><div class="role-top"><div><div class="name">${esc(name)}</div><div class="muted">${esc(val(info.当前观察,'当前没有额外观察'))}</div></div><span class="tag">${esc(val(info.距离感,'同一场域内'))}</span></div><div class="row">${kv('动作姿态',info.动作姿态)}${kv('可感知来源',info.可感知来源)}${kv('面貌',info.面貌)}${kv('发型发色',info.发型发色)}${kv('配饰',info.配饰)}${kv('上衣 / 下装',`${val(info.上衣,'看不清')} / ${val(info.下装,'看不清')}`)}</div></div>`).join('')}</div></div>`;
   }
