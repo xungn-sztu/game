@@ -165,7 +165,7 @@ body{margin:0;padding:12px;background:transparent;color:#eee;font-family:"Segoe 
   }
   function renderSocial(data){
     const social = rec(get(data,'社交状态',{})); const forum = rec(get(data,'论坛状态',{}));
-    return `<div class="card"><h3>社交通知</h3><div class="mini-grid">${kv('微信未读',val(social.微信未读,'0'))}${kv('论坛私信',val(forum.未读私信,'0'))}${kv('帖子热度',forum.帖子热度 || '暂无')}</div></div><div class="card"><h3>最近动态</h3><div class="grid">${kv('最近聊天对象',social.最近聊天对象 || '暂无')}${kv('朋友圈新动态',social.朋友圈新动态 || '暂无')}${kv('最近社交暗示',social.最近社交暗示 || '暂无')}${kv('最近热帖',forum.最近热帖 || '暂无')}</div><div class="quick-actions"><button class="btn" data-fill="打开微信聊天">打开微信</button><button class="btn" data-fill="打开论坛主页">打开论坛</button><button class="btn" data-fill="查看朋友圈">看看朋友圈</button><button class="btn secondary" data-fill="查看论坛私信">看论坛私信</button></div></div>`;
+    return `<div class="card"><h3>社交通知</h3><div class="mini-grid">${kv('微信未读',val(social.微信未读,'0'))}${kv('论坛私信',val(forum.未读私信,'0'))}${kv('帖子热度',forum.帖子热度 || '暂无')}</div></div><div class="card"><h3>最近动态</h3><div class="grid">${kv('最近聊天对象',social.最近聊天对象 || '暂无')}${kv('最近社交暗示',social.最近社交暗示 || '暂无')}${kv('最近热帖',forum.最近热帖 || '暂无')}</div><div class="quick-actions"><button class="btn" data-fill="打开微信聊天">打开微信</button><button class="btn" data-fill="打开论坛主页">打开论坛</button><button class="btn secondary" data-fill="查看论坛私信">看论坛私信</button></div></div>`;
   }
   function render(){
     const data = allVars();
