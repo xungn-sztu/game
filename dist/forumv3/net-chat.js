@@ -41,6 +41,9 @@
     const match = String(line).match(/^\[([^|\]]+)\|([\s\S]*)\]$/);
     return match ? [match[1], match[2]] : null;
   }
+  function normalizeTag(line) {
+    return String(line || '').replace(/\s+/g, '').trim();
+  }
 
   function parseMessageLine(line) {
     if (!line.startsWith('[消息|') || !line.endsWith(']')) return null;
@@ -79,6 +82,11 @@
     return text;
   }
 
+  function extractMessageLines(text) {
+    const matches = String(text || '').match(/\[消息\|[\s\S]*?\]/g);
+    return matches || [];
+  }
+
   function parse(raw) {
     const data = {
       platform: '微信',
@@ -93,11 +101,12 @@
     let inMessages = false;
 
     for (const line of lines) {
-      if (line === '[messages]') {
+      const tag = normalizeTag(line);
+      if (tag === '[messages]') {
         inMessages = true;
         continue;
       }
-      if (line === '[/messages]') {
+      if (tag === '[/messages]') {
         inMessages = false;
         continue;
       }
@@ -123,6 +132,10 @@
         const msg = parseMessageLine(line);
         if (msg) data.messages.push(msg);
       }
+    }
+
+    if (!data.messages.length) {
+      data.messages = extractMessageLines(raw).map(parseMessageLine).filter(Boolean);
     }
 
     return data;
