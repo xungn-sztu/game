@@ -173,15 +173,32 @@ function examOverview(exam){
 }
 function normalizeOnsite(data){
   const raw=get(data,'视线内对象');
-  if(Array.isArray(raw)) return raw.map(x=>rec(x)).filter(x=>Object.keys(x).length);
+  let items = [];
+  if(Array.isArray(raw)) items = raw.map(x=>rec(x)).filter(x=>Object.keys(x).length);
   if(raw&&typeof raw==='object'){
-    return Object.entries(raw).map(([key,val])=>{
+    items = Object.entries(raw).map(([key,val])=>{
       const item=rec(val);
       if(placeholderName(item.角色名) && !/档案\d+/.test(key)) item.角色名=key;
       return item;
     }).filter(x=>Object.keys(x).length);
   }
-  return [];
+  if(items.length) return items;
+  return slots
+    .map(slot=>normalizeRole(data,slot))
+    .filter(role=>role.built && role.inScene)
+    .map(role=>({
+      角色名: role.name,
+      当前观察: firstKnown(role.body.当前观感, role.body.可观察体态, role.recentUpdate, '已在当前场景中出现'),
+      动作姿态: firstKnown(role.body.动作姿态, '未记录'),
+      可感知来源: '剧情在场',
+      面貌: firstKnown(role.body.面貌, role.body.面部, role.appearance, '未记录'),
+      发型发色: firstKnown(role.body.发型发色, role.body.发型, '未记录'),
+      配饰: firstKnown(role.body.配饰, '未记录'),
+      上衣: firstKnown(role.body.上衣, '未记录'),
+      下装: firstKnown(role.body.下装, '未记录'),
+      内衣可见情况: firstKnown(role.body.内衣可见情况, '未记录'),
+      距离感: '同一场域内'
+    }));
 }
 function renderOverview(data){
   return `<div class="card"><h3>当前处境</h3>${grid([
@@ -204,7 +221,7 @@ function renderOverview(data){
 function renderOnsite(data){
   const onsite=normalizeOnsite(data);
   if(!onsite.length) return `<div class="card"><div class="empty">当前视线内没有可观察角色。</div></div>`;
-  return `<div class="list">${onsite.map(o=>{
+  return `<div class="card"><h3>在场角色</h3><div class="list">${onsite.map(o=>{
     const name=displayRoleName(o.角色名, firstKnown(o.公开身份,o.身份));
     return `<div class="role">
       <div class="top">
@@ -225,7 +242,7 @@ function renderOnsite(data){
         ['配饰',o.配饰]
       ])}
     </div>`;
-  }).join('')}</div>`;
+  }).join('')}</div></div>`;
 }
 function renderExam(normalizedExam){
   const base=rec(normalizedExam.基础数据);
