@@ -8,17 +8,19 @@
     style.textContent = `
       .fv3-chat{max-width:760px;margin:14px auto;border:1px solid rgba(185,42,48,.38);border-radius:18px;overflow:hidden;background:#0b0f14;color:#e9edf2;font-family:"Segoe UI","Microsoft YaHei",sans-serif;box-shadow:0 18px 46px rgba(0,0,0,.42)}
       .fv3-chat-head{background:linear-gradient(180deg,#141922,#0f1319);padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:center;align-items:center;position:relative}
-      .fv3-title{font-size:17px;font-weight:800;color:#f5f7fb;text-align:center}.fv3-sub{position:absolute;right:16px;top:15px;font-size:12px;color:#8f98a6}
+      .fv3-title{font-size:17px;font-weight:800;color:#f5f7fb;text-align:center}
+      .fv3-sub{position:absolute;right:16px;top:15px;font-size:12px;color:#8f98a6}
       .fv3-body{padding:16px 14px 10px;background:radial-gradient(circle at top left,rgba(115,27,34,.28),transparent 34%),#0c1117;display:grid;gap:12px}
       .fv3-row{display:grid;grid-template-columns:34px minmax(0,1fr);gap:9px;align-items:start;max-width:86%}
       .fv3-row.mine{justify-self:end;grid-template-columns:minmax(0,1fr) 34px}
       .fv3-avatar{width:34px;height:34px;border-radius:8px;background:#26303d;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#d6dce6;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.28)}
       .fv3-row.mine .fv3-avatar{background:#71242b;color:#ffe9e9}
-      .fv3-name{font-size:11px;color:#9aa4b2;margin:0 0 4px 2px}.fv3-row.mine .fv3-name{text-align:right;margin:0 2px 4px 0;color:#c7a0a4}
+      .fv3-name{font-size:11px;color:#9aa4b2;margin:0 0 4px 2px}
+      .fv3-row.mine .fv3-name{text-align:right;margin:0 2px 4px 0;color:#c7a0a4}
       .fv3-bubble{display:inline-block;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:9px 11px;background:#1b232e;color:#eef3f8;line-height:1.65;white-space:pre-wrap;text-align:left;max-width:100%;word-break:break-word}
       .fv3-row.mine .fv3-bubble{background:#8b2731;color:#fff;border-color:#b13a45}
       .fv3-system{justify-self:center;max-width:92%;color:#8f98a6;font-size:12px;text-align:center;padding:2px 0}
-      .fv3-image{min-width:132px;min-height:84px;border-radius:10px;background:#131a22;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#9aa4b2}
+      .fv3-image{min-width:132px;min-height:84px;border-radius:10px;background:#131a22;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#9aa4b2;padding:12px;text-align:center}
       .fv3-inputbar{border-top:1px solid rgba(255,255,255,.08);padding:11px 12px;background:#10151c;display:flex;gap:8px;align-items:center}
       .fv3-input{flex:1;border:1px solid rgba(255,255,255,.12);background:#0b0f14;color:#aeb7c4;border-radius:999px;padding:9px 12px;font-size:13px;cursor:pointer;text-align:left;min-height:18px}
       .fv3-send{border:1px solid rgba(185,42,48,.62);background:#7f2029;color:#fff;border-radius:999px;padding:9px 13px;cursor:pointer;font-weight:700}
@@ -60,8 +62,6 @@
       .replace(/<\/?content>/gi, '\n')
       .replace(/<\/?thinking>/gi, '\n');
 
-    // Some models mention the tag before the real block. The regex can then
-    // capture junk plus an inner protocol block; keep the last complete chat.
     const lastMessages = text.lastIndexOf('[messages]');
     const lastEnd = text.lastIndexOf('[/messages]');
     if (lastMessages >= 0 && lastEnd > lastMessages) {
@@ -80,17 +80,33 @@
   }
 
   function parse(raw) {
-    const data = { platform: '微信', contact: '微信聊天', note: '', status: '', messages: [], hints: [] };
+    const data = {
+      platform: '微信',
+      contact: '微信聊天',
+      note: '',
+      status: '',
+      messages: [],
+      hints: []
+    };
+
     const lines = sanitizeRaw(raw).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     let inMessages = false;
+
     for (const line of lines) {
-      if (line === '[messages]') { inMessages = true; continue; }
-      if (line === '[/messages]') { inMessages = false; continue; }
+      if (line === '[messages]') {
+        inMessages = true;
+        continue;
+      }
+      if (line === '[/messages]') {
+        inMessages = false;
+        continue;
+      }
       if (line.startsWith('[消息|')) {
         const msg = parseMessageLine(line);
         if (msg) data.messages.push(msg);
         continue;
       }
+
       const pair = parseBracket(line);
       if (pair && !inMessages) {
         const [key, value] = pair;
@@ -102,21 +118,29 @@
         else if (key === 'input_hint') data.hints.push(value);
         continue;
       }
+
       if (inMessages) {
         const msg = parseMessageLine(line);
         if (msg) data.messages.push(msg);
       }
     }
+
     return data;
   }
 
   function hostDocument() {
-    try { return window.parent && window.parent.document ? window.parent.document : document; } catch (error) { return document; }
+    try {
+      return window.parent && window.parent.document ? window.parent.document : document;
+    } catch (error) {
+      return document;
+    }
   }
 
   function setInput(text) {
     const doc = hostDocument();
-    const textarea = doc.querySelector('#send_textarea') || doc.querySelector('textarea[name="message"]') || doc.querySelector('textarea');
+    const textarea = doc.querySelector('#send_textarea')
+      || doc.querySelector('textarea[name="message"]')
+      || doc.querySelector('textarea');
     if (!textarea) return false;
     const view = textarea.ownerDocument.defaultView || window;
     const descriptor = Object.getOwnPropertyDescriptor(view.HTMLTextAreaElement.prototype, 'value');
@@ -145,6 +169,7 @@
     if (message.type === 'system' || sender === '系统') {
       return `<div class="fv3-system">${esc(message.content)}</div>`;
     }
+
     let body = esc(message.content);
     if (message.type === 'image') {
       body = `<div class="fv3-image">${esc(message.content || '图片')}</div>`;
@@ -152,9 +177,8 @@
       body = esc(message.content || '[语音]');
     } else if (message.type === 'task') {
       body = esc(message.content);
-    } else if (message.type === 'recall') {
-      body = esc(message.content || '消息已删除');
     }
+
     const avatar = `<div class="fv3-avatar">${esc(avatarText(sender))}</div>`;
     const bubble = `<div><div class="fv3-name">${esc(sender)}${message.time ? ' · ' + esc(message.time) : ''}</div><div class="fv3-bubble">${body}</div></div>`;
     return mine
@@ -167,9 +191,12 @@
     shell.dataset.fv3Ready = '1';
     const template = shell.querySelector('template');
     const root = shell.querySelector('.forumv3-net-chat-root') || shell;
-    const raw = template ? (template.content ? template.content.textContent : template.textContent) : shell.textContent;
+    const raw = template
+      ? (template.content ? template.content.textContent : template.textContent)
+      : shell.textContent;
     const data = parse(raw);
     const hint = data.hints[0] || `回复${data.contact}：`;
+
     root.innerHTML = `
       <div class="fv3-chat">
         <div class="fv3-chat-head">
