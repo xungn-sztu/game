@@ -307,23 +307,24 @@ function renderOnsite(data){
   if(!onsite.length) return `<div class="card"><div class="empty">当前视线内没有可观察角色。</div></div>`;
   return `<div class="card"><h3>在场角色</h3><div class="list">${onsite.map(o=>{
     const name=displayRoleName(o.角色名, firstKnown(o.公开身份,o.身份));
+    const topWear = firstKnown(o.上衣, o.上装, '看不清');
+    const bottomWear = firstKnown(o.下装, '看不清');
     return `<div class="role">
       <div class="top">
         <div>
           <div class="name">${esc(name)}</div>
-          <div class="small">${esc(firstKnown(o.当前观察,'当前只记录一眼能看到的外观和动作'))}</div>
+          <div class="small">${esc(firstKnown(o.当前观察,'当前没有额外观察'))}</div>
         </div>
-        <span class="tag">${esc(firstKnown(o.可感知来源,'亲眼所见'))}</span>
+        <span class="tag">${esc(firstKnown(o.距离感,'同一场域内'))}</span>
       </div>
       ${grid([
         ['动作姿态',o.动作姿态],
-        ['距离感',o.距离感],
-        ['发型',firstKnown(o.发型,o.发型发色)],
-        ['面部',firstKnown(o.面部,o.面貌)],
-        ['上装',o.上装],
-        ['下装',o.下装],
-        ['内衣可见情况',o.内衣可见情况],
-        ['配饰',o.配饰]
+        ['可感知来源',firstKnown(o.可感知来源,'亲眼所见')],
+        ['面貌',firstKnown(o.面貌,o.面部)],
+        ['发型发色',firstKnown(o.发型发色,o.发型)],
+        ['配饰',o.配饰],
+        ['上衣 / 下装',`${topWear} / ${bottomWear}`],
+        ['内衣可见情况',o.内衣可见情况]
       ])}
     </div>`;
   }).join('')}</div></div>`;
