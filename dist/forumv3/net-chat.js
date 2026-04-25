@@ -54,13 +54,43 @@
     };
   }
 
+  function sanitizeRaw(raw) {
+    let text = String(raw || '')
+      .replace(/<\/?net_chat_data>/gi, '\n')
+      .replace(/<\/?content>/gi, '\n')
+      .replace(/<\/?thinking>/gi, '\n');
+
+    // Some models mention the tag before the real block. The regex can then
+    // capture junk plus an inner protocol block; keep the last complete chat.
+    const lastMessages = text.lastIndexOf('[messages]');
+    const lastEnd = text.lastIndexOf('[/messages]');
+    if (lastMessages >= 0 && lastEnd > lastMessages) {
+      const before = text.slice(0, lastMessages);
+      const headerStarts = [
+        before.lastIndexOf('[平台|'),
+        before.lastIndexOf('[联系人|'),
+        before.lastIndexOf('[群聊名|')
+      ].filter((index) => index >= 0);
+      const start = headerStarts.length ? Math.min(...headerStarts) : lastMessages;
+      const after = text.slice(lastEnd + '[/messages]'.length);
+      const hintMatch = after.match(/\[input_hint\|[\s\S]*?\]/);
+      text = text.slice(start, lastEnd + '[/messages]'.length) + (hintMatch ? '\n' + hintMatch[0] : '');
+    }
+    return text;
+  }
+
   function parse(raw) {
     const data = { platform: '微信', contact: '微信聊天', note: '', status: '', messages: [], hints: [] };
-    const lines = String(raw || '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    const lines = sanitizeRaw(raw).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     let inMessages = false;
     for (const line of lines) {
       if (line === '[messages]') { inMessages = true; continue; }
       if (line === '[/messages]') { inMessages = false; continue; }
+      if (line.startsWith('[消息|')) {
+        const msg = parseMessageLine(line);
+        if (msg) data.messages.push(msg);
+        continue;
+      }
       const pair = parseBracket(line);
       if (pair && !inMessages) {
         const [key, value] = pair;
@@ -137,7 +167,8 @@
     shell.dataset.fv3Ready = '1';
     const template = shell.querySelector('template');
     const root = shell.querySelector('.forumv3-net-chat-root') || shell;
-    const data = parse(template ? template.innerHTML : shell.textContent);
+    const raw = template ? (template.content ? template.content.textContent : template.textContent) : shell.textContent;
+    const data = parse(raw);
     const hint = data.hints[0] || `回复${data.contact}：`;
     root.innerHTML = `
       <div class="fv3-chat">
