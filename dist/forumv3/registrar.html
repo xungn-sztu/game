@@ -1,38 +1,205 @@
 <meta charset="utf-8">
 <style>
-body{margin:0;padding:14px;background:transparent;color:#eee;font-family:"Segoe UI","Microsoft YaHei",sans-serif}.reg{max-width:920px;margin:0 auto;background:#151111;border:1px solid rgba(190,38,47,.35);border-radius:18px;overflow:hidden}.head{padding:16px 18px;background:linear-gradient(135deg,#7d161d,#b42a35)}h2{margin:0 0 6px}.body{padding:14px;display:grid;gap:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{background:#1e1717;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}.label{font-weight:800;margin-bottom:5px}.hint{font-size:12px;color:#b9a9a9;line-height:1.5;margin-bottom:8px}.opts{display:flex;gap:7px;flex-wrap:wrap}.opt,.btn{border:1px solid rgba(190,38,47,.4);background:#2a181b;color:#f4dada;border-radius:999px;padding:7px 10px;cursor:pointer}.opt.active{background:#a32631;color:#fff}.custom{width:100%;box-sizing:border-box;margin-top:8px;background:#120f0f;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px}.preview{background:#100d0d;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;white-space:pre-wrap;color:#d8cccc;max-height:180px;overflow:auto}.actions{display:flex;gap:10px;flex-wrap:wrap}.primary{background:#b82b36;color:#fff}@media(max-width:720px){.grid{grid-template-columns:1fr}}
+  :root {
+    color-scheme: dark;
+    --bg: #151111;
+    --panel: #1f1718;
+    --panel-2: #120f10;
+    --line: rgba(190, 38, 47, .38);
+    --text: #f4e5e5;
+    --muted: #bca9a9;
+    --accent: #b62b36;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 14px;
+    background: transparent;
+    color: var(--text);
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  .reg {
+    max-width: 940px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .28);
+  }
+  .head {
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #6d151b, #a82932 58%, #2a171a);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+  }
+  h2 { margin: 0 0 6px; font-size: 22px; }
+  .head p { margin: 0; color: #f1cccc; font-size: 13px; line-height: 1.6; }
+  .body { display: grid; gap: 12px; padding: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .field {
+    min-width: 0;
+    border: 1px solid rgba(255,255,255,.08);
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .label { font-weight: 800; margin-bottom: 5px; }
+  .hint { color: var(--muted); font-size: 12px; line-height: 1.55; margin-bottom: 9px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 7px; }
+  .opt, .btn {
+    border: 1px solid var(--line);
+    background: #2a181b;
+    color: #f4dada;
+    border-radius: 999px;
+    padding: 7px 10px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .opt.active, .primary { background: var(--accent); color: #fff; border-color: #d34a55; }
+  .custom {
+    width: 100%;
+    margin-top: 9px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: var(--panel-2);
+    color: #fff;
+    border-radius: 9px;
+    padding: 8px 9px;
+    font-size: 13px;
+  }
+  .preview {
+    max-height: 210px;
+    overflow: auto;
+    white-space: pre-wrap;
+    border: 1px solid rgba(255,255,255,.08);
+    background: #0f0d0d;
+    color: #d9cbcb;
+    border-radius: 12px;
+    padding: 11px;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+  }
 </style>
-<div class="reg"><div class="head"><h2>论坛v3 角色注册器</h2><div>只定制第一位角色的大方向，不定制剧情；自定义输入优先。</div></div><div class="body"><div id="fields" class="grid"></div><div id="preview" class="preview"></div><div class="actions"><button id="fill" class="btn primary">填入定制指令</button><button id="random" class="btn">随机生成</button></div></div></div>
+
+<div class="reg">
+  <div class="head">
+    <h2>论坛v3 角色注册器</h2>
+    <p>只定制第一位角色的大方向，不定制剧情；每一栏都可以自填，自填内容优先。</p>
+  </div>
+  <div class="body">
+    <div id="fields" class="grid"></div>
+    <div id="preview" class="preview"></div>
+    <div class="actions">
+      <button id="fill" class="btn primary">填入定制指令</button>
+      <button id="random" class="btn">随机生成</button>
+    </div>
+  </div>
+</div>
+
 <script>
-(function(){
-const groups=[
-['年龄','决定年龄区间与社会阶段',['年轻成年','轻熟','成熟稳重','熟女','年龄未知']],
-['身材类型','只决定观感，精确体测需要后续确认',['纤细','匀称','丰腴','高挑','健身型','微胖真实']],
-['外貌类型','用于气质和第一印象，不做种族标签',['清冷','温婉','精英感','邻家','明艳','疲惫现实','知性']],
-['身高','只记录区间或观感',['娇小','中等','高挑','很高','未知']],
-['职业','影响线下场景、作息和社交压力',['教师','白领','主管经理','医生','护士','律师金融','公务员','自由职业','研究生学生','全职太太']],
-['性格','稳定底色，后续只能缓慢变化',['温和克制','冷淡理性','外热内防','慢热敏感','社交熟练','骄矜自持','嘴硬心软','强势清醒']],
-['性经验','默认玩家未必知道',['未知','较少','普通','丰富','复杂','长期空窗','婚内经验','线上经验多']],
-['性癖倾向','潜在倾向，不等于立刻暴露',['未知','被关注','轻羞耻','控制/被控制','展示欲','禁忌感','文字语音挑逗','任务感']],
-['性欲','欲望强弱，不机械服从',['未知','低','中等','偏高','压抑','周期波动','被动唤起','主动试探']],
-['性上的类型','亲密情境里的反应模式',['温顺回应型','主动试探型','关系驱动型','刺激驱动型','嘴硬拖延型','控制欲型','被引导型','线上外放型']],
-['婚姻状况','影响现实压力和边界',['单身','恋爱中','已婚','离异','分居','暧昧对象存在','未知']],
-['认识途径','决定第一接触渠道',['论坛私信','微信好友','现实介绍','线下偶遇','工作接触','校园接触','朋友圏互动','邻居同楼']],
-['肉体关系','当前身体接触阶段',['零接触','轻微接触','暧昧接触','已有亲密','线上暧昧','曾经越界','暂停疏离','未知']],
-['性开放尺度','当前边界，不是固定标签',['保守','谨慎开放','私下开放','较开放','线上开放','只对熟人开放','未知']],
-['感情关系','当前情感底色',['刚认识','普通朋友','暧昧','旧识熟人','秘密关系','互相利用','单向关注','网友转现实']]
-];
-const selected={}, custom={};
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function hostDoc(){try{return window.parent&&window.parent.document?window.parent.document:document}catch(e){return document}}
-function setInput(text){const doc=hostDoc();const t=doc.querySelector('#send_textarea')||doc.querySelector('textarea[name="message"]')||doc.querySelector('textarea');if(!t)return;const desc=Object.getOwnPropertyDescriptor((t.ownerDocument.defaultView||window).HTMLTextAreaElement.prototype,'value');if(desc&&desc.set)desc.set.call(t,text);else t.value=text;t.dispatchEvent(new Event('input',{bubbles:true,cancelable:true}));t.dispatchEvent(new Event('change',{bubbles:true}));t.focus()}
-function value(name){return (custom[name]||'').trim()||selected[name]||'按真实感随机'}
-function prompt(random=false){const lines=groups.map(([n])=>`${n}: ${value(n)}`).join('\n');return `${random?'随机生成':'按以下选择定制'}论坛v3第一位成年女性角色并写入MVU变量。\n要求：只建档，不定制剧情；写入 女角色档案/档案1 和 角色索引/档案1；不要写旧详情镜像；不要在思考、复述或示例里重复变量标签；先输出唯一合法变量更新块，之后可见正文只输出【注册完成】和状态栏占位符。\n${lines}`}
-function render(){const root=document.getElementById('fields');root.innerHTML=groups.map(([name,hint,opts])=>`<div class="field"><div class="label">${esc(name)}</div><div class="hint">${esc(hint)}</div><div class="opts">${opts.map(o=>`<button class="opt ${selected[name]===o?'active':''}" data-name="${esc(name)}" data-value="${esc(o)}">${esc(o)}</button>`).join('')}</div><input class="custom" data-custom="${esc(name)}" placeholder="自定义${esc(name)}，可留空"></div>`).join('');document.getElementById('preview').textContent=prompt(false)}
-document.addEventListener('click',e=>{const b=e.target.closest('.opt');if(b){selected[b.dataset.name]=b.dataset.value;render()}});
-document.addEventListener('input',e=>{if(e.target.matches('[data-custom]')){custom[e.target.dataset.custom]=e.target.value;document.getElementById('preview').textContent=prompt(false)}});
-document.getElementById('fill').onclick=()=>setInput(prompt(false));
-document.getElementById('random').onclick=()=>setInput(prompt(true));
-render();
+(function () {
+  const groups = [
+    ['年龄', '决定年龄区间与社会阶段。', ['年轻成年', '轻熟', '成熟稳重', '熟女', '年龄未知']],
+    ['身材类型', '只决定观感，精确体测需要后续确认。', ['纤细', '匀称', '丰腴', '高挑', '健身型', '微胖真实']],
+    ['外貌类型', '用于气质和第一印象，不做族裔标签。', ['清冷', '温婉', '精英感', '邻家', '明艳', '疲惫现实', '知性']],
+    ['身高', '只记录区间或观感。', ['娇小', '中等', '高挑', '很高', '未知']],
+    ['职业', '影响线下场景、作息和社会压力。', ['教师', '白领', '主管经理', '医生', '护士', '律师金融', '公务员', '自由职业', '研究生学生', '全职太太']],
+    ['性格', '稳定底色，后续只能缓慢变化。', ['温和克制', '冷淡理性', '外热内防', '慢热敏感', '社交熟练', '骄矜自持', '嘴硬心软', '强势清醒']],
+    ['性经验', '默认玩家未必知道。', ['未知', '较少', '普通', '丰富', '复杂', '长期空窗', '婚内经验', '线上经验多']],
+    ['性癖倾向', '潜在倾向，不等于立刻暴露。', ['未知', '被关注', '轻羞耻', '控制/被控制', '展示欲', '禁忌感', '文字语音挑逗', '任务感']],
+    ['性欲', '欲望强弱，不机械服从。', ['未知', '低', '中等', '偏高', '压抑', '周期波动', '被动唤起', '主动试探']],
+    ['性上的类型', '亲密情境里的反应模式。', ['温顺回应型', '主动试探型', '关系驱动型', '刺激驱动型', '嘴硬拖延型', '控制欲型', '被引导型', '线上外放型']],
+    ['婚姻状况', '影响现实压力和边界。', ['单身', '恋爱中', '已婚', '离异', '分居', '暧昧对象存在', '未知']],
+    ['认识途径', '决定第一接触渠道。', ['论坛私信', '微信好友', '现实介绍', '线下偶遇', '工作接触', '校园接触', '朋友圈互动', '邻居同楼']],
+    ['肉体关系', '当前身体接触阶段。', ['零接触', '轻微接触', '暧昧接触', '已有亲密', '线上暧昧', '曾经越界', '暂停疏离', '未知']],
+    ['性开放尺度', '当前边界，不是固定标签。', ['保守', '谨慎开放', '私下开放', '较开放', '线上开放', '只对熟人开放', '未知']],
+    ['感情关系', '当前情感底色。', ['刚认识', '普通朋友', '暧昧', '旧识熟人', '秘密关系', '互相利用', '单向关注', '网友转现实']]
+  ];
+
+  const selected = {};
+  const custom = {};
+
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function hostDocument() {
+    try {
+      return window.parent && window.parent.document ? window.parent.document : document;
+    } catch (_) {
+      return document;
+    }
+  }
+
+  function setInput(text) {
+    const doc = hostDocument();
+    const textarea =
+      doc.querySelector('#send_textarea') ||
+      doc.querySelector('textarea[name="message"]') ||
+      doc.querySelector('textarea');
+    if (!textarea) return false;
+    const view = textarea.ownerDocument.defaultView || window;
+    const descriptor = Object.getOwnPropertyDescriptor(view.HTMLTextAreaElement.prototype, 'value');
+    if (descriptor && descriptor.set) descriptor.set.call(textarea, text);
+    else textarea.value = text;
+    textarea.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+    textarea.focus();
+    return true;
+  }
+
+  function valueOf(name) {
+    return (custom[name] || '').trim() || selected[name] || '按真实感随机';
+  }
+
+  function buildPrompt(random) {
+    const lines = groups.map(([name]) => `${name}: ${valueOf(name)}`).join('\n');
+    const mode = random ? '随机生成' : '按以下选择定制';
+    return `${mode}论坛v3第一位成年女性角色并写入MVU变量。
+要求：只建档，不定制剧情；写入 女角色档案/档案1 和 角色索引/档案1；不要写旧详情镜像；不要在思考、复述或示例里重复变量标签；先输出唯一合法变量更新块，之后可见正文只输出【注册完成】和状态栏占位符。
+姓名规则：如果用户未指定姓名，必须根据年龄、职业、婚姻、社交圈和气质生成一个自然中文姓名；不要写待定、未命名、某老师、某女教师；不要反复使用固定AI味名字。
+${lines}`;
+  }
+
+  function render() {
+    const root = document.getElementById('fields');
+    root.innerHTML = groups.map(([name, hint, options]) => `
+      <div class="field">
+        <div class="label">${esc(name)}</div>
+        <div class="hint">${esc(hint)}</div>
+        <div class="opts">
+          ${options.map(option => `<button class="opt ${selected[name] === option ? 'active' : ''}" data-name="${esc(name)}" data-value="${esc(option)}">${esc(option)}</button>`).join('')}
+        </div>
+        <input class="custom" data-custom="${esc(name)}" placeholder="自定义${esc(name)}，可留空">
+      </div>
+    `).join('');
+    document.getElementById('preview').textContent = buildPrompt(false);
+  }
+
+  document.addEventListener('click', event => {
+    const option = event.target.closest('.opt');
+    if (option) {
+      selected[option.dataset.name] = option.dataset.value;
+      render();
+    }
+  });
+
+  document.addEventListener('input', event => {
+    if (event.target.matches('[data-custom]')) {
+      custom[event.target.dataset.custom] = event.target.value;
+      document.getElementById('preview').textContent = buildPrompt(false);
+    }
+  });
+
+  document.getElementById('fill').addEventListener('click', () => setInput(buildPrompt(false)));
+  document.getElementById('random').addEventListener('click', () => setInput(buildPrompt(true)));
+  render();
 })();
 </script>
