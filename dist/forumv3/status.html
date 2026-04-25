@@ -108,7 +108,7 @@ function kv(k,v){ return `<div class="kv"><div class="k">${esc(k)}</div><div cla
 function grid(rows){ return `<div class="grid">${rows.map(([k,v])=>kv(k,v)).join('')}</div>`; }
 function placeholderName(v){
   const s=String(v||'').trim();
-  return !s || /待定|未命名|未确认|角色|女人|女性|女教师|陌生女人|某个女人/.test(s);
+  return unknownish(s) || /未知|暂无|无|待定|未命名|未确认|角色|女人|女性|女教师|陌生女人|某个女人/.test(s);
 }
 function displayRoleName(name, identity){
   if(!placeholderName(name)) return name;
@@ -132,7 +132,7 @@ function normalizeRole(data, slot){
   const normalized={
     slot,
     idx,p,exam,social,base,body,sex,rel,
-    built: boolish(p.是否已建档)||boolish(idx.是否已建档)||!placeholderName(name)||!unknownish(publicIdentity),
+    built: boolish(p.是否已建档)||boolish(idx.是否已建档)||!placeholderName(name),
     name: displayRoleName(name, publicIdentity),
     rawName: name,
     publicIdentity,
