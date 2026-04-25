@@ -74,6 +74,12 @@ function firstKnown(){
   for(const value of arguments){ if(!unknownish(value)) return value; }
   return '未知';
 }
+function sameName(a,b){
+  const aa=String(a||'').trim();
+  const bb=String(b||'').trim();
+  if(!aa || !bb) return false;
+  return aa===bb || aa.includes(bb) || bb.includes(aa);
+}
 function boolish(v){ return v===true || v==='true' || v===1 || v==='1'; }
 function get(obj,path){
   try{
@@ -162,6 +168,96 @@ function normalizeRole(data, slot){
   };
   return normalized;
 }
+function onsiteFromRole(role, sourceLabel){
+  return {
+    角色名: role.name,
+    公开身份: role.publicIdentity,
+    当前观察: firstKnown(
+      role.body.当前观察,
+      role.body.当前观感,
+      role.body.可观察体态,
+      role.recentUpdate,
+      '已在当前场景中出现'
+    ),
+    动作姿态: firstKnown(
+      role.body.动作姿态,
+      role.p.动作姿态,
+      '未记录'
+    ),
+    可感知来源: firstKnown(sourceLabel, '剧情在场'),
+    面貌: firstKnown(
+      role.body.面貌,
+      role.body.面部,
+      role.p.面貌,
+      role.p.面部,
+      role.appearance,
+      '未记录'
+    ),
+    发型发色: firstKnown(
+      role.body.发型发色,
+      role.body.发型,
+      role.p.发型发色,
+      role.p.发型,
+      '未记录'
+    ),
+    配饰: firstKnown(
+      role.body.配饰,
+      role.p.配饰,
+      '未记录'
+    ),
+    上衣: firstKnown(
+      role.body.上衣,
+      role.p.上衣,
+      '未记录'
+    ),
+    下装: firstKnown(
+      role.body.下装,
+      role.p.下装,
+      '未记录'
+    ),
+    内衣可见情况: firstKnown(
+      role.body.内衣可见情况,
+      role.p.内衣可见情况,
+      '未观察'
+    ),
+    距离感: firstKnown(
+      role.body.距离感,
+      role.p.距离感,
+      '同一场域内'
+    )
+  };
+}
+function enrichOnsiteItem(item, roles){
+  const current=rec(item);
+  const role=roles.find(r=>
+    sameName(current.角色名, r.rawName) ||
+    sameName(current.角色名, r.name) ||
+    sameName(current.角色名, r.publicIdentity) ||
+    sameName(current.公开身份, r.rawName) ||
+    sameName(current.公开身份, r.name) ||
+    sameName(current.公开身份, r.publicIdentity)
+  );
+  if(!role) return current;
+  const fallback=onsiteFromRole(role, firstKnown(current.可感知来源, '亲眼所见'));
+  return {
+    ...fallback,
+    ...current,
+    角色名: firstKnown(current.角色名, fallback.角色名),
+    公开身份: firstKnown(current.公开身份, fallback.公开身份),
+    当前观察: firstKnown(current.当前观察, fallback.当前观察),
+    动作姿态: firstKnown(current.动作姿态, fallback.动作姿态),
+    可感知来源: firstKnown(current.可感知来源, fallback.可感知来源),
+    面貌: firstKnown(current.面貌, current.面部, fallback.面貌),
+    面部: firstKnown(current.面部, current.面貌, fallback.面貌),
+    发型发色: firstKnown(current.发型发色, current.发型, fallback.发型发色),
+    发型: firstKnown(current.发型, current.发型发色, fallback.发型发色),
+    配饰: firstKnown(current.配饰, fallback.配饰),
+    上衣: firstKnown(current.上衣, fallback.上衣),
+    下装: firstKnown(current.下装, fallback.下装),
+    内衣可见情况: firstKnown(current.内衣可见情况, fallback.内衣可见情况),
+    距离感: firstKnown(current.距离感, fallback.距离感)
+  };
+}
 function examOverview(exam){
   const overview=rec(exam.概况);
   return {
@@ -173,6 +269,7 @@ function examOverview(exam){
 }
 function normalizeOnsite(data){
   const raw=get(data,'视线内对象');
+  const builtRoles = slots.map(slot=>normalizeRole(data,slot)).filter(role=>role.built);
   let items = [];
   if(Array.isArray(raw)) items = raw.map(x=>rec(x)).filter(x=>Object.keys(x).length);
   if(raw&&typeof raw==='object'){
@@ -182,23 +279,10 @@ function normalizeOnsite(data){
       return item;
     }).filter(x=>Object.keys(x).length);
   }
-  if(items.length) return items;
-  return slots
-    .map(slot=>normalizeRole(data,slot))
-    .filter(role=>role.built && role.inScene)
-    .map(role=>({
-      角色名: role.name,
-      当前观察: firstKnown(role.body.当前观感, role.body.可观察体态, role.recentUpdate, '已在当前场景中出现'),
-      动作姿态: firstKnown(role.body.动作姿态, '未记录'),
-      可感知来源: '剧情在场',
-      面貌: firstKnown(role.body.面貌, role.body.面部, role.appearance, '未记录'),
-      发型发色: firstKnown(role.body.发型发色, role.body.发型, '未记录'),
-      配饰: firstKnown(role.body.配饰, '未记录'),
-      上衣: firstKnown(role.body.上衣, '未记录'),
-      下装: firstKnown(role.body.下装, '未记录'),
-      内衣可见情况: firstKnown(role.body.内衣可见情况, '未记录'),
-      距离感: '同一场域内'
-    }));
+  if(items.length) return items.map(item=>enrichOnsiteItem(item,builtRoles));
+  return builtRoles
+    .filter(role=>role.inScene)
+    .map(role=>onsiteFromRole(role,'剧情在场'));
 }
 function renderOverview(data){
   return `<div class="card"><h3>当前处境</h3>${grid([
